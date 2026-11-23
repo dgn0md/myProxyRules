@@ -1,14 +1,14 @@
 /**
- * myClashRules Mihomo 配置全量覆写脚本
+ * myProxyRules Mihomo 配置全量覆写脚本
  * 项目地址：dgn0md/myProxyRules
  * 致谢：AIsouler/MyClash 全量版（commit 4861619be366c7bacabfed6d581bb8c450de1ca1）。
  * 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
  *
- * 最新 Raw SHA-256：4f3a447595b72a2ced468d3b9b0b622cc793f356e66ffdbb20f56f7a14ba3005
+ * 最新 Raw SHA-256：36ea43625bf8b1baa27d77f5f126304ec4ec91af15f347cdb69321738eb9ff98
  * Raw 脚本：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js
  * CDN 脚本：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js
  *
- * 缓存 CDN SHA-256：66916a13ad54a563792ac745ff082224b904fd1509ae9cb406e44e2957d87522
+ * 缓存 CDN SHA-256：c456ec56a7ce0c435c56aac276d334ee9d14fe117dd75929d89cd16797c3776c
  */
 
 // --- 静态配置区域 ---
@@ -1905,7 +1905,7 @@ function main(config) {
     `MATCH,${ruleOptionsEnable.极简分流 ? '默认代理' : '漏网之鱼'}`,
   ];
 
-  return finalizeMyClashRules(newConfig);
+  return finalizeMyProxyRules(newConfig);
 }
 
 /**
@@ -2287,7 +2287,7 @@ function cleanupUnusedRuleProviders(config) {
   }
 }
 
-function finalizeMyClashRules(config) {
+function finalizeMyProxyRules(config) {
   const options = ruleOptionsEnable;
   applyRuntimeConfigOptions(config, options);
   prioritizePreferredGroups(config);

@@ -158,7 +158,7 @@ async function verifyRouting({ port, sinkPort, track, api, cases = CASES, skipMi
       new Promise((_, reject) => setTimeout(() => reject(new Error(`CONNECT timeout: ${host}`)), 3000)),
     ]);
     assert.match(response[0].toString(), /200/);
-    socket.write('myclash-routing-probe');
+    socket.write('myproxy-routing-probe');
     let connection;
     let active;
     for (let attempt = 0; attempt < 20; attempt++) {

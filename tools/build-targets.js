@@ -340,7 +340,7 @@ function addDnsMappings(config) {
 function renderStash(config) {
   const clean = JSON.parse(JSON.stringify(config));
   return [
-    '# myClashRules Stash full profile',
+    '# myProxyRules Stash full profile',
     '# Generated from the shared Mihomo configuration model. Stash-only scripts/modules are not included.',
     '# Replace proxy-providers.订阅.url with a Stash-compatible Clash subscription before use.',
     YAML.stringify(clean, { lineWidth: 120 }),
@@ -354,7 +354,7 @@ function renderSurge(config, compiled) {
   const final = compiled.lines.find((line) => line.startsWith('FINAL,')) || 'FINAL,漏网之鱼';
   const comments = compiled.omitted.map((line) => '# COMPATIBILITY: omitted: ' + line);
   return [
-    '# myClashRules Surge profile',
+    '# myProxyRules Surge profile',
     '# Proxy subscription must be in Surge-compatible format; replace the example URL in policy-path.',
     '# DNS is encrypted by default; per-provider Mihomo nameserver-policy is not portable.',
     '[General]',
@@ -384,7 +384,7 @@ function renderShadowrocket(config, compiled) {
   const final = compiled.lines.find((line) => line.startsWith('FINAL,')) || 'FINAL,漏网之鱼';
   const comments = compiled.omitted.map((line) => '# COMPATIBILITY: omitted: ' + line);
   return [
-    '# myClashRules Shadowrocket profile',
+    '# myProxyRules Shadowrocket profile',
     '# Import/update the proxy subscription in Shadowrocket first; groups filter imported nodes by name.',
     '# DNS uses encrypted DoH endpoints and does not fall back to system DNS.',
     '[General]',
@@ -416,7 +416,7 @@ function renderQuantumultX(config, compiled) {
   const final = compiled.lines.find((line) => line.startsWith('final,')) || 'final, 漏网之鱼';
   const comments = compiled.omitted.map((line) => '; COMPATIBILITY: omitted: ' + line);
   return [
-    '# myClashRules Quantumult X full profile',
+    '# myProxyRules Quantumult X full profile',
     '# Server subscription must be a Quantumult X server snippet. Rule resources use native QX format.',
     '[general]',
     'server_check_url = ' + PROXY_TEST_URL,
@@ -479,7 +479,7 @@ function createArtifact(target, sourceText) {
   while (bodyLines.length && bodyLines[0].startsWith('#')) bodyLines.shift();
   const body = bodyLines.join('\n').replace(/^\n/, '');
   const header = [
-    '# myClashRules ' + info.title + ' profile',
+    '# myProxyRules ' + info.title + ' profile',
     '# Raw profile: ' + rawUrl,
     '# CDN profile: ' + cdnUrl,
     '# Raw SHA-256: ' + '0'.repeat(64),
@@ -502,7 +502,7 @@ function createArtifact(target, sourceText) {
 
 function loadSettings() {
   const input = readYaml(SOURCE_CONFIG);
-  const settings = JSON.parse(JSON.stringify(input['x-myClashRules'] || {}));
+  const settings = JSON.parse(JSON.stringify(input['x-myProxyRules'] || input['x-myClashRules'] || {}));
   if (settings.customProxies && settings.customProxies.length) {
     throw new Error(
       'Target profiles are generated without custom node definitions; keep private nodes out of tracked files.',

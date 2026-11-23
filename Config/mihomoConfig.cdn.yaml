@@ -1,17 +1,17 @@
-# myClashRules Mihomo 全量静态配置
+# myProxyRules Mihomo 全量静态配置
 # 致谢：AIsouler/MyClash 全量版（commit 4861619be366c7bacabfed6d581bb8c450de1ca1）。
 # 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
-# 最新 Raw SHA-256：109ac52f0eeb482f4da66d63e3a661bcb53275ab91baefb4f3536709935f6217
+# 最新 Raw SHA-256：29b3a3ce5785f03ecda333cea896f80d3c3ba9be7fd68571149b87d7739e639f
 # Raw 配置：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/mihomoConfig.yaml
 # CDN 配置：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/mihomoConfig.cdn.yaml
-# 缓存 CDN SHA-256：eeab6a0dfcfe9b37dddd1830ea485ee8fe7c27c22ed0ff277cc73b692d561038
+# 缓存 CDN SHA-256：c11a0dd73156cb5f5d47732c60bf4b98f16f30d061b9d6fb775774f0752dbec0
 # 仅适用于 Mihomo。关闭客户端 DNS 覆写。第一次使用请填 proxy-providers.订阅.url。
-# 此 YAML 的开关由生成器读取，Mihomo 不执行 x-myClashRules。修改开关并推送后由 GitHub Actions 重新生成。
+# 此 YAML 的开关由生成器读取，Mihomo 不执行 x-myProxyRules。修改开关并推送后由 GitHub Actions 重新生成。
 # 机场非节点设置不会继承；需处理实际节点与节点 hosts 映射时使用 --subscription .local/subscription.yaml。
 # 严格模式无明文上游 DNS；需 TUN/网关接管才覆盖系统流量。不可达时不降级。
 # 请勿将真实订阅链接/节点提交到 Git。true 是正确拼写，ture 会被拒绝。
 
-x-myClashRules:
+x-myProxyRules:
   options:
     手动选择: true # 是否启用手动选择策略组
     排除大陆香港自动选: true # 是否启用排除大陆和香港节点的自动选择策略组
@@ -365,7 +365,7 @@ tun:
     - any:53
     - tcp://any:53
 proxies:
-  # 自定义节点与五种直连出口；链式落地须在 x-myClashRules.customProxies 配置并重新生成。
+  # 自定义节点与五种直连出口；链式落地须在 x-myProxyRules.customProxies 配置并重新生成。
   - name: 🇨🇳 直连 | 双栈
     type: direct
   - name: 🇨🇳 直连 | IPv4优先

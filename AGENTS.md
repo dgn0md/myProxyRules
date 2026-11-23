@@ -8,7 +8,7 @@
 - `Script/mihomoScript.js` 与 `Config/mihomoConfig.yaml` 是 Mihomo 的唯一功能源，不增加精简版脚本；`极简分流` 是脚本选项。
 - `tools/build-targets.js` 从同一 Mihomo 配置对象生成 Stash、Surge、Shadowrocket 和 Quantumult X 原生配置，适配器不是第二套功能源。
 - Mihomo 静态 YAML 与四种目标客户端 profile 及 CDN 副本均由 GitHub Actions 生成。Mihomo YAML 保留 Raw/CDN SHA-256；目标配置使用各自 Raw/CDN SHA-256 标识。
-- YAML 的 `x-myClashRules` 扩展字段只供构建工具读取，Mihomo 内核不会执行。
+- YAML 的 `x-myProxyRules` 扩展字段只供构建工具读取，Mihomo 内核不会执行。
 
 ## 模块化与动态规则集原则
 

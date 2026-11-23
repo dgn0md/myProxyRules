@@ -1,4 +1,4 @@
-# myClashRules
+# myProxyRules
 
 以 Mihomo 为主要功能源的覆写脚本与全量配置生成项目，并生成 Stash、Surge、Shadowrocket 和 Quantumult X 的客户端原生配置。项目从 [AIsouler/MyClash 全量版](https://github.com/AIsouler/MyClash/commit/4861619be366c7bacabfed6d581bb8c450de1ca1) 起步并独立维护。地区节点分组、倍率与家宽分类、常见服务分流是基础能力；本仓库重点维护以下功能。
 
@@ -10,7 +10,7 @@
 - **DNS policy 与出口联动**：明确路由到 `直连` 的域名规则与动态域名规则集使用阿里 DoH 与腾讯 DoH；代理服务的 DNS 请求经对应服务组选择出口。`geolocation-cn`、国内 CDN、Microsoft 下载、Steam 国内节点及国内服务集合也使用国内加密 DNS；11 组国内服务集合按 `domestic AND NOT domestic_noncn`，百度按完整集合匹配，厂商 policy 随 `国内服务优先直连` 开关启停。仅因 IP 兜底规则直连或未命中明确域名 policy 的查询仍使用默认国外 DNS。普通默认查询使用 Cloudflare 强制 DoH-H3 与 Google DoH；代理节点域名使用阿里/腾讯 DoH，经直连建立连接，避免节点启动依赖境外 DNS。启动解析单独使用阿里/腾讯 IP DoH。地区服务保持专属解析出口。严格模式不接受生成配置里的明文或不安全 DNS，也不静默回退。它描述的是配置行为，不代表所有设备流量都已被接管。
 - **机场配置只接管节点**：展开订阅时处理节点；机场 DNS、路由、策略组和其他非节点设置由脚本重建。机场 hosts 只在满足节点改写条件时用于改写节点 server，不复制到结果配置。
 - **纯 IP 域名识别**：从支持的 HTTP Host、TLS SNI 与 QUIC 元数据补充路由所需域名；不解密 HTTPS，也不改写目标地址。
-- **Mihomo 功能源与多客户端产物**：`Script/mihomoScript.js` 管理规则和选项，`Config/mihomoConfig.yaml` 由 GitHub Actions 构建并回写；四种目标客户端配置由适配器从同一配置对象生成。YAML 中的 `x-myClashRules` 扩展字段供构建工具读取。
+- **Mihomo 功能源与多客户端产物**：`Script/mihomoScript.js` 管理规则和选项，`Config/mihomoConfig.yaml` 由 GitHub Actions 构建并回写；四种目标客户端配置由适配器从同一配置对象生成。YAML 中的 `x-myProxyRules` 扩展字段供构建工具读取；本地设置文件仍兼容旧键 `x-myClashRules`，生成产物统一使用新键。
 - **自动选择排除组**：开关 `排除大陆香港自动选` 控制 `自动选择ex(大陆&香港)` 策略组；该组按节点名称排除大陆和香港候选，保留台湾节点。
 - **默认控制面最小化**：发布配置不启动外部控制 API，也不自动下载 Web 控制面；需要管理界面时由本地客户端单独配置并保护 API 密钥。
 
