@@ -1,9 +1,9 @@
 # myClashRules Mihomo 全量静态配置
 # 致谢：AIsouler/MyClash 全量版（commit 4861619be366c7bacabfed6d581bb8c450de1ca1）。
 # 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
-# 最新 Raw SHA-256：99d467c413c2743fc13a3f35b2e976a1303405eea362206c13b84866e1d9efee
-# Raw 配置：https://raw.githubusercontent.com/dgn0md/myClashRules/main/Config/mihomoConfig.yaml
-# CDN 配置：https://cdn.jsdelivr.net/gh/dgn0md/myClashRules@main/Config/mihomoConfig.cdn.yaml
+# 最新 Raw SHA-256：109ac52f0eeb482f4da66d63e3a661bcb53275ab91baefb4f3536709935f6217
+# Raw 配置：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/mihomoConfig.yaml
+# CDN 配置：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/mihomoConfig.cdn.yaml
 # 仅适用于 Mihomo。关闭客户端 DNS 覆写。第一次使用请填 proxy-providers.订阅.url。
 # 此 YAML 的开关由生成器读取，Mihomo 不执行 x-myClashRules。修改开关并推送后由 GitHub Actions 重新生成。
 # 机场非节点设置不会继承；需处理实际节点与节点 hosts 映射时使用 --subscription .local/subscription.yaml。

@@ -473,8 +473,8 @@ function setHash(text, marker, value) {
 
 function createArtifact(target, sourceText) {
   const info = TARGETS[target];
-  const rawUrl = 'https://raw.githubusercontent.com/dgn0md/myClashRules/main/Config/' + info.dir + '/' + info.file;
-  const cdnUrl = 'https://cdn.jsdelivr.net/gh/dgn0md/myClashRules@main/Config/' + info.dir + '/' + info.cdnFile;
+  const rawUrl = 'https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/' + info.dir + '/' + info.file;
+  const cdnUrl = 'https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/' + info.dir + '/' + info.cdnFile;
   const bodyLines = sourceText.split('\n');
   while (bodyLines.length && bodyLines[0].startsWith('#')) bodyLines.shift();
   const body = bodyLines.join('\n').replace(/^\n/, '');

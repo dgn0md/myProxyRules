@@ -6,8 +6,8 @@ const { build } = require('../tools/build');
 const { computeScriptSha256, updateScriptSha256 } = require('../tools/script-sha');
 const { buildCdnScript, computeCdnScriptSha256 } = require('../tools/build-cdn-script');
 
-const rawUrl = 'https://raw.githubusercontent.com/dgn0md/myClashRules/main/Script/mihomoScript.js';
-const cdnUrl = 'https://cdn.jsdelivr.net/gh/dgn0md/myClashRules@main/Script/mihomoScript.cdn.js';
+const rawUrl = 'https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js';
+const cdnUrl = 'https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js';
 
 const MARKERS = `/**
  * 最新 Raw SHA-256：${'0'.repeat(64)}
@@ -40,7 +40,7 @@ test('source and generated CDN copy carry distinct version identifiers', () => {
   assert.ok(cdnScript.includes(cdnUrl));
   assert.ok(!text.includes(rawUrl));
   assert.ok(!text.includes(cdnUrl));
-  assert.ok(text.includes('https://raw.githubusercontent.com/dgn0md/myClashRules/main/Config/mihomoConfig.yaml'));
-  assert.ok(text.includes('https://cdn.jsdelivr.net/gh/dgn0md/myClashRules@main/Config/mihomoConfig.cdn.yaml'));
+  assert.ok(text.includes('https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/mihomoConfig.yaml'));
+  assert.ok(text.includes('https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/mihomoConfig.cdn.yaml'));
   assert.ok(text.includes('MIT License；Copyright (c) 2026 dgn0md、AIsouler。'));
 });

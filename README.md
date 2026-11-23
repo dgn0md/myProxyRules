@@ -30,25 +30,25 @@ DNS policy 不强制修改连接路由。明确直连的域名规则按其规则
 
 | 客户端 | Raw 配置 | CDN 配置 |
 | --- | --- | --- |
-| Stash | [profile.yaml](https://raw.githubusercontent.com/dgn0md/myClashRules/main/Config/stash/profile.yaml) | [profile.cdn.yaml](https://cdn.jsdelivr.net/gh/dgn0md/myClashRules@main/Config/stash/profile.cdn.yaml) |
-| Surge | [profile.conf](https://raw.githubusercontent.com/dgn0md/myClashRules/main/Config/surge/profile.conf) | [profile.cdn.conf](https://cdn.jsdelivr.net/gh/dgn0md/myClashRules@main/Config/surge/profile.cdn.conf) |
-| Shadowrocket | [profile.conf](https://raw.githubusercontent.com/dgn0md/myClashRules/main/Config/shadowrocket/profile.conf) | [profile.cdn.conf](https://cdn.jsdelivr.net/gh/dgn0md/myClashRules@main/Config/shadowrocket/profile.cdn.conf) |
-| Quantumult X | [profile.conf](https://raw.githubusercontent.com/dgn0md/myClashRules/main/Config/quantumultx/profile.conf) | [profile.cdn.conf](https://cdn.jsdelivr.net/gh/dgn0md/myClashRules@main/Config/quantumultx/profile.cdn.conf) |
+| Stash | [profile.yaml](https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/stash/profile.yaml) | [profile.cdn.yaml](https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/stash/profile.cdn.yaml) |
+| Surge | [profile.conf](https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/surge/profile.conf) | [profile.cdn.conf](https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/surge/profile.cdn.conf) |
+| Shadowrocket | [profile.conf](https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/shadowrocket/profile.conf) | [profile.cdn.conf](https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/shadowrocket/profile.cdn.conf) |
+| Quantumult X | [profile.conf](https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/quantumultx/profile.conf) | [profile.cdn.conf](https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/quantumultx/profile.cdn.conf) |
 
 Stash 保留 Mihomo provider、MRS 与 DNS policy。其他客户端使用各自规则格式，暂不等价实现所有动态规则与 DNS 行为；差异、订阅格式和脚本/模块边界见[多客户端兼容性说明](docs/client-compatibility.md)。客户端配置只包含示例订阅 URL，请替换为该应用支持的订阅格式。
 
 | **产物**     | **Raw下载**                                                                                              | **CDN下载**                                                                                                |
 | ------------ | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| 全量覆写脚本 | [mihomoScript.js](https://raw.githubusercontent.com/dgn0md/myClashRules/main/Script/mihomoScript.js)     | [mihomoScript.cdn.js](https://cdn.jsdelivr.net/gh/dgn0md/myClashRules@main/Script/mihomoScript.cdn.js)     |
-| 全量静态配置 | [mihomoConfig.yaml](https://raw.githubusercontent.com/dgn0md/myClashRules/main/Config/mihomoConfig.yaml) | [mihomoConfig.cdn.yaml](https://cdn.jsdelivr.net/gh/dgn0md/myClashRules@main/Config/mihomoConfig.cdn.yaml) |
+| 全量覆写脚本 | [mihomoScript.js](https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js)     | [mihomoScript.cdn.js](https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js)     |
+| 全量静态配置 | [mihomoConfig.yaml](https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/mihomoConfig.yaml) | [mihomoConfig.cdn.yaml](https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/mihomoConfig.cdn.yaml) |
 
 ## 使用
 
 支持 `main(config)` 的 Mihomo 脚本覆写客户端可使用：
 
 ```text
-https://raw.githubusercontent.com/dgn0md/myClashRules/main/Script/mihomoScript.js
-https://cdn.jsdelivr.net/gh/dgn0md/myClashRules@main/Script/mihomoScript.cdn.js
+https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js
+https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js
 ```
 
 静态配置可下载上表中的 YAML，填写 `proxy-providers.订阅.url` 后导入 Mihomo。静态 provider 由内核读取订阅，无法在构建时处理远端节点名称或机场 hosts。需要完整节点处理时，使用本地订阅展开模式，见[功能目录](docs/feature-matrix.md)。

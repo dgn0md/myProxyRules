@@ -1,7 +1,7 @@
 # myClashRules Stash profile
-# Raw profile: https://raw.githubusercontent.com/dgn0md/myClashRules/main/Config/stash/profile.yaml
-# CDN profile: https://cdn.jsdelivr.net/gh/dgn0md/myClashRules@main/Config/stash/profile.cdn.yaml
-# Raw SHA-256: ad7e335e48ee31d0da7231cc5b6be7dd3048639f5d78217076e6e23ed7350f48
+# Raw profile: https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/stash/profile.yaml
+# CDN profile: https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/stash/profile.cdn.yaml
+# Raw SHA-256: c638795c948c30b7976b006502c852fce32d432dbcc0b826e0eef410b625fd62
 dns:
   enable: true
   ipv6: true
