@@ -9,7 +9,7 @@ npm ci
 node Test/run-tests.js
 ```
 
-`npm test` 会运行这里的兼容性套件，随后运行 `tests/*.test.js` 中针对生成配置的 Node 回归。后者覆盖配置图、服务与 Apple 规则、DNS policy 与路由出口、动态 IP provider 顺序、严格加密 DNS、开关行为和静态生成一致性。
+`npm test` 会运行这里的兼容性套件，随后运行 `tests/*.test.js` 中针对生成配置的 Node 回归。后者覆盖配置图、服务与 Apple 规则、DNS policy 与路由出口、动态 IP provider 顺序、规则源注册表的同上游优先/原生回退/省略行为、严格加密 DNS、开关行为和静态生成一致性。
 
 `npm run check` 比较默认 Mihomo YAML 与提交产物，并检查 Stash、Surge、Shadowrocket、Quantumult X profile 的生成一致性。可用官方 Mihomo 内核时，`tools/native-check.js` 和 `tools/native-sniffing.js` 提供额外的原生配置与隔离流量检查。配置测试、原生解析和设备/运营商网络行为是不同的检查范围。
 

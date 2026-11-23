@@ -22,9 +22,19 @@
 | [AppleFlow](https://github.com/Kianuni/AppleFlow)                                                                                                                                                                                                            | [PCC 清单](https://github.com/Kianuni/AppleFlow/blob/eb017c28c3a77ac1b36d0fa7c0aa7a190ffd532f/rules/clash/Apple-PCC.yaml)、[Siri 清单](https://github.com/Kianuni/AppleFlow/blob/eb017c28c3a77ac1b36d0fa7c0aa7a190ffd532f/rules/clash/Siri-Direct.yaml)。 | 按固定版本整理端点；不复制整份第三方 AI 主机列表作为第二套活动规则。                                                                                                                                                                                                                             |
 | [Domain List Community](https://github.com/v2fly/domain-list-community) 与产品规则源                                                                                                                                                                         | Apple 产品分类和其他服务的分类参考。                                                                                                                                                                                                                      | 服务专用域名不等于产品所有共享后端。                                                                                                                                                                                                                                                             |
 
-## 其他客户端的规则源
+## 其他客户端规则源选择
 
-Mihomo 与 Stash 使用本页列出的 Bett MRS、Sukka classical 和现有 provider。Surge、Shadowrocket、Quantumult X 的原生配置由 `tools/build-targets.js` 映射到各自客户端目录中的文本规则资源；这些上游列表不是 Bett MRS 的逐项格式转换，成员与附加规则类型可能不同。国内厂商 `AND NOT` 规则、`geolocation-cn` 等未获得可信等价源时不加入目标配置的国内直连规则。目标 DNS 的覆盖边界见[多客户端兼容性说明](client-compatibility.md)。
+Mihomo 与 Stash 使用本页所列 MRS、classical 与现有 provider。Surge、Shadowrocket、Quantumult X 通过 `tools/build-targets.js` 的 provider 规则源注册表选择上游文件，顺序固定为：同上游且目标客户端可直接读取、格式及语义已确认的版本；当前已验证的客户端原生来源；否则省略。客户端继续直接更新这些 URL，上游成员不经本仓库转换、筛选、合并或重新发布。
+
+| Provider / Mihomo 上游 | 同上游候选审查 | 目标客户端当前选择 |
+| --- | --- | --- |
+| `apple_proxy`：Blackmatrix7 Clash YAML | 同一规则仓库提供客户端原生列表，但目标版本与 Clash YAML 的规则类型和成员数量不同，暂不认定为语义已确认的同源等价版本。 | 沿用现有已验证的客户端原生列表作为回退；成员差异不宣称逐条等价。 |
+| `apple_cn`：固定版本 SukkaW 文本规则 | 原文件可由 Surge 和 Shadowrocket 作为规则集读取；Quantumult X 没有已确认的同范围文件。 | Surge 与 Shadowrocket 使用同一固定 URL；Quantumult X 省略。 |
+| Bett domain MRS，包括服务、国内厂商、地理位置和广告 provider | `.list` / `.yaml` 是通用 payload 变体。裸域名、后缀标记与目标规则语义没有为每个 provider 完成等价核对，因此不会按扩展名直接替换。 | 已声明映射的服务集合回退到 Blackmatrix7 对应客户端规则；无可靠来源时省略。 |
+| Bett IP-CIDR MRS | 通用 CIDR 列表不含目标规则类型/策略，也不能证明与客户端 GeoIP 数据相同。 | 省略；不替换为更宽的 GeoIP/IP 集合。 |
+| DNS 专用、Sukka CDN、MetaCubeX Steam 及 classical provider | 逐项按用途与目标格式审查；没有已确认等价的客户端 DNS policy 或文本规则时不能用它替换连接规则。 | 保留各客户端现有已验证来源或省略。 |
+
+目前使用 Blackmatrix7 客户端原生回退源的 Bett 服务 provider 为 `googlefcm`、`youtube`、`google`、`github`、`microsoft`、`apple`、`telegram`、`steam`、`tiktok`、`twitter`、`meta`、`line`、`netflix`、`pikpak`、`spotify`、`cryptocurrency`、`paypal`、`patreon`、`ehentai` 和 `category-ads`。其余 provider 按生成 profile 中的 `COMPATIBILITY: omitted` 注释说明，细节见[多客户端兼容性](client-compatibility.md)。注册表源选择由 `tests/build-targets.test.js` 回归。
 
 ## 国内服务厂商集合
 

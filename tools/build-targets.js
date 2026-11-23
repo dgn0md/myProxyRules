@@ -33,8 +33,10 @@ const TARGETS = {
   },
 };
 
-// Client-native alternatives are fetched by the clients. This repository does not
-// download, filter, merge, or republish their members.
+// Source choices are explicit: a target-native file from the Mihomo provider's
+// upstream wins when it is known to be readable and semantically suitable. The
+// target-specific fallback remains a direct upstream URL; this repository does
+// not download, filter, merge, or republish rule members.
 const CLIENT_RULE_CATEGORIES = {
   googlefcm: 'GoogleFCM',
   youtube: 'YouTube',
@@ -71,22 +73,138 @@ const TARGET_SOURCE_NAMES = {
   quantumultx: 'QuantumultX',
 };
 
-function rawRuleUrl(target, providerName) {
-  if (providerName === 'apple_cn') {
-    if (target === 'quantumultx') return undefined;
-    return SURGE_RULE_OVERRIDES.apple_cn;
+function blackmatrixRuleSource(target, category, selection) {
+  const targetName = TARGET_SOURCE_NAMES[target];
+  if (!targetName) return undefined;
+  return {
+    url:
+      'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/' +
+      targetName +
+      '/' +
+      category +
+      '/' +
+      category +
+      '.list',
+    format: target === 'quantumultx' ? 'quantumultx-filter' : 'rule-set',
+    upstream: 'blackmatrix7/ios_rule_script',
+    selection,
+  };
+}
+
+const RULE_SOURCE_REGISTRY = Object.fromEntries(
+  Object.entries(CLIENT_RULE_CATEGORIES).map(([providerName, category]) => {
+    const sources = Object.fromEntries(
+      Object.keys(TARGET_SOURCE_NAMES)
+        .filter((target) => target !== 'stash')
+        .map((target) => [target, blackmatrixRuleSource(target, category, 'client-native-fallback')]),
+    );
+    if (providerName === 'apple_proxy') {
+      return [
+        providerName,
+        {
+          upstream: 'blackmatrix7/ios_rule_script',
+          upstreamFormat: 'Clash YAML',
+          sameUpstream: Object.fromEntries(
+            Object.entries(sources).map(([target, source]) => [
+              target,
+              {
+                ...source,
+                selection: 'same-upstream-unverified',
+                compatibilityVerified: false,
+                reason:
+                  'The target variants contain different rule types and member counts from the Clash YAML source.',
+              },
+            ]),
+          ),
+          fallback: sources,
+        },
+      ];
+    }
+    return [
+      providerName,
+      {
+        upstream: 'appshubcc/bett-rules',
+        upstreamFormat: 'MRS',
+        sameUpstream: {},
+        sameUpstreamReason:
+          'The upstream .list/.yaml variants are generic payload formats; direct client use and matching semantics are not verified.',
+        fallback: sources,
+      },
+    ];
+  }),
+);
+
+RULE_SOURCE_REGISTRY.apple_cn = {
+  upstream: 'SukkaW/Surge',
+  upstreamFormat: 'Surge rule list',
+  sameUpstream: {
+    surge: {
+      url: SURGE_RULE_OVERRIDES.apple_cn,
+      format: 'rule-set',
+      upstream: 'SukkaW/Surge',
+      selection: 'same-upstream-native-variant',
+      compatibilityVerified: true,
+    },
+    shadowrocket: {
+      url: SURGE_RULE_OVERRIDES.apple_cn,
+      format: 'rule-set',
+      upstream: 'SukkaW/Surge',
+      selection: 'same-upstream-native-variant',
+      compatibilityVerified: true,
+    },
+  },
+  fallback: {},
+};
+
+function sameUpstreamRuleCandidates(target, providerName, config) {
+  const entry = RULE_SOURCE_REGISTRY[providerName];
+  const explicit = entry && entry.sameUpstream[target];
+  if (explicit) return [explicit];
+
+  const provider = config?.['rule-providers']?.[providerName];
+  if (
+    !provider ||
+    provider.format !== 'mrs' ||
+    !provider.url?.startsWith('https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/') ||
+    !provider.url.endsWith('.mrs')
+  ) {
+    return [];
   }
-  const category = CLIENT_RULE_CATEGORIES[providerName];
-  if (!category) return undefined;
-  return (
-    'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/' +
-    TARGET_SOURCE_NAMES[target] +
-    '/' +
-    category +
-    '/' +
-    category +
-    '.list'
+
+  const baseUrl = provider.url.slice(0, -'.mrs'.length);
+  const reason =
+    'Bett provides generic payload variants; client rule syntax and exact/suffix matching semantics are not verified.';
+  return [
+    {
+      url: baseUrl + '.list',
+      format: provider.behavior === 'ipcidr' ? 'mihomo-cidr-list' : 'mihomo-domain-list',
+      upstream: 'appshubcc/bett-rules',
+      selection: 'same-upstream-unverified',
+      compatibilityVerified: false,
+      reason,
+    },
+    {
+      url: baseUrl + '.yaml',
+      format: 'mihomo-yaml-payload',
+      upstream: 'appshubcc/bett-rules',
+      selection: 'same-upstream-unverified',
+      compatibilityVerified: false,
+      reason,
+    },
+  ];
+}
+
+function resolveRuleSource(target, providerName, config) {
+  const entry = RULE_SOURCE_REGISTRY[providerName];
+  const sameUpstream = sameUpstreamRuleCandidates(target, providerName, config).find(
+    (candidate) => candidate.compatibilityVerified,
   );
+  if (sameUpstream) return sameUpstream;
+  return entry?.fallback[target];
+}
+
+function rawRuleUrl(target, providerName, config) {
+  return resolveRuleSource(target, providerName, config)?.url;
 }
 
 function targetName(name) {
@@ -131,10 +249,11 @@ function finalRule(target, policy) {
   return 'FINAL,' + policy;
 }
 
-function remoteRule(target, url, policy, noResolve) {
+function remoteRule(target, source, policy, noResolve) {
   const suffix = noResolve ? ',no-resolve' : '';
-  if (target === 'quantumultx') return url + ', force-policy=' + policy + ', enabled=true';
-  return 'RULE-SET,' + url + ',' + policy + suffix;
+  if (source.format === 'quantumultx-filter') return source.url + ', force-policy=' + policy + ', enabled=true';
+  if (source.format === 'rule-set') return 'RULE-SET,' + source.url + ',' + policy + suffix;
+  throw new Error('Unsupported client rule source format: ' + source.format);
 }
 
 function convertInlineRule(target, parsed) {
@@ -192,12 +311,14 @@ function appendRule(target, line, config, supported, omitted) {
       omitted.push(providerName + ' has no verified equivalent in this client rule format.');
       return;
     }
-    const url = rawRuleUrl(target, providerName);
-    if (!url) {
-      omitted.push(providerName + ' MRS/classical provider has no verified client-native replacement.');
+    const source = resolveRuleSource(target, providerName, config);
+    if (!source) {
+      const candidate = sameUpstreamRuleCandidates(target, providerName, config)[0];
+      const detail = candidate ? ' Same-upstream variant rejected: ' + candidate.reason : '';
+      omitted.push(providerName + ' has no verified same-upstream or client-native replacement.' + detail);
       return;
     }
-    supported.push(remoteRule(target, url, mapPolicy(target, parsed.policy), parsed.options.includes('no-resolve')));
+    supported.push(remoteRule(target, source, mapPolicy(target, parsed.policy), parsed.options.includes('no-resolve')));
     return;
   }
   if (parsed.type === 'AND' || parsed.type === 'OR' || parsed.type === 'NOT') {
@@ -221,7 +342,7 @@ function buildRules(target, config) {
     omitted: unique(omitted),
     mappedRemoteProviders: (config.rules || [])
       .map(parseRule)
-      .filter((rule) => rule.type === 'RULE-SET' && rawRuleUrl(target, rule.parts[1]))
+      .filter((rule) => rule.type === 'RULE-SET' && resolveRuleSource(target, rule.parts[1], config))
       .map((rule) => rule.parts[1]),
   };
 }
@@ -574,7 +695,17 @@ function cli(args) {
   }
 }
 
-module.exports = { TARGETS, buildRules, generateTarget, parseArgs, rawRuleUrl, renderTarget };
+module.exports = {
+  TARGETS,
+  RULE_SOURCE_REGISTRY,
+  buildRules,
+  generateTarget,
+  parseArgs,
+  rawRuleUrl,
+  renderTarget,
+  resolveRuleSource,
+  sameUpstreamRuleCandidates,
+};
 
 if (require.main === module) {
   try {

@@ -12,7 +12,7 @@
 ./tools/npmw run native:check
 ```
 
-- `test` 运行节点处理、兼容性、配置图、Apple 路由/DNS、动态规则 provider、白名单开关和生成器回归。
+- `test` 运行节点处理、兼容性、配置图、Apple 路由/DNS、动态规则 provider、白名单开关和规则源注册表回归；规则源测试覆盖同上游候选优先、客户端原生回退与省略行为。
 - `check` 比较 Mihomo Raw/CDN YAML、四种客户端 Raw/CDN profile 与各自生成器结果。
 - `native:check` 使用项目锁定的 Mihomo 版本和公开规则快照，检查各选项组合的原生配置，并在隔离回环环境验证实际规则路由、DNS policy 与节点分类。
 - 首次原生检查会下载 Mihomo 和当前公开规则；需要手动刷新快照时运行 `./tools/npmw run native:refresh-rules`。

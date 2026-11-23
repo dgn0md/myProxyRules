@@ -1,15 +1,23 @@
 # 多客户端配置与兼容性
 
-本仓库的功能源仍是 Script/mihomoScript.js 与 Config/mihomoConfig.yaml。tools/build-targets.js 从同一 Mihomo 配置对象生成 Stash、Surge、Shadowrocket 与 Quantumult X 的原生配置文件。适配器不把 Mihomo JavaScript 当作跨客户端脚本，也不把 MRS 二进制冒充成其他客户端可读取的文本规则。
+本仓库以 Mihomo 为主支持客户端，唯一功能源是 `Script/mihomoScript.js` 与 `Config/mihomoConfig.yaml`。Stash 使用 Mihomo 风格配置，沿用项目的 provider、MRS 与 DNS policy。Surge、Shadowrocket 和 Quantumult X 是独立的原生配置入口；`tools/build-targets.js` 从同一 Mihomo 配置对象生成其 profile。
 
-## 生成产物
+## Mihomo 主支持产物
+
+| 产物 | 文件 | 节点订阅入口 |
+| --- | --- | --- |
+| Mihomo 静态 YAML | `Config/mihomoConfig.yaml` 与 CDN 副本 `Config/mihomoConfig.cdn.yaml` | `proxy-providers.订阅.url`，须是 Clash/Mihomo 格式 |
+| Stash Mihomo 风格 profile | `Config/stash/profile.yaml` 与 CDN 副本 `Config/stash/profile.cdn.yaml` | `proxy-providers.订阅.url`，须是 Stash/Clash 格式 |
+
+Mihomo 脚本覆写入口见 README。静态 provider 由客户端加载订阅，构建时无法处理远端节点名称或机场 hosts。
+
+## 其他客户端原生 profile
 
 | 客户端 | 原生配置 | CDN 副本 | 节点订阅入口 |
 | --- | --- | --- | --- |
-| Stash | Config/stash/profile.yaml | Config/stash/profile.cdn.yaml | proxy-providers.订阅.url，须是 Stash/Clash 格式 |
-| Surge | Config/surge/profile.conf | Config/surge/profile.cdn.conf | 各策略组中的 policy-path，须提供 Surge 可读取的节点资源 |
-| Shadowrocket | Config/shadowrocket/profile.conf | Config/shadowrocket/profile.cdn.conf | 先在应用中导入节点订阅，再由策略组按节点名称筛选 |
-| Quantumult X | Config/quantumultx/profile.conf | Config/quantumultx/profile.cdn.conf | [server_remote]，须提供 Quantumult X 节点片段 |
+| Surge | `Config/surge/profile.conf` | `Config/surge/profile.cdn.conf` | 各策略组中的 `policy-path`，须提供 Surge 可读取的节点资源 |
+| Shadowrocket | `Config/shadowrocket/profile.conf` | `Config/shadowrocket/profile.cdn.conf` | 先在应用中导入节点订阅，再由策略组按节点名称筛选 |
+| Quantumult X | `Config/quantumultx/profile.conf` | `Config/quantumultx/profile.cdn.conf` | `[server_remote]`，须提供 Quantumult X 节点片段 |
 
 所有跟踪配置只含 example.invalid 占位 URL 和规则源链接。真实订阅、节点与凭证不得写入生成产物。生成全部配置可使用以下命令：
 
@@ -34,9 +42,21 @@ npm run check 会检查四种客户端产物与构建器是否一致。该检查
 
 各客户端有自己的脚本执行环境、配置语法和模块优先级。项目功能目前聚焦策略组、路由、规则源及 DNS 基础行为；不会把 Mihomo 脚本直接改名后投放到其他应用，也不会启用 HTTPS 解密、请求重写、定时任务或脚本遥测。
 
-## 规则源映射和已知差异
+## 规则源选择与已知差异
 
-Stash 配置沿用 Mihomo provider。Surge、Shadowrocket 和 Quantumult X 无法直接读取项目的大多数 MRS provider；适配器将一组常见代理服务映射到 [Blackmatrix7 按客户端生成的规则列表](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule)。Surge 与 Shadowrocket 的 Apple CN 规则引用固定提交的 [SukkaW Apple CN 文本规则](https://github.com/SukkaW/Surge/blob/0afc9c2ee92aadbf79ce1c9caf03f724135073ea/Source/non_ip/apple_cn.conf)；Shadowrocket 复用其兼容的 DOMAIN 规则语法。Quantumult X 没有验证过的同范围原生来源，因此省略 Apple CN 规则。
+规则源按 provider 解析，选源顺序为：**同上游且客户端可直接读取的版本 → 已验证的客户端原生来源 → 省略**。仅扩展名相同不足以证明兼容；选源还要确认目标文件语法、规则类型和匹配语义。客户端直接更新配置中引用的上游文件，仓库不下载、筛选、合并或重新发布规则成员。
+
+| Provider / 上游 | 同上游版本审查 | Surge、Shadowrocket、Quantumult X 选源 |
+| --- | --- | --- |
+| `apple_proxy` / Blackmatrix7 Clash YAML | Blackmatrix7 提供按客户端生成的原生列表，但目标版本与 Clash YAML 的规则类型和成员数量不同，暂不判定为语义已确认的同源等价版本。 | 沿用各客户端当前已验证的原生 AppleProxy 列表作为回退；成员差异单独记录，不宣称逐条等价。 |
+| `apple_cn` / 固定提交的 SukkaW Surge 规则 | SukkaW 文件可直接作为 Surge 与 Shadowrocket 规则集；没有验证过的 Quantumult X 同范围原生版本。 | Surge、Shadowrocket 使用同一 SukkaW URL；Quantumult X 省略。 |
+| Bett domain MRS providers | 上游的 `.list` / `.yaml` 是通用域名 payload 变体，不等同于每个客户端的规则行；目前没有可对所有 provider 证明格式和语义均兼容的版本。 | 对已声明的服务集合使用 Blackmatrix7 对应客户端原生列表；其他 provider 继续省略。 |
+| Bett IP-CIDR MRS providers | 裸 CIDR 列表缺少目标规则类型与策略，不能直接当作客户端规则集。 | 保留省略，不替换为其他 GeoIP/IP 数据库。 |
+| Sukka CDN、MetaCubeX Steam 与其他 classical/DNS 专用 provider | 当前源是 DNS/路由专用；没有验证出与目标客户端等价的同上游文件和 DNS policy 行为。 | 保留各客户端原生已验证映射；无可验证映射时省略并在配置注释中说明。 |
+
+当前映射到 Blackmatrix7 客户端目录的 Bett 服务 provider 为 `googlefcm`、`youtube`、`google`、`github`、`microsoft`、`apple`、`telegram`、`steam`、`tiktok`、`twitter`、`meta`、`line`、`netflix`、`pikpak`、`spotify`、`cryptocurrency`、`paypal`、`patreon`、`ehentai` 和 `category-ads`。兼容性由生成器中的规则源注册表维护，并由 `tests/build-targets.test.js` 验证其优先级与回退行为。
+
+Surge 与 Shadowrocket 的 Apple CN 规则固定引用 [SukkaW Apple CN 文本规则](https://github.com/SukkaW/Surge/blob/0afc9c2ee92aadbf79ce1c9caf03f724135073ea/Source/non_ip/apple_cn.conf)。Bett 的通用列表在目标文件语法或精确/后缀语义没有确认时不被当作直接替代；Quantumult X 规则资源使用其原生过滤规则格式。
 
 Stash 的 MRS provider 保留项目规则，但 Stash iOS/tvOS 因 Network Extension 限制会忽略进程名/进程路径规则；macOS 客户端可按其运行环境处理。当前仓库生成的 Mihomo 规则本身不使用进程名规则，第三方动态规则集仍可能包含此类条目。
 

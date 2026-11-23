@@ -6,7 +6,7 @@
 
 ## 本仓库重点维护
 
-Stash、Surge、Shadowrocket 和 Quantumult X 的静态原生配置由目标适配器生成。Stash 保留主要 Mihomo 能力；其他客户端受 MRS、逻辑规则与 DNS policy 格式差异影响，覆盖边界见[多客户端兼容性说明](client-compatibility.md)。这些配置不包含各应用独有的脚本或模块。
+Mihomo 是主支持客户端和唯一功能源。Stash 位于 Mihomo 支持入口下，使用 Mihomo 风格配置并保留主要 MRS/provider/DNS 能力。Surge、Shadowrocket 和 Quantumult X 使用单独的原生 profile；由于规则、逻辑表达式与 DNS policy 格式不同，其覆盖边界见[多客户端兼容性说明](client-compatibility.md)。这些 profile 不包含各应用专属脚本或模块。
 
 全量与极简模式下，`GLOBAL` 首次默认选择 `美国`，`默认代理` 首次默认选择 `自动选择ex(大陆&香港)`（由 `排除大陆香港自动选` 开关控制）；候选组不存在时保留其他有效选项，已有客户端选择缓存优先。
 
@@ -17,7 +17,7 @@ Stash、Surge、Shadowrocket 和 Quantumult X 的静态原生配置由目标适�
 | DNS 控制         | 明确路由到 `直连` 的域名规则与动态域名规则集、`geolocation-cn`、开启国内服务模块时的 11 组 `domestic AND NOT domestic_noncn` 集合与完整百度集合，以及 `国内CDN解析`、`微软下载解析`、`Steam下载解析` 使用阿里/腾讯 DoH；后三者开关默认开启且可独立关闭。代理服务的 DNS 请求经对应服务组选择出口。普通默认查询使用 Cloudflare DoH-H3 与 Google DoH；代理节点域名引导使用阿里/腾讯 DoH 并通过直连建连；`default-nameserver` 使用阿里/腾讯 IP DoH 启动解析。仅因 IP 兜底直连或未命中明确域名 policy 的查询仍使用默认国外 DNS；严格模式不明文降级。 |
 | 机场覆写         | 展开模式只处理节点和节点 hosts 映射，其他机场配置不进入输出。                                                                                                                                                                                                                                                                                                       |
 | 纯 IP 入站识别   | 以 HTTP Host、TLS SNI 和受支持的 QUIC 元数据补充域名，不改写目标地址。                                                                                                                                                                                                                                                                                              |
-| 单一构建来源     | 脚本管理 Mihomo 行为；静态 YAML 与四个目标 profile 由构建工具生成，扩展开关须重新构建。                                                                                                                                                                                                                                                                                                        |
+| 单一构建来源     | 脚本管理 Mihomo 行为；静态 YAML、Stash Mihomo 风格 profile 和三个其他客户端 profile 由构建工具生成，扩展开关须重新构建。                                                                                                                                                                                                                                                                             |
 | 自动选择排除组   | `排除大陆香港自动选` 控制 `自动选择ex(大陆&香港)`，按节点名称过滤大陆、香港候选并保留台湾节点。                                                                                                                                                                                                                                                                     |
 | 本地控制面       | 生成配置默认不提供外部控制 API 或自动下载控制面；本地客户端可单独配置受密钥保护的管理入口。                                                                                                                                                                                                                                                                         |
 | 隔离策略诊断     | 本地 `diagnose` 命令以真实 Mihomo 规则和合成回环出口，报告 TCP 域名/IP 的命中规则、策略链及域名 DNS policy 候选。                                                                                                                                                                                                                                                   |
