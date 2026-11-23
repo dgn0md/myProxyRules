@@ -33,7 +33,7 @@ function sha256(bytes) {
 }
 
 function assertLocalToolchain() {
-  if (process.env.MYCLASH_LOCAL_RUNTIME !== '1') {
+  if (process.env.MYPROXY_LOCAL_RUNTIME !== '1') {
     fail('请通过 ./tools/npmw 运行项目命令，避免调用系统 Node/npm。');
   }
   if (process.version !== 'v' + NODE_VERSION) {

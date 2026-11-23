@@ -169,14 +169,14 @@ function render(config, api, settings) {
     if (m) descriptions[m[1] || m[2] || m[3]] = m[4];
   }
   const header = [
-    '# myClashRules Mihomo 全量静态配置',
+    '# myProxyRules Mihomo 全量静态配置',
     '# 致谢：AIsouler/MyClash 全量版（commit 4861619be366c7bacabfed6d581bb8c450de1ca1）。',
     '# 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。',
     `# 最新 Raw SHA-256：${'0'.repeat(64)}`,
-    '# Raw 配置：https://raw.githubusercontent.com/dgn0md/myClashRules/main/Config/mihomoConfig.yaml',
-    '# CDN 配置：https://cdn.jsdelivr.net/gh/dgn0md/myClashRules@main/Config/mihomoConfig.cdn.yaml',
+    '# Raw 配置：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/mihomoConfig.yaml',
+    '# CDN 配置：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/mihomoConfig.cdn.yaml',
     '# 仅适用于 Mihomo。关闭客户端 DNS 覆写。第一次使用请填 proxy-providers.订阅.url。',
-    '# 此 YAML 的开关由生成器读取，Mihomo 不执行 x-myClashRules。修改开关并推送后由 GitHub Actions 重新生成。',
+    '# 此 YAML 的开关由生成器读取，Mihomo 不执行 x-myProxyRules。修改开关并推送后由 GitHub Actions 重新生成。',
     '# 机场非节点设置不会继承；需处理实际节点与节点 hosts 映射时使用 --subscription .local/subscription.yaml。',
     '# 严格模式无明文上游 DNS；需 TUN/网关接管才覆盖系统流量。不可达时不降级。',
     '# 请勿将真实订阅链接/节点提交到 Git。true 是正确拼写，ture 会被拒绝。',
@@ -185,14 +185,14 @@ function render(config, api, settings) {
     options: { ...api.ruleOptionsEnable },
     customProxies: JSON.parse(JSON.stringify(api.customizeProxies)),
   };
-  const doc = new YAML.Document({ 'x-myClashRules': metadata, ...JSON.parse(JSON.stringify(config)) });
-  const options = doc.getIn(['x-myClashRules', 'options'], true);
+  const doc = new YAML.Document({ 'x-myProxyRules': metadata, ...JSON.parse(JSON.stringify(config)) });
+  const options = doc.getIn(['x-myProxyRules', 'options'], true);
   for (const pair of options.items) pair.value.comment = ' ' + (descriptions[pair.key.value] || '');
   const comments = {
     dns: 'DNS：显式直连域名规则、geolocation-cn、国内服务 AND NOT 海外子集、完整百度集合、白名单、代理节点域名引导和 Apple 国内例外使用阿里/腾讯 DoH；服务组目标的 DNS 请求经对应组选择出口；普通默认查询使用 Cloudflare 强制 DoH-H3 和 Google DoH。厂商 DNS policy 随国内服务优先直连开关启停。default-nameserver 使用阿里/腾讯 IP DoH 仅作域名端点启动解析。',
     tun: 'TUN 接管 TCP/UDP 53；strict-route 在支持的平台防多网卡旁路。关闭 TUN 需上级 DNS 接管。',
     'proxy-providers': '填入 Clash/Mihomo 订阅 URL；静态 provider 模式不能读取机场的顶层 DNS/hosts。',
-    proxies: '自定义节点与五种直连出口；链式落地须在 x-myClashRules.customProxies 配置并重新生成。',
+    proxies: '自定义节点与五种直连出口；链式落地须在 x-myProxyRules.customProxies 配置并重新生成。',
     'proxy-groups': '全量服务/地区/倍率/家宽组。静态地区无节点时回退 REJECT；脚本只生成有节点的组。',
     'rule-providers': '远程 MRS/文本规则每日更新；DNS 白名单独立于路由；本地 inline 规则随配置更新。',
     rules:
@@ -224,7 +224,7 @@ function cli(args) {
     else throw new Error(`未知或缺少值的参数：${name}`);
   }
   const input = flags.settings ? readYaml(flags.settings) : {};
-  const settings = input['x-myClashRules'] || input;
+  const settings = input['x-myProxyRules'] || input['x-myClashRules'] || input;
   if (input['proxy-providers']?.订阅?.url) settings.subscription = { url: input['proxy-providers'].订阅.url };
   const result = build({ settings, subscription: flags.subscription ? readYaml(flags.subscription) : undefined });
   const output = path.resolve(

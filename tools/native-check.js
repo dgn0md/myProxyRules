@@ -34,7 +34,7 @@ async function run() {
     throw new Error('诊断域名格式无效');
   if (probe?.type === 'ip' && !net.isIP(probe.value)) throw new Error('诊断 IP 格式无效');
   if (selections.length && !probe) throw new Error('--select 需要同时指定诊断目标');
-  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'myclash-native-'));
+  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'myproxy-native-'));
   console.log(`Evidence directory: ${temp}`);
   const cases = [{ name: 'default', settings: {} }];
   const node = {
@@ -246,7 +246,7 @@ async function run() {
     }
     assert.ok(providers, logs);
     for (const [name, p] of Object.entries(providers)) assert.ok(p.ruleCount > 0, `${name} failed to load: ${logs}`);
-    if (process.env.MYCLASH_RSS_BENCH === '1') {
+    if (process.env.MYPROXY_RSS_BENCH === '1') {
       const rss = spawnSync('ps', ['-o', 'rss=', '-p', String(child.pid)], { encoding: 'utf8' });
       assert.equal(rss.status, 0, `cannot read Mihomo RSS: ${rss.stderr}`);
       console.log(`RSS_BENCH_KB ${Number(rss.stdout.trim())}`);

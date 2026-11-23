@@ -332,7 +332,7 @@ test('mainland/Hong Kong auto-select group excludes those labels and keeps Taiwa
   assert.ok(!disabled['proxy-groups'].some((entry) => entry.name === autoSelectExMainlandHongKongGroup));
   const migrated = build({ settings: { options: { 自动选择: false } } });
   assert.ok(!migrated.config['proxy-groups'].some((entry) => entry.name === autoSelectExMainlandHongKongGroup));
-  assert.equal(YAML.parse(migrated.text)['x-myClashRules'].options[autoSelectExMainlandHongKongOption], false);
+  assert.equal(YAML.parse(migrated.text)['x-myProxyRules'].options[autoSelectExMainlandHongKongOption], false);
   const explicitNewOptionWins = build({
     settings: { options: { 自动选择: false, [autoSelectExMainlandHongKongOption]: true } },
   }).config;
@@ -987,7 +987,7 @@ test('each boolean option is accepted, takes part in generation and leaves valid
     for (const subscription of [undefined, clean()]) {
       const result = build({ settings, subscription });
       graph(result.config);
-      assert.equal(YAML.parse(result.text)['x-myClashRules'].options[key], !value);
+      assert.equal(YAML.parse(result.text)['x-myProxyRules'].options[key], !value);
       if (key !== '严格DNS校验') encryptedDns(result.config);
     }
   }
@@ -1037,16 +1037,16 @@ test('default YAML is deterministic, commented and contains no template credenti
   assert.ok(!JSON.stringify(config).includes('template'));
   assert.equal(fs.readFileSync('Config/mihomoConfig.yaml', 'utf8'), text);
   assert.deepEqual(YAML.parse(text).dns, config.dns);
-  assert.match(text, /Mihomo 不执行 x-myClashRules/);
+  assert.match(text, /Mihomo 不执行 x-myProxyRules/);
   assert.match(text, /Apple智能分流: true #/);
   assert.equal(text, build().text);
-  const metadata = YAML.parse(text)['x-myClashRules'];
+  const metadata = YAML.parse(text)['x-myProxyRules'];
   assert.equal(text, build({ settings: metadata }).text);
 });
 test('provider cleanup preserves nested route, Fake-IP, DNS policy and inline DNS dependencies', () => {
   const api = loadScript('Script/mihomoScript.js', (source) => {
     const transformed = source.replace(
-      '  return finalizeMyClashRules(newConfig);',
+      '  return finalizeMyProxyRules(newConfig);',
       `  const cleanupProvider = { type: 'inline', behavior: 'domain', payload: [] };
   for (const name of [
     'cleanup_nested_route',
@@ -1070,7 +1070,7 @@ test('provider cleanup preserves nested route, Fake-IP, DNS policy and inline DN
   newConfig.dns['nameserver-policy']['rule-set:cleanup_dns_policy'] = 'rcode://success';
   newConfig.dns['nameserver-policy']['rule-set:cleanup_dns_predicate'] = 'rcode://success';
   newConfig.dns['proxy-server-nameserver-policy']['rule-set:cleanup_proxy_dns_policy'] = 'rcode://success';
-  return finalizeMyClashRules(newConfig);`,
+  return finalizeMyProxyRules(newConfig);`,
     );
     assert.notEqual(transformed, source);
     return transformed;
@@ -1328,18 +1328,18 @@ test('renamed option keys migrate to their short names and explicit short names 
     过滤非地区节点: '过滤公告信息项',
     屏蔽代理QUIC流量: '拦截代理QUIC',
   };
-  const defaults = YAML.parse(build().text)['x-myClashRules'].options;
+  const defaults = YAML.parse(build().text)['x-myProxyRules'].options;
 
   for (const [oldName, newName] of Object.entries(aliases)) {
     const migratedValue = !defaults[newName];
     const migrated = build({ settings: { options: { [oldName]: migratedValue } } });
-    const migratedOptions = YAML.parse(migrated.text)['x-myClashRules'].options;
+    const migratedOptions = YAML.parse(migrated.text)['x-myProxyRules'].options;
     assert.equal(migratedOptions[newName], migratedValue, `${oldName} should migrate to ${newName}`);
 
     const explicit = build({
       settings: { options: { [oldName]: migratedValue, [newName]: defaults[newName] } },
     });
-    const explicitOptions = YAML.parse(explicit.text)['x-myClashRules'].options;
+    const explicitOptions = YAML.parse(explicit.text)['x-myProxyRules'].options;
     assert.equal(explicitOptions[newName], defaults[newName], `${newName} should take precedence`);
   }
 });
@@ -1682,9 +1682,9 @@ test('airport fake-IP filters, DNS policies, and extra DNS settings never leak i
   assert.ok(!('airport-sentinel' in config));
 });
 test('CLI applies edited booleans and preserves the subscription URL from a settings YAML', () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'myclash-cli-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'myproxy-cli-'));
   const settings = YAML.parse(build().text);
-  settings['x-myClashRules'].options[siriAiOption] = false;
+  settings['x-myProxyRules'].options[siriAiOption] = false;
   settings['proxy-providers'].订阅.url = 'https://subscription.example.test/fixture';
   const input = path.join(dir, 'settings.yaml');
   const output = path.join(dir, 'output.yaml');
@@ -1698,8 +1698,27 @@ test('CLI applies edited booleans and preserves the subscription URL from a sett
   assert.ok(generated['proxy-groups'].some((group) => group.name === siriAiGroup));
   assert.ok(generated.dns['nameserver-policy']['rule-set:apple'].every((dns) => dnsRouteFor(dns) === siriAiGroup));
 });
+test('CLI accepts legacy x-myClashRules metadata and emits x-myProxyRules', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'myproxylegacy-'));
+  const settings = YAML.parse(build().text);
+  const legacyMetadata = settings['x-myProxyRules'];
+  delete settings['x-myProxyRules'];
+  legacyMetadata.options[siriAiOption] = false;
+  settings['x-myClashRules'] = legacyMetadata;
+  const input = path.join(dir, 'legacy-settings.yaml');
+  const output = path.join(dir, 'output.yaml');
+  fs.writeFileSync(input, YAML.stringify(settings));
+  const result = spawnSync(process.execPath, ['tools/build.js', '--settings', input, '--output', output], {
+    encoding: 'utf8',
+  });
+  assert.equal(result.status, 0, result.stderr);
+  const generated = YAML.parse(fs.readFileSync(output, 'utf8'));
+  assert.equal(generated['x-myProxyRules'].options[siriAiOption], false);
+  assert.ok(!Object.hasOwn(generated, 'x-myClashRules'));
+});
+
 test('CLI refuses private subscription output inside tracked repository paths', () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'myclash-private-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'myproxy-private-'));
   const subscription = path.join(dir, 'subscription.yaml');
   fs.writeFileSync(subscription, YAML.stringify(clean()));
   const result = spawnSync(

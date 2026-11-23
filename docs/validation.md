@@ -4,6 +4,8 @@
 
 ## 本地验收
 
+`npm run build` 还会生成 Stash、Surge、Shadowrocket 与 Quantumult X profile；`npm run check` 对比这些生成文件与适配器输出。该检查不解析或导入客户端应用，也不证明第三方规则资源在上游可用。
+
 ```sh
 ./tools/npmw test
 ./tools/npmw run check
@@ -11,7 +13,7 @@
 ```
 
 - `test` 运行节点处理、兼容性、配置图、Apple 路由/DNS、动态规则 provider、白名单开关和生成器回归。
-- `check` 比较默认 YAML、CDN YAML、Raw/CDN 摘要与当前脚本生成结果。
+- `check` 比较 Mihomo Raw/CDN YAML、四种客户端 Raw/CDN profile 与各自生成器结果。
 - `native:check` 使用项目锁定的 Mihomo 版本和公开规则快照，检查各选项组合的原生配置，并在隔离回环环境验证实际规则路由、DNS policy 与节点分类。
 - 首次原生检查会下载 Mihomo 和当前公开规则；需要手动刷新快照时运行 `./tools/npmw run native:refresh-rules`。
 - 本机诊断可运行 `./tools/npmw run diagnose -- --probe-domain gateway.icloud.com` 或 `./tools/npmw run diagnose -- --probe-ip 17.0.0.1`；可以附加 `--select 'Other Apple Service=美国'` 检查一次手动选择。

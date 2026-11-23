@@ -1,0 +1,3160 @@
+# myProxyRules Stash profile
+# Raw profile: https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/stash/profile.yaml
+# CDN profile: https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/stash/profile.cdn.yaml
+# Raw SHA-256: 6dc7b3dfbda0b2845af4037f6b211c3010741769a361f07b06be3cc9678b70a4
+# CDN SHA-256: 3ba0e6ce759ada31c538efb4fb6bfeb05a17db29e3eeec9534d68d8b39e613b0
+dns:
+  enable: true
+  ipv6: true
+  use-hosts: true
+  cache-algorithm: arc
+  use-system-hosts: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/15
+  fake-ip-range6: 2001:2::1/48
+  fake-ip-filter:
+    - rule-set:private
+    - rule-set:fakeip_filter
+    - rule-set:googlefcm
+    - +.guzzoni.apple.com
+    - +.siri.apple.com
+    - dejavu.apple.com
+    - sequoia.apple.com
+    - +.smoot.apple.com
+    - api-siri-prod.apple.com
+    - gspe1-ssl.ls.apple.com
+    - +.issuer.apple.com
+    - +.ropes.apple.com
+    - mask-api.icloud.com
+    - mask.icloud.com
+    - mask-h2.icloud.com
+    - +.app.apple.com
+    - +.apple-relay.apple.com
+    - +.apple-relay.cloudflare.com
+    - +.apple-relay.fastly-edge.com
+    - +.apple-relay.akamaized.net
+    - cp4.cloudflare.com
+  default-nameserver:
+    - https://223.5.5.5/dns-query#DIRECT&name-cert-verify=dns.alidns.com
+    - https://1.12.12.12/dns-query#DIRECT&name-cert-verify=doh.pub
+  proxy-server-nameserver:
+    - https://dns.alidns.com/dns-query#DIRECT
+    - https://doh.pub/dns-query#DIRECT
+  proxy-server-nameserver-policy: {}
+  nameserver:
+    - https://cloudflare-dns.com/dns-query#默认代理&h3=true
+    - https://dns.google/dns-query#默认代理
+  nameserver-policy:
+    +.issuer.apple.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    +.ropes.apple.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    mask-api.icloud.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    mask.icloud.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    mask-h2.icloud.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    +.app.apple.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    +.apple-relay.apple.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    +.apple-relay.cloudflare.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    +.apple-relay.fastly-edge.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    +.apple-relay.akamaized.net:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    cp4.cloudflare.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    +.icloud-content.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    +.guzzoni.apple.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    +.siri.apple.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    dejavu.apple.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    sequoia.apple.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    +.smoot.apple.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    api-siri-prod.apple.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    gspe1-ssl.ls.apple.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    +.apple-dns.com:
+      - https://cloudflare-dns.com/dns-query#AppleProxy&h3=true
+      - https://dns.google/dns-query#AppleProxy
+    news-client-search.apple.com:
+      - https://cloudflare-dns.com/dns-query#AppleProxy&h3=true
+      - https://dns.google/dns-query#AppleProxy
+    +.fitness.apple.com:
+      - https://cloudflare-dns.com/dns-query#AppleProxy&h3=true
+      - https://dns.google/dns-query#AppleProxy
+    +.sports.apple.com:
+      - https://cloudflare-dns.com/dns-query#AppleProxy&h3=true
+      - https://dns.google/dns-query#AppleProxy
+    +.books.apple.com:
+      - https://cloudflare-dns.com/dns-query#AppleProxy&h3=true
+      - https://dns.google/dns-query#AppleProxy
+    gdmf.apple.com:
+      - https://dns.alidns.com/dns-query#DIRECT
+      - https://doh.pub/dns-query#DIRECT
+    mesu.apple.com:
+      - https://dns.alidns.com/dns-query#DIRECT
+      - https://doh.pub/dns-query#DIRECT
+    updates.cdn-apple.com:
+      - https://dns.alidns.com/dns-query#DIRECT
+      - https://doh.pub/dns-query#DIRECT
+    assets.cdn-apple.com:
+      - https://dns.alidns.com/dns-query#DIRECT
+      - https://doh.pub/dns-query#DIRECT
+    +.steamserver.net:
+      - https://cloudflare-dns.com/dns-query#Steam&h3=true
+      - https://dns.google/dns-query#Steam
+    +.steamusercontent.com:
+      - https://cloudflare-dns.com/dns-query#Steam&h3=true
+      - https://dns.google/dns-query#Steam
+    gateway.icloud.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    setup.icloud.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    cp.cloudflare.com:
+      - https://cloudflare-dns.com/dns-query#默认代理&h3=true
+      - https://dns.google/dns-query#默认代理
+    fsend.cn:
+      - https://dns.alidns.com/dns-query#DIRECT
+      - https://doh.pub/dns-query#DIRECT
+    international-gfe.download.nvidia.com:
+      - https://dns.alidns.com/dns-query#DIRECT
+      - https://doh.pub/dns-query#DIRECT
+    +.ctaiot.com:
+      - https://dns.alidns.com/dns-query#DIRECT
+      - https://doh.pub/dns-query#DIRECT
+    +.mb3admin.com:
+      - https://cloudflare-dns.com/dns-query#Emby&h3=true
+      - https://dns.google/dns-query#Emby
+    +.nubebelle.com:
+      - https://cloudflare-dns.com/dns-query#Emby&h3=true
+      - https://dns.google/dns-query#Emby
+    rule-set:private: rcode://success
+    rule-set:apple_tv:
+      - https://cloudflare-dns.com/dns-query#AppleProxy&h3=true
+      - https://dns.google/dns-query#AppleProxy
+    rule-set:dns_domestic_cdn,dns_microsoft_cdn,dns_steam_cn:
+      - https://dns.alidns.com/dns-query#DIRECT
+      - https://doh.pub/dns-query#DIRECT
+    rule-set:apple_proxy:
+      - https://cloudflare-dns.com/dns-query#AppleProxy&h3=true
+      - https://dns.google/dns-query#AppleProxy
+    rule-set:category-ads: rcode://name_error
+    rule-set:games_cn,synology,nvidia_cn,apple_cn,microsoft_cn:
+      - https://dns.alidns.com/dns-query#DIRECT
+      - https://doh.pub/dns-query#DIRECT
+    rule-set:googlefcm:
+      - https://cloudflare-dns.com/dns-query#FCM&h3=true
+      - https://dns.google/dns-query#FCM
+    rule-set:youtube:
+      - https://cloudflare-dns.com/dns-query#YouTube&h3=true
+      - https://dns.google/dns-query#YouTube
+    rule-set:google:
+      - https://cloudflare-dns.com/dns-query#Google&h3=true
+      - https://dns.google/dns-query#Google
+    rule-set:ai:
+      - https://cloudflare-dns.com/dns-query#AI&h3=true
+      - https://dns.google/dns-query#AI
+    rule-set:github:
+      - https://cloudflare-dns.com/dns-query#GitHub&h3=true
+      - https://dns.google/dns-query#GitHub
+    rule-set:microsoft:
+      - https://cloudflare-dns.com/dns-query#Microsoft&h3=true
+      - https://dns.google/dns-query#Microsoft
+    rule-set:apple:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    rule-set:telegram:
+      - https://cloudflare-dns.com/dns-query#Telegram&h3=true
+      - https://dns.google/dns-query#Telegram
+    rule-set:steam:
+      - https://cloudflare-dns.com/dns-query#Steam&h3=true
+      - https://dns.google/dns-query#Steam
+    rule-set:tiktok:
+      - https://cloudflare-dns.com/dns-query#TikTok&h3=true
+      - https://dns.google/dns-query#TikTok
+    rule-set:twitter:
+      - https://cloudflare-dns.com/dns-query#Twitter&h3=true
+      - https://dns.google/dns-query#Twitter
+    rule-set:meta:
+      - https://cloudflare-dns.com/dns-query#Meta&h3=true
+      - https://dns.google/dns-query#Meta
+    rule-set:line:
+      - https://cloudflare-dns.com/dns-query#Line&h3=true
+      - https://dns.google/dns-query#Line
+    rule-set:netflix:
+      - https://cloudflare-dns.com/dns-query#Netflix&h3=true
+      - https://dns.google/dns-query#Netflix
+    rule-set:emby,emby_keyword:
+      - https://cloudflare-dns.com/dns-query#Emby&h3=true
+      - https://dns.google/dns-query#Emby
+    rule-set:pikpak:
+      - https://cloudflare-dns.com/dns-query#PikPak&h3=true
+      - https://dns.google/dns-query#PikPak
+    rule-set:spotify:
+      - https://cloudflare-dns.com/dns-query#Spotify&h3=true
+      - https://dns.google/dns-query#Spotify
+    rule-set:cryptocurrency:
+      - https://cloudflare-dns.com/dns-query#Crypto&h3=true
+      - https://dns.google/dns-query#Crypto
+    rule-set:paypal:
+      - https://cloudflare-dns.com/dns-query#PayPal&h3=true
+      - https://dns.google/dns-query#PayPal
+    rule-set:patreon:
+      - https://cloudflare-dns.com/dns-query#Patreon&h3=true
+      - https://dns.google/dns-query#Patreon
+    rule-set:ehentai:
+      - https://cloudflare-dns.com/dns-query#EHentai&h3=true
+      - https://dns.google/dns-query#EHentai
+    rule-set:domestic_alibaba_dns,domestic_baidu,domestic_bilibili_dns,domestic_bytedance_dns,domestic_chinamobile_dns,domestic_chinatelecom_dns,domestic_chinaunicom_dns,domestic_huaweicloud_dns,domestic_jd_dns,domestic_netease_dns,domestic_tencent_dns,domestic_xiaomi_dns,geolocation-cn:
+      - https://dns.alidns.com/dns-query#DIRECT
+      - https://doh.pub/dns-query#DIRECT
+    rule-set:geolocation-!cn:
+      - https://cloudflare-dns.com/dns-query#默认代理&h3=true
+      - https://dns.google/dns-query#默认代理
+  listen: 127.0.0.1:1053
+  prefer-h3: false
+  respect-rules: false
+hosts:
+  dns.alidns.com:
+    - 223.5.5.5
+    - 223.6.6.6
+  doh.pub:
+    - 1.12.12.12
+    - 120.53.53.53
+  cloudflare-dns.com:
+    - 1.1.1.1
+    - 1.0.0.1
+  dns.google:
+    - 8.8.8.8
+    - 8.8.4.4
+  services.googleapis.cn: services.googleapis.com
+  +.mcdn.bilivideo.com:
+    - 0.0.0.0
+  +.mcdn.bilivideo.cn:
+    - 0.0.0.0
+  +.edge.mountaintoys.cn:
+    - 0.0.0.0
+  +.h2.smtcdns.net:
+    - 0.0.0.0
+mixed-port: 7890
+allow-lan: false
+ipv6: true
+mode: rule
+log-level: info
+bind-address: 127.0.0.1
+unified-delay: true
+tcp-concurrent: true
+keep-alive-interval: 60
+find-process-mode: strict
+profile:
+  store-selected: true
+  store-fake-ip: true
+ntp:
+  enable: true
+  write-to-system: false
+  server: ntp.aliyun.com
+  port: 123
+  interval: 60
+tun:
+  enable: true
+  stack: mixed
+  auto-route: true
+  strict-route: true
+  auto-redirect: true
+  auto-detect-interface: true
+  dns-hijack:
+    - any:53
+    - tcp://any:53
+proxies:
+  - name: 🇨🇳 直连 | 双栈
+    type: direct
+  - name: 🇨🇳 直连 | IPv4优先
+    type: direct
+    ip-version: ipv4-prefer
+  - name: 🇨🇳 直连 | IPv6优先
+    type: direct
+    ip-version: ipv6-prefer
+  - name: 🇨🇳 直连 | 仅IPv4
+    type: direct
+    ip-version: ipv4
+  - name: 🇨🇳 直连 | 仅IPv6
+    type: direct
+    ip-version: ipv6
+  - name: 内置DNS
+    type: dns
+proxy-groups:
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: GLOBAL
+    proxies:
+      - 美国
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - FCM
+      - YouTube
+      - Google
+      - AI
+      - GitHub
+      - Microsoft
+      - Other Apple Service
+      - Telegram
+      - Steam
+      - TikTok
+      - Twitter
+      - Meta
+      - Line
+      - Netflix
+      - Emby
+      - PikPak
+      - Spotify
+      - Crypto
+      - PayPal
+      - Patreon
+      - EHentai
+      - AdBlock
+      - Siri Ai/Apple Intelligence
+      - AppleProxy
+      - 漏网之鱼
+      - 直连
+      - 香港
+      - 香港-自动选择
+      - 日本
+      - 日本-自动选择
+      - 美国-自动选择
+      - 新加坡
+      - 新加坡-自动选择
+      - 台湾
+      - 台湾-自动选择
+      - 韩国
+      - 韩国-自动选择
+      - 澳大利亚
+      - 澳大利亚-自动选择
+      - 印度尼西亚
+      - 印度尼西亚-自动选择
+      - 印度
+      - 印度-自动选择
+      - 加拿大
+      - 加拿大-自动选择
+      - 德国
+      - 德国-自动选择
+      - 英国
+      - 英国-自动选择
+      - 法国
+      - 法国-自动选择
+      - 荷兰
+      - 荷兰-自动选择
+      - 西班牙
+      - 西班牙-自动选择
+      - 俄罗斯
+      - 俄罗斯-自动选择
+      - 乌克兰
+      - 乌克兰-自动选择
+      - 土耳其
+      - 土耳其-自动选择
+      - 挪威
+      - 挪威-自动选择
+      - 瑞士
+      - 瑞士-自动选择
+      - 瑞典
+      - 瑞典-自动选择
+      - 爱尔兰
+      - 爱尔兰-自动选择
+      - 菲律宾
+      - 菲律宾-自动选择
+      - 越南
+      - 越南-自动选择
+      - 泰国
+      - 泰国-自动选择
+      - 马来西亚
+      - 马来西亚-自动选择
+      - 低倍率节点
+      - 低倍率节点-自动选择
+      - 高倍率节点
+      - 高倍率节点-自动选择
+      - 家宽节点
+      - 家宽节点-自动选择
+      - 其他节点
+      - 其他节点-自动选择
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Global.svg
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 默认代理
+    proxies:
+      - 自动选择ex(大陆&香港)
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+      - 手动选择
+      - 负载均衡
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Proxy.svg
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 手动选择
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Static.svg
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 自动选择ex(大陆&香港)
+    exclude-filter: (?i)((🇭🇰|香港|\b(HK|HKG)\b|hong\s*kong|🇨🇳|大陆|内地|\b(CN|CHN|PRC)\b|\bChina\b|\bMainland\b)|(官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+    include-all-providers: true
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: load-balance
+    interval: 600
+    lazy: true
+    strategy: sticky-sessions
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/RoundRobin.svg
+    hidden: true
+    name: 负载均衡
+    include-all-providers: true
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: FCM
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Fcm.svg
+    proxies:
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+      - 直连
+    default-selected: 直连
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: YouTube
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/YouTube.svg
+    proxies:
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: Google
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Google.svg
+    proxies:
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+    default-selected: 美国
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: AI
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/OpenAI.svg
+    proxies:
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+    default-selected: 美国
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: GitHub
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/GitHub.svg
+    proxies:
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: Microsoft
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Microsoft.svg
+    proxies:
+      - 直连
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: Other Apple Service
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Apple.svg
+    proxies:
+      - 直连
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: Telegram
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Telegram.svg
+    proxies:
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: Steam
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Steam.svg
+    proxies:
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+      - 直连
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: TikTok
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/TikTok.svg
+    proxies:
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+    default-selected: 美国
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: Twitter
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Twitter.svg
+    proxies:
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: Meta
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Meta.svg
+    proxies:
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+    default-selected: 美国
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: Line
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Line.svg
+    proxies:
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: Netflix
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Netflix.svg
+    proxies:
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: Emby
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Emby.svg
+    proxies:
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+      - 直连
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: PikPak
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/PikPak.svg
+    proxies:
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+      - 直连
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: Spotify
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Spotify.svg
+    proxies:
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+      - 直连
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: Crypto
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Bitcoin.svg
+    proxies:
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+    default-selected: 日本
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: PayPal
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/PayPal.svg
+    proxies:
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+    default-selected: 美国
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: Patreon
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Patreon.svg
+    proxies:
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+    default-selected: 香港
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: EHentai
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/EHentai.svg
+    proxies:
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+      - 直连
+    default-selected: 美国
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: AdBlock
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/AdBlock.svg
+    proxies:
+      - REJECT
+      - REJECT-DROP
+      - PASS
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: Siri Ai/Apple Intelligence
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Apple.svg
+    proxies:
+      - 美国
+      - 日本
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: AppleProxy
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Apple.svg
+    proxies:
+      - 美国
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 负载均衡
+      - 香港
+      - 日本
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+      - 直连
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 漏网之鱼
+    proxies:
+      - 默认代理
+      - 直连
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Stack.svg
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 直连
+    proxies:
+      - 🇨🇳 直连 | 双栈
+      - 🇨🇳 直连 | IPv4优先
+      - 🇨🇳 直连 | IPv6优先
+      - 🇨🇳 直连 | 仅IPv4
+      - 🇨🇳 直连 | 仅IPv6
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/China.svg
+    hidden: false
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 香港
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/HongKong.svg
+    proxies:
+      - 香港-自动选择
+    default-selected: 香港-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇭🇰|香港|\b(HK|HKG)\b|hong\s*kong
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 香港-自动选择
+    include-all-providers: true
+    filter: (?i)🇭🇰|香港|\b(HK|HKG)\b|hong\s*kong
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 日本
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Japan.svg
+    proxies:
+      - 日本-自动选择
+    default-selected: 日本-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇯🇵|日本|东京|大阪|京都|\b(JP|JPN)\b|japan
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 日本-自动选择
+    include-all-providers: true
+    filter: (?i)🇯🇵|日本|东京|大阪|京都|\b(JP|JPN)\b|japan
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 美国
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/America.svg
+    proxies:
+      - 美国-自动选择
+    default-selected: 美国-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇺🇸|美国|纽约|洛杉矶|旧金山|芝加哥|休斯顿|迈阿密|西雅图|波士顿|华盛顿|拉斯维加斯|圣何塞|\b(US|USA)\b|america|united\s*states
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 美国-自动选择
+    include-all-providers: true
+    filter: (?i)🇺🇸|美国|纽约|洛杉矶|旧金山|芝加哥|休斯顿|迈阿密|西雅图|波士顿|华盛顿|拉斯维加斯|圣何塞|\b(US|USA)\b|america|united\s*states
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 新加坡
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Singapore.svg
+    proxies:
+      - 新加坡-自动选择
+    default-selected: 新加坡-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇸🇬|新加坡|狮城|\b(SG|SGP)\b|singapore
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 新加坡-自动选择
+    include-all-providers: true
+    filter: (?i)🇸🇬|新加坡|狮城|\b(SG|SGP)\b|singapore
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 台湾
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Taiwan.svg
+    proxies:
+      - 台湾-自动选择
+    default-selected: 台湾-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇹🇼|台湾|台北|高雄|\b(TW|TWN)\b|taiwan
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 台湾-自动选择
+    include-all-providers: true
+    filter: (?i)🇹🇼|台湾|台北|高雄|\b(TW|TWN)\b|taiwan
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 韩国
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 韩国-自动选择
+    default-selected: 韩国-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇰🇷|韩国|首尔|釜山|\b(KR|KOR)\b|south\s*korea|korea
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 韩国-自动选择
+    include-all-providers: true
+    filter: (?i)🇰🇷|韩国|首尔|釜山|\b(KR|KOR)\b|south\s*korea|korea
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 澳大利亚
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 澳大利亚-自动选择
+    default-selected: 澳大利亚-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇦🇺|澳大利亚|澳洲|悉尼|墨尔本|珀斯|\b(AU|AUS)\b|australia
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 澳大利亚-自动选择
+    include-all-providers: true
+    filter: (?i)🇦🇺|澳大利亚|澳洲|悉尼|墨尔本|珀斯|\b(AU|AUS)\b|australia
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 印度尼西亚
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 印度尼西亚-自动选择
+    default-selected: 印度尼西亚-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇮🇩|印度尼西亚|印尼|雅加达|\b(ID|IDN)\b|indonesia
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 印度尼西亚-自动选择
+    include-all-providers: true
+    filter: (?i)🇮🇩|印度尼西亚|印尼|雅加达|\b(ID|IDN)\b|indonesia
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 印度
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 印度-自动选择
+    default-selected: 印度-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇮🇳|印度($|[^尼])|孟买|新德里|\b(IN|IND)\b|india
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 印度-自动选择
+    include-all-providers: true
+    filter: (?i)🇮🇳|印度($|[^尼])|孟买|新德里|\b(IN|IND)\b|india
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 加拿大
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 加拿大-自动选择
+    default-selected: 加拿大-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇨🇦|加拿大|多伦多|温哥华|蒙特利尔|\b(CA|CAN)\b|canada
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 加拿大-自动选择
+    include-all-providers: true
+    filter: (?i)🇨🇦|加拿大|多伦多|温哥华|蒙特利尔|\b(CA|CAN)\b|canada
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 德国
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 德国-自动选择
+    default-selected: 德国-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇩🇪|德国|法兰克福|柏林|\b(DE|DEU)\b|germany
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 德国-自动选择
+    include-all-providers: true
+    filter: (?i)🇩🇪|德国|法兰克福|柏林|\b(DE|DEU)\b|germany
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 英国
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 英国-自动选择
+    default-selected: 英国-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇬🇧|英国|伦敦|曼彻斯特|\b(UK|GB|GBR)\b|united\s*kingdom|britain|england
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 英国-自动选择
+    include-all-providers: true
+    filter: (?i)🇬🇧|英国|伦敦|曼彻斯特|\b(UK|GB|GBR)\b|united\s*kingdom|britain|england
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 法国
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 法国-自动选择
+    default-selected: 法国-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇫🇷|法国|巴黎|\b(FR|FRA)\b|france
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 法国-自动选择
+    include-all-providers: true
+    filter: (?i)🇫🇷|法国|巴黎|\b(FR|FRA)\b|france
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 荷兰
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 荷兰-自动选择
+    default-selected: 荷兰-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇳🇱|荷兰|阿姆斯特丹|\b(NL|NLD)\b|netherlands|holland
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 荷兰-自动选择
+    include-all-providers: true
+    filter: (?i)🇳🇱|荷兰|阿姆斯特丹|\b(NL|NLD)\b|netherlands|holland
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 西班牙
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 西班牙-自动选择
+    default-selected: 西班牙-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇪🇸|西班牙|马德里|\b(ES|ESP)\b|spain
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 西班牙-自动选择
+    include-all-providers: true
+    filter: (?i)🇪🇸|西班牙|马德里|\b(ES|ESP)\b|spain
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 俄罗斯
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 俄罗斯-自动选择
+    default-selected: 俄罗斯-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇷🇺|俄罗斯|莫斯科|\b(RU|RUS)\b|russia
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 俄罗斯-自动选择
+    include-all-providers: true
+    filter: (?i)🇷🇺|俄罗斯|莫斯科|\b(RU|RUS)\b|russia
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 乌克兰
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 乌克兰-自动选择
+    default-selected: 乌克兰-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇺🇦|乌克兰|基辅|\b(UA|UKR)\b|ukraine
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 乌克兰-自动选择
+    include-all-providers: true
+    filter: (?i)🇺🇦|乌克兰|基辅|\b(UA|UKR)\b|ukraine
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 土耳其
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 土耳其-自动选择
+    default-selected: 土耳其-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇹🇷|土耳其|伊斯坦布尔|\b(TR|TUR)\b|turkey|türkiye
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 土耳其-自动选择
+    include-all-providers: true
+    filter: (?i)🇹🇷|土耳其|伊斯坦布尔|\b(TR|TUR)\b|turkey|türkiye
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 挪威
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 挪威-自动选择
+    default-selected: 挪威-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇳🇴|挪威|奥斯陆|\b(NO|NOR)\b|norway
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 挪威-自动选择
+    include-all-providers: true
+    filter: (?i)🇳🇴|挪威|奥斯陆|\b(NO|NOR)\b|norway
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 瑞士
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 瑞士-自动选择
+    default-selected: 瑞士-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇨🇭|瑞士|苏黎世|\b(CH|CHE)\b|switzerland|swiss
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 瑞士-自动选择
+    include-all-providers: true
+    filter: (?i)🇨🇭|瑞士|苏黎世|\b(CH|CHE)\b|switzerland|swiss
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 瑞典
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 瑞典-自动选择
+    default-selected: 瑞典-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇸🇪|瑞典|斯德哥尔摩|\b(SE|SWE)\b|sweden
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 瑞典-自动选择
+    include-all-providers: true
+    filter: (?i)🇸🇪|瑞典|斯德哥尔摩|\b(SE|SWE)\b|sweden
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 爱尔兰
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 爱尔兰-自动选择
+    default-selected: 爱尔兰-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇮🇪|爱尔兰|都柏林|\b(IE|IRL)\b|ireland
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 爱尔兰-自动选择
+    include-all-providers: true
+    filter: (?i)🇮🇪|爱尔兰|都柏林|\b(IE|IRL)\b|ireland
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 菲律宾
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 菲律宾-自动选择
+    default-selected: 菲律宾-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇵🇭|菲律宾|马尼拉|\b(PH|PHL)\b|philippines
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 菲律宾-自动选择
+    include-all-providers: true
+    filter: (?i)🇵🇭|菲律宾|马尼拉|\b(PH|PHL)\b|philippines
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 越南
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 越南-自动选择
+    default-selected: 越南-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇻🇳|越南|河内|胡志明|\b(VN|VNM)\b|vietnam
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 越南-自动选择
+    include-all-providers: true
+    filter: (?i)🇻🇳|越南|河内|胡志明|\b(VN|VNM)\b|vietnam
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 泰国
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 泰国-自动选择
+    default-selected: 泰国-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇹🇭|泰国|曼谷|\b(TH|THA)\b|thailand
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 泰国-自动选择
+    include-all-providers: true
+    filter: (?i)🇹🇭|泰国|曼谷|\b(TH|THA)\b|thailand
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 马来西亚
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 马来西亚-自动选择
+    default-selected: 马来西亚-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)🇲🇾|马来西亚|吉隆坡|\b(MY|MYS)\b|malaysia
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 马来西亚-自动选择
+    include-all-providers: true
+    filter: (?i)🇲🇾|马来西亚|吉隆坡|\b(MY|MYS)\b|malaysia
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 低倍率节点
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Available.svg
+    proxies:
+      - 低倍率节点-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)(^|[^A-Za-z0-9.])([*×✕✖⨯⨉xX] *(0(\.[0-5][0-9]*)?|\.[0-5][0-9]*)|(0(\.[0-5][0-9]*)?|\.[0-5][0-9]*)
+      *(倍(率)?|[*×✕✖⨯⨉xX]))($|[^A-Za-z0-9.])|低倍|免费|\bfree\b
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?)|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 低倍率节点-自动选择
+    include-all-providers: true
+    filter: (?i)(^|[^A-Za-z0-9.])([*×✕✖⨯⨉xX] *(0(\.[0-5][0-9]*)?|\.[0-5][0-9]*)|(0(\.[0-5][0-9]*)?|\.[0-5][0-9]*)
+      *(倍(率)?|[*×✕✖⨯⨉xX]))($|[^A-Za-z0-9.])|低倍|免费|\bfree\b
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?)|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 高倍率节点
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Airport.svg
+    proxies:
+      - 高倍率节点-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)(^|[^A-Za-z0-9.])([*×✕✖⨯⨉xX]
+      *(([2-9][0-9]*|[1-9][0-9]+)(\.[0-9]+)?|1\.[0-9]*[1-9][0-9]*)|(([2-9][0-9]*|[1-9][0-9]+)(\.[0-9]+)?|1\.[0-9]*[1-9][0-9]*)
+      *(倍(率)?|[*×✕✖⨯⨉xX]))($|[^A-Za-z0-9.])
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?)|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 高倍率节点-自动选择
+    include-all-providers: true
+    filter: (?i)(^|[^A-Za-z0-9.])([*×✕✖⨯⨉xX]
+      *(([2-9][0-9]*|[1-9][0-9]+)(\.[0-9]+)?|1\.[0-9]*[1-9][0-9]*)|(([2-9][0-9]*|[1-9][0-9]+)(\.[0-9]+)?|1\.[0-9]*[1-9][0-9]*)
+      *(倍(率)?|[*×✕✖⨯⨉xX]))($|[^A-Za-z0-9.])
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?)|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 家宽节点
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Home.svg
+    proxies:
+      - 家宽节点-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    filter: (?i)家宽|住宅|原生(\s*IP)?|家庭宽带|家庭网络|\bISP\b|\bRES\b|residential|home\s*broadband|native\s*IP
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?)|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 家宽节点-自动选择
+    include-all-providers: true
+    filter: (?i)家宽|住宅|原生(\s*IP)?|家庭宽带|家庭网络|\bISP\b|\bRES\b|residential|home\s*broadband|native\s*IP
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?)|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: 其他节点
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    proxies:
+      - 其他节点-自动选择
+    hidden: false
+    include-all-providers: true
+    exclude-type: DIRECT|REJECT|REMATCH
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?)|🇭🇰|香港|\b(HK|HKG)\b|hong\s*kong|🇯🇵|日本|东京|大阪|京都|\b(JP|JPN)\b|japan|🇺🇸|美国|纽约|洛杉矶|旧金山|芝加哥|休斯顿|迈阿密|西雅图|波士顿|华盛顿|拉斯维加斯|圣何塞|\b(US|USA)\b|america|united\s*states|🇸🇬|新加坡|狮城|\b(SG|SGP)\b|singapore|🇹🇼|台湾|台北|高雄|\b(TW|TWN)\b|taiwan|🇰🇷|韩国|首尔|釜山|\b(KR|KOR)\b|south\s*korea|korea|🇦🇺|澳大利亚|澳洲|悉尼|墨尔本|珀斯|\b(AU|AUS)\b|australia|🇮🇩|印度尼西亚|印尼|雅加达|\b(ID|IDN)\b|indonesia|🇮🇳|印度($|[^尼])|孟买|新德里|\b(IN|IND)\b|india|🇨🇦|加拿大|多伦多|温哥华|蒙特利尔|\b(CA|CAN)\b|canada|🇩🇪|德国|法兰克福|柏林|\b(DE|DEU)\b|germany|🇬🇧|英国|伦敦|曼彻斯特|\b(UK|GB|GBR)\b|united\s*kingdom|britain|england|🇫🇷|法国|巴黎|\b(FR|FRA)\b|france|🇳🇱|荷兰|阿姆斯特丹|\b(NL|NLD)\b|netherlands|holland|🇪🇸|西班牙|马德里|\b(ES|ESP)\b|spain|🇷🇺|俄罗斯|莫斯科|\b(RU|RUS)\b|russia|🇺🇦|乌克兰|基辅|\b(UA|UKR)\b|ukraine|🇹🇷|土耳其|伊斯坦布尔|\b(TR|TUR)\b|turkey|türkiye|🇳🇴|挪威|奥斯陆|\b(NO|NOR)\b|norway|🇨🇭|瑞士|苏黎世|\b(CH|CHE)\b|switzerland|swiss|🇸🇪|瑞典|斯德哥尔摩|\b(SE|SWE)\b|sweden|🇮🇪|爱尔兰|都柏林|\b(IE|IRL)\b|ireland|🇵🇭|菲律宾|马尼拉|\b(PH|PHL)\b|philippines|🇻🇳|越南|河内|胡志明|\b(VN|VNM)\b|vietnam|🇹🇭|泰国|曼谷|\b(TH|THA)\b|thailand|🇲🇾|马来西亚|吉隆坡|\b(MY|MYS)\b|malaysia|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
+  - timeout: 5000
+    url: https://cp.cloudflare.com/generate_204
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: url-test
+    interval: 600
+    lazy: true
+    tolerance: 50
+    exclude-type: DIRECT|REJECT|REMATCH
+    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    hidden: true
+    name: 其他节点-自动选择
+    include-all-providers: true
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?)|🇭🇰|香港|\b(HK|HKG)\b|hong\s*kong|🇯🇵|日本|东京|大阪|京都|\b(JP|JPN)\b|japan|🇺🇸|美国|纽约|洛杉矶|旧金山|芝加哥|休斯顿|迈阿密|西雅图|波士顿|华盛顿|拉斯维加斯|圣何塞|\b(US|USA)\b|america|united\s*states|🇸🇬|新加坡|狮城|\b(SG|SGP)\b|singapore|🇹🇼|台湾|台北|高雄|\b(TW|TWN)\b|taiwan|🇰🇷|韩国|首尔|釜山|\b(KR|KOR)\b|south\s*korea|korea|🇦🇺|澳大利亚|澳洲|悉尼|墨尔本|珀斯|\b(AU|AUS)\b|australia|🇮🇩|印度尼西亚|印尼|雅加达|\b(ID|IDN)\b|indonesia|🇮🇳|印度($|[^尼])|孟买|新德里|\b(IN|IND)\b|india|🇨🇦|加拿大|多伦多|温哥华|蒙特利尔|\b(CA|CAN)\b|canada|🇩🇪|德国|法兰克福|柏林|\b(DE|DEU)\b|germany|🇬🇧|英国|伦敦|曼彻斯特|\b(UK|GB|GBR)\b|united\s*kingdom|britain|england|🇫🇷|法国|巴黎|\b(FR|FRA)\b|france|🇳🇱|荷兰|阿姆斯特丹|\b(NL|NLD)\b|netherlands|holland|🇪🇸|西班牙|马德里|\b(ES|ESP)\b|spain|🇷🇺|俄罗斯|莫斯科|\b(RU|RUS)\b|russia|🇺🇦|乌克兰|基辅|\b(UA|UKR)\b|ukraine|🇹🇷|土耳其|伊斯坦布尔|\b(TR|TUR)\b|turkey|türkiye|🇳🇴|挪威|奥斯陆|\b(NO|NOR)\b|norway|🇨🇭|瑞士|苏黎世|\b(CH|CHE)\b|switzerland|swiss|🇸🇪|瑞典|斯德哥尔摩|\b(SE|SWE)\b|sweden|🇮🇪|爱尔兰|都柏林|\b(IE|IRL)\b|ireland|🇵🇭|菲律宾|马尼拉|\b(PH|PHL)\b|philippines|🇻🇳|越南|河内|胡志明|\b(VN|VNM)\b|vietnam|🇹🇭|泰国|曼谷|\b(TH|THA)\b|thailand|🇲🇾|马来西亚|吉隆坡|\b(MY|MYS)\b|malaysia|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
+rule-providers:
+  private:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/private.mrs
+    path: ./ruleset/private.mrs
+    path-in-bundle: geo/geosite/private.mrs
+  private_ip:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: ipcidr
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/private.mrs
+    path: ./ruleset/private_ip.mrs
+    path-in-bundle: geo/geoip/private.mrs
+  games_cn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-games@cn.mrs
+    path: ./ruleset/category-games@cn.mrs
+    path-in-bundle: geo/geosite/category-games@cn.mrs
+  synology:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/synology.mrs
+    path: ./ruleset/synology.mrs
+    path-in-bundle: geo/geosite/synology.mrs
+  nvidia_cn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/nvidia@cn.mrs
+    path: ./ruleset/nvidia@cn.mrs
+    path-in-bundle: geo/geosite/nvidia@cn.mrs
+  apple_cn:
+    type: http
+    format: text
+    interval: 86400
+    behavior: classical
+    url: https://fastly.jsdelivr.net/gh/SukkaW/Surge@0afc9c2ee92aadbf79ce1c9caf03f724135073ea/Source/non_ip/apple_cn.conf
+    path: ./ruleset/apple_cn.list
+  microsoft_cn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/microsoft@cn.mrs
+    path: ./ruleset/microsoft@cn.mrs
+    path-in-bundle: geo/geosite/microsoft@cn.mrs
+  geolocation-cn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/geolocation-cn.mrs
+    path: ./ruleset/geolocation-cn.mrs
+    path-in-bundle: geo/geosite/geolocation-cn.mrs
+  cn_ip:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: ipcidr
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/cn.mrs
+    path: ./ruleset/cn_ip.mrs
+    path-in-bundle: geo/geoip/cn.mrs
+  geolocation-!cn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/geolocation-!cn.mrs
+    path: ./ruleset/geolocation-!cn.mrs
+    path-in-bundle: geo/geosite/geolocation-!cn.mrs
+  fakeip_filter:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/fakeip-filter.mrs
+    path: ./ruleset/fakeip-filter.mrs
+    path-in-bundle: geo/geosite/fakeip-filter.mrs
+  googlefcm:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/googlefcm.mrs
+    path: ./ruleset/googlefcm.mrs
+    path-in-bundle: geo/geosite/googlefcm.mrs
+  youtube:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/youtube.mrs
+    path: ./ruleset/youtube.mrs
+    path-in-bundle: geo/geosite/youtube.mrs
+  google:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/google.mrs
+    path: ./ruleset/google.mrs
+    path-in-bundle: geo/geosite/google.mrs
+  google_ip:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: ipcidr
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/google.mrs
+    path: ./ruleset/google_ip.mrs
+    path-in-bundle: geo/geoip/google.mrs
+  ai:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-ai-!cn.mrs
+    path: ./ruleset/ai.mrs
+    path-in-bundle: geo/geosite/category-ai-!cn.mrs
+  github:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/github.mrs
+    path: ./ruleset/github.mrs
+    path-in-bundle: geo/geosite/github.mrs
+  microsoft:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/microsoft.mrs
+    path: ./ruleset/microsoft.mrs
+    path-in-bundle: geo/geosite/microsoft.mrs
+  microsoft_ip:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: ipcidr
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/microsoft.mrs
+    path: ./ruleset/microsoft_ip.mrs
+    path-in-bundle: geo/geoip/microsoft.mrs
+  apple:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/apple.mrs
+    path: ./ruleset/apple.mrs
+    path-in-bundle: geo/geosite/apple.mrs
+  telegram:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/telegram.mrs
+    path: ./ruleset/telegram.mrs
+    path-in-bundle: geo/geosite/telegram.mrs
+  telegram_ip:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: ipcidr
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/telegram.mrs
+    path: ./ruleset/telegram_ip.mrs
+    path-in-bundle: geo/geoip/telegram.mrs
+  steam:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/steam.mrs
+    path: ./ruleset/steam.mrs
+    path-in-bundle: geo/geosite/steam.mrs
+  steam_ip:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: ipcidr
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/steam.mrs
+    path: ./ruleset/steam_ip.mrs
+    path-in-bundle: geo/geoip/steam.mrs
+  tiktok:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/tiktok.mrs
+    path: ./ruleset/tiktok.mrs
+    path-in-bundle: geo/geosite/tiktok.mrs
+  tiktok_ip:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: ipcidr
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/tiktok.mrs
+    path: ./ruleset/tiktok_ip.mrs
+    path-in-bundle: geo/geoip/tiktok.mrs
+  twitter:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/twitter.mrs
+    path: ./ruleset/twitter.mrs
+    path-in-bundle: geo/geosite/twitter.mrs
+  twitter_ip:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: ipcidr
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/twitter.mrs
+    path: ./ruleset/twitter_ip.mrs
+    path-in-bundle: geo/geoip/twitter.mrs
+  meta:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/meta.mrs
+    path: ./ruleset/meta.mrs
+    path-in-bundle: geo/geosite/meta.mrs
+  facebook_ip:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: ipcidr
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/facebook.mrs
+    path: ./ruleset/facebook_ip.mrs
+    path-in-bundle: geo/geoip/facebook.mrs
+  line:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/line.mrs
+    path: ./ruleset/line.mrs
+    path-in-bundle: geo/geosite/line.mrs
+  netflix:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/netflix.mrs
+    path: ./ruleset/netflix.mrs
+    path-in-bundle: geo/geosite/netflix.mrs
+  netflix_ip:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: ipcidr
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/netflix.mrs
+    path: ./ruleset/netflix_ip.mrs
+    path-in-bundle: geo/geoip/netflix.mrs
+  emby:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-emby.mrs
+    path: ./ruleset/emby.mrs
+    path-in-bundle: geo/geosite/category-emby.mrs
+  emby_keyword:
+    type: inline
+    format: text
+    behavior: classical
+    payload:
+      - DOMAIN-KEYWORD,emby
+  pikpak:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/pikpak.mrs
+    path: ./ruleset/pikpak.mrs
+    path-in-bundle: geo/geosite/pikpak.mrs
+  spotify:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/spotify.mrs
+    path: ./ruleset/spotify.mrs
+    path-in-bundle: geo/geosite/spotify.mrs
+  spotify_ip:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: ipcidr
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/spotify.mrs
+    path: ./ruleset/spotify_ip.mrs
+    path-in-bundle: geo/geoip/spotify.mrs
+  cryptocurrency:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-cryptocurrency.mrs
+    path: ./ruleset/cryptocurrency.mrs
+    path-in-bundle: geo/geosite/category-cryptocurrency.mrs
+  paypal:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/paypal.mrs
+    path: ./ruleset/paypal.mrs
+    path-in-bundle: geo/geosite/paypal.mrs
+  patreon:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/patreon.mrs
+    path: ./ruleset/patreon.mrs
+    path-in-bundle: geo/geosite/patreon.mrs
+  ehentai:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/ehentai.mrs
+    path: ./ruleset/ehentai.mrs
+    path-in-bundle: geo/geosite/ehentai.mrs
+  category-ads:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-ads.mrs
+    path: ./ruleset/category-ads.mrs
+    path-in-bundle: geo/geosite/category-ads.mrs
+  apple_proxy:
+    type: http
+    format: yaml
+    interval: 86400
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AppleProxy/AppleProxy.yaml
+    path: ./ruleset/apple_proxy.yaml
+  apple_ip:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: ipcidr
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/apple.mrs
+    path: ./ruleset/apple_ip.mrs
+    path-in-bundle: geo/geoip/apple.mrs
+  domestic_alibaba:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/alibaba.mrs
+    path: ./ruleset/domestic_alibaba.mrs
+    path-in-bundle: geo/geosite/alibaba.mrs
+  domestic_alibaba_noncn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/alibaba@!cn.mrs
+    path: ./ruleset/domestic_alibaba_noncn.mrs
+    path-in-bundle: geo/geosite/alibaba@!cn.mrs
+  domestic_alibaba_dns:
+    type: inline
+    format: text
+    behavior: classical
+    payload:
+      - AND,((RULE-SET,domestic_alibaba),(NOT,((RULE-SET,domestic_alibaba_noncn))))
+  domestic_baidu:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/baidu.mrs
+    path: ./ruleset/domestic_baidu.mrs
+    path-in-bundle: geo/geosite/baidu.mrs
+  domestic_bilibili:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/bilibili.mrs
+    path: ./ruleset/domestic_bilibili.mrs
+    path-in-bundle: geo/geosite/bilibili.mrs
+  domestic_bilibili_noncn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/bilibili@!cn.mrs
+    path: ./ruleset/domestic_bilibili_noncn.mrs
+    path-in-bundle: geo/geosite/bilibili@!cn.mrs
+  domestic_bilibili_dns:
+    type: inline
+    format: text
+    behavior: classical
+    payload:
+      - AND,((RULE-SET,domestic_bilibili),(NOT,((RULE-SET,domestic_bilibili_noncn))))
+  domestic_bytedance:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/bytedance.mrs
+    path: ./ruleset/domestic_bytedance.mrs
+    path-in-bundle: geo/geosite/bytedance.mrs
+  domestic_bytedance_noncn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/bytedance@!cn.mrs
+    path: ./ruleset/domestic_bytedance_noncn.mrs
+    path-in-bundle: geo/geosite/bytedance@!cn.mrs
+  domestic_bytedance_dns:
+    type: inline
+    format: text
+    behavior: classical
+    payload:
+      - AND,((RULE-SET,domestic_bytedance),(NOT,((RULE-SET,domestic_bytedance_noncn))))
+  domestic_chinamobile:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/chinamobile.mrs
+    path: ./ruleset/domestic_chinamobile.mrs
+    path-in-bundle: geo/geosite/chinamobile.mrs
+  domestic_chinamobile_noncn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/chinamobile@!cn.mrs
+    path: ./ruleset/domestic_chinamobile_noncn.mrs
+    path-in-bundle: geo/geosite/chinamobile@!cn.mrs
+  domestic_chinamobile_dns:
+    type: inline
+    format: text
+    behavior: classical
+    payload:
+      - AND,((RULE-SET,domestic_chinamobile),(NOT,((RULE-SET,domestic_chinamobile_noncn))))
+  domestic_chinatelecom:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/chinatelecom.mrs
+    path: ./ruleset/domestic_chinatelecom.mrs
+    path-in-bundle: geo/geosite/chinatelecom.mrs
+  domestic_chinatelecom_noncn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/chinatelecom@!cn.mrs
+    path: ./ruleset/domestic_chinatelecom_noncn.mrs
+    path-in-bundle: geo/geosite/chinatelecom@!cn.mrs
+  domestic_chinatelecom_dns:
+    type: inline
+    format: text
+    behavior: classical
+    payload:
+      - AND,((RULE-SET,domestic_chinatelecom),(NOT,((RULE-SET,domestic_chinatelecom_noncn))))
+  domestic_chinaunicom:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/chinaunicom.mrs
+    path: ./ruleset/domestic_chinaunicom.mrs
+    path-in-bundle: geo/geosite/chinaunicom.mrs
+  domestic_chinaunicom_noncn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/chinaunicom@!cn.mrs
+    path: ./ruleset/domestic_chinaunicom_noncn.mrs
+    path-in-bundle: geo/geosite/chinaunicom@!cn.mrs
+  domestic_chinaunicom_dns:
+    type: inline
+    format: text
+    behavior: classical
+    payload:
+      - AND,((RULE-SET,domestic_chinaunicom),(NOT,((RULE-SET,domestic_chinaunicom_noncn))))
+  domestic_huaweicloud:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/huaweicloud.mrs
+    path: ./ruleset/domestic_huaweicloud.mrs
+    path-in-bundle: geo/geosite/huaweicloud.mrs
+  domestic_huaweicloud_noncn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/huaweicloud@!cn.mrs
+    path: ./ruleset/domestic_huaweicloud_noncn.mrs
+    path-in-bundle: geo/geosite/huaweicloud@!cn.mrs
+  domestic_huaweicloud_dns:
+    type: inline
+    format: text
+    behavior: classical
+    payload:
+      - AND,((RULE-SET,domestic_huaweicloud),(NOT,((RULE-SET,domestic_huaweicloud_noncn))))
+  domestic_jd:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/jd.mrs
+    path: ./ruleset/domestic_jd.mrs
+    path-in-bundle: geo/geosite/jd.mrs
+  domestic_jd_noncn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/jd@!cn.mrs
+    path: ./ruleset/domestic_jd_noncn.mrs
+    path-in-bundle: geo/geosite/jd@!cn.mrs
+  domestic_jd_dns:
+    type: inline
+    format: text
+    behavior: classical
+    payload:
+      - AND,((RULE-SET,domestic_jd),(NOT,((RULE-SET,domestic_jd_noncn))))
+  domestic_netease:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/netease.mrs
+    path: ./ruleset/domestic_netease.mrs
+    path-in-bundle: geo/geosite/netease.mrs
+  domestic_netease_noncn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/netease@!cn.mrs
+    path: ./ruleset/domestic_netease_noncn.mrs
+    path-in-bundle: geo/geosite/netease@!cn.mrs
+  domestic_netease_dns:
+    type: inline
+    format: text
+    behavior: classical
+    payload:
+      - AND,((RULE-SET,domestic_netease),(NOT,((RULE-SET,domestic_netease_noncn))))
+  domestic_tencent:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/tencent.mrs
+    path: ./ruleset/domestic_tencent.mrs
+    path-in-bundle: geo/geosite/tencent.mrs
+  domestic_tencent_noncn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/tencent@!cn.mrs
+    path: ./ruleset/domestic_tencent_noncn.mrs
+    path-in-bundle: geo/geosite/tencent@!cn.mrs
+  domestic_tencent_dns:
+    type: inline
+    format: text
+    behavior: classical
+    payload:
+      - AND,((RULE-SET,domestic_tencent),(NOT,((RULE-SET,domestic_tencent_noncn))))
+  domestic_xiaomi:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/xiaomi.mrs
+    path: ./ruleset/domestic_xiaomi.mrs
+    path-in-bundle: geo/geosite/xiaomi.mrs
+  domestic_xiaomi_noncn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/xiaomi@!cn.mrs
+    path: ./ruleset/domestic_xiaomi_noncn.mrs
+    path-in-bundle: geo/geosite/xiaomi@!cn.mrs
+  domestic_xiaomi_dns:
+    type: inline
+    format: text
+    behavior: classical
+    payload:
+      - AND,((RULE-SET,domestic_xiaomi),(NOT,((RULE-SET,domestic_xiaomi_noncn))))
+  apple_tv:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/apple-tvplus.mrs
+    path: ./ruleset/apple_tv.mrs
+  dns_domestic_cdn:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://ruleset.skk.moe/Clash/non_ip/domestic_cdn.txt
+    path: ./ruleset/dns_domestic_cdn.list
+  dns_microsoft_cdn:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://ruleset.skk.moe/Clash/non_ip/microsoft_cdn.txt
+    path: ./ruleset/dns_microsoft_cdn.list
+  dns_steam_cn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam@cn.mrs
+    path: ./ruleset/dns_steam_cn.mrs
+rules:
+  - DST-PORT,53,内置DNS
+  - DOMAIN-SUFFIX,issuer.apple.com,Siri Ai/Apple Intelligence
+  - DOMAIN-SUFFIX,ropes.apple.com,Siri Ai/Apple Intelligence
+  - DOMAIN,mask-api.icloud.com,Siri Ai/Apple Intelligence
+  - DOMAIN,mask.icloud.com,Siri Ai/Apple Intelligence
+  - DOMAIN,mask-h2.icloud.com,Siri Ai/Apple Intelligence
+  - DOMAIN-SUFFIX,app.apple.com,Siri Ai/Apple Intelligence
+  - DOMAIN-SUFFIX,apple-relay.apple.com,Siri Ai/Apple Intelligence
+  - DOMAIN-SUFFIX,apple-relay.cloudflare.com,Siri Ai/Apple Intelligence
+  - DOMAIN-SUFFIX,apple-relay.fastly-edge.com,Siri Ai/Apple Intelligence
+  - DOMAIN-SUFFIX,apple-relay.akamaized.net,Siri Ai/Apple Intelligence
+  - DOMAIN,cp4.cloudflare.com,Siri Ai/Apple Intelligence
+  - DOMAIN-SUFFIX,icloud-content.com,Siri Ai/Apple Intelligence
+  - DOMAIN-SUFFIX,guzzoni.apple.com,Siri Ai/Apple Intelligence
+  - DOMAIN-SUFFIX,siri.apple.com,Siri Ai/Apple Intelligence
+  - DOMAIN,dejavu.apple.com,Siri Ai/Apple Intelligence
+  - DOMAIN,sequoia.apple.com,Siri Ai/Apple Intelligence
+  - DOMAIN-SUFFIX,smoot.apple.com,Siri Ai/Apple Intelligence
+  - DOMAIN,api-siri-prod.apple.com,Siri Ai/Apple Intelligence
+  - DOMAIN,gspe1-ssl.ls.apple.com,Siri Ai/Apple Intelligence
+  - DOMAIN-SUFFIX,apple-dns.com,AppleProxy
+  - DOMAIN,news-client-search.apple.com,AppleProxy
+  - DOMAIN-SUFFIX,fitness.apple.com,AppleProxy
+  - DOMAIN-SUFFIX,sports.apple.com,AppleProxy
+  - DOMAIN-SUFFIX,books.apple.com,AppleProxy
+  - RULE-SET,apple_tv,AppleProxy
+  - DOMAIN,gateway.icloud.com,Other Apple Service
+  - DOMAIN,setup.icloud.com,Other Apple Service
+  - DOMAIN,gdmf.apple.com,直连
+  - DOMAIN,mesu.apple.com,直连
+  - DOMAIN,updates.cdn-apple.com,直连
+  - DOMAIN,assets.cdn-apple.com,直连
+  - RULE-SET,apple_proxy,AppleProxy
+  - DOMAIN,cp.cloudflare.com,默认代理
+  - RULE-SET,category-ads,AdBlock
+  - RULE-SET,private,直连
+  - RULE-SET,games_cn,直连
+  - RULE-SET,synology,直连
+  - RULE-SET,nvidia_cn,直连
+  - RULE-SET,apple_cn,直连
+  - RULE-SET,microsoft_cn,直连
+  - DOMAIN,fsend.cn,直连
+  - DOMAIN,international-gfe.download.nvidia.com,直连
+  - DOMAIN-SUFFIX,ctaiot.com,直连
+  - RULE-SET,googlefcm,FCM
+  - RULE-SET,youtube,YouTube
+  - RULE-SET,google,Google
+  - RULE-SET,ai,AI
+  - RULE-SET,github,GitHub
+  - RULE-SET,microsoft,Microsoft
+  - RULE-SET,apple,Other Apple Service
+  - RULE-SET,telegram,Telegram
+  - RULE-SET,steam,Steam
+  - RULE-SET,tiktok,TikTok
+  - RULE-SET,twitter,Twitter
+  - RULE-SET,meta,Meta
+  - RULE-SET,line,Line
+  - RULE-SET,netflix,Netflix
+  - RULE-SET,emby,Emby
+  - DOMAIN-SUFFIX,mb3admin.com,Emby
+  - DOMAIN-SUFFIX,nubebelle.com,Emby
+  - RULE-SET,emby_keyword,Emby
+  - RULE-SET,pikpak,PikPak
+  - RULE-SET,spotify,Spotify
+  - RULE-SET,cryptocurrency,Crypto
+  - RULE-SET,paypal,PayPal
+  - RULE-SET,patreon,Patreon
+  - RULE-SET,ehentai,EHentai
+  - AND,((RULE-SET,domestic_alibaba),(NOT,((RULE-SET,domestic_alibaba_noncn)))),直连
+  - RULE-SET,domestic_baidu,直连
+  - AND,((RULE-SET,domestic_bilibili),(NOT,((RULE-SET,domestic_bilibili_noncn)))),直连
+  - AND,((RULE-SET,domestic_bytedance),(NOT,((RULE-SET,domestic_bytedance_noncn)))),直连
+  - AND,((RULE-SET,domestic_chinamobile),(NOT,((RULE-SET,domestic_chinamobile_noncn)))),直连
+  - AND,((RULE-SET,domestic_chinatelecom),(NOT,((RULE-SET,domestic_chinatelecom_noncn)))),直连
+  - AND,((RULE-SET,domestic_chinaunicom),(NOT,((RULE-SET,domestic_chinaunicom_noncn)))),直连
+  - AND,((RULE-SET,domestic_huaweicloud),(NOT,((RULE-SET,domestic_huaweicloud_noncn)))),直连
+  - AND,((RULE-SET,domestic_jd),(NOT,((RULE-SET,domestic_jd_noncn)))),直连
+  - AND,((RULE-SET,domestic_netease),(NOT,((RULE-SET,domestic_netease_noncn)))),直连
+  - AND,((RULE-SET,domestic_tencent),(NOT,((RULE-SET,domestic_tencent_noncn)))),直连
+  - AND,((RULE-SET,domestic_xiaomi),(NOT,((RULE-SET,domestic_xiaomi_noncn)))),直连
+  - RULE-SET,geolocation-cn,直连
+  - RULE-SET,geolocation-!cn,默认代理
+  - RULE-SET,apple_ip,AppleProxy,no-resolve
+  - RULE-SET,private_ip,直连,no-resolve
+  - RULE-SET,google_ip,Google,no-resolve
+  - RULE-SET,microsoft_ip,Microsoft,no-resolve
+  - RULE-SET,telegram_ip,Telegram,no-resolve
+  - RULE-SET,steam_ip,Steam,no-resolve
+  - RULE-SET,tiktok_ip,TikTok,no-resolve
+  - RULE-SET,twitter_ip,Twitter,no-resolve
+  - RULE-SET,facebook_ip,Meta,no-resolve
+  - RULE-SET,netflix_ip,Netflix,no-resolve
+  - RULE-SET,spotify_ip,Spotify,no-resolve
+  - RULE-SET,cn_ip,直连
+  - MATCH,漏网之鱼
+sniffer:
+  enable: true
+  force-dns-mapping: true
+  parse-pure-ip: true
+  override-destination: false
+  sniff:
+    HTTP:
+      ports:
+        - 80
+        - 8080-8880
+    TLS:
+      ports:
+        - 443
+        - 8443
+    QUIC:
+      ports:
+        - 443
+        - 8443
+proxy-providers:
+  订阅:
+    type: http
+    url: https://example.invalid/replace-with-your-subscription
+    path: ./proxy_provider/subscription.yaml
+    interval: 86400
+    proxy: DIRECT
+    exclude-type: DIRECT|REJECT|REMATCH
+    health-check:
+      enable: true
+      url: https://cp.cloudflare.com/generate_204
+      interval: 600
+      lazy: true
+    override:
+      proxy-name:
+        - pattern: (?i)🇨🇳(.*(台湾|台北|高雄|\b(TW|TWN)\b|taiwan))
+          target: $1
+        - pattern: (?i)((台湾|台北|高雄|\b(TW|TWN)\b|taiwan).*)🇨🇳
+          target: $1

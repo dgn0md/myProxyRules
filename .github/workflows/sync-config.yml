@@ -11,7 +11,16 @@ on:
       - Script/mihomoScript.cdn.js
       - Config/mihomoConfig.yaml
       - Config/mihomoConfig.cdn.yaml
+      - Config/stash/profile.yaml
+      - Config/stash/profile.cdn.yaml
+      - Config/surge/profile.conf
+      - Config/surge/profile.cdn.conf
+      - Config/shadowrocket/profile.conf
+      - Config/shadowrocket/profile.cdn.conf
+      - Config/quantumultx/profile.conf
+      - Config/quantumultx/profile.cdn.conf
       - tools/build.js
+      - tools/build-targets.js
       - tools/build-cdn-script.js
       - tools/build-cdn-config.js
       - tools/config-sha.js
@@ -76,13 +85,13 @@ jobs:
       - name: Commit generated config when it changes
         run: |
           set -euo pipefail
-          if git diff --quiet -- Config/mihomoConfig.yaml Config/mihomoConfig.cdn.yaml Script/mihomoScript.js Script/mihomoScript.cdn.js; then
+          if git diff --quiet -- Config/mihomoConfig.yaml Config/mihomoConfig.cdn.yaml Config/stash/profile.yaml Config/stash/profile.cdn.yaml Config/surge/profile.conf Config/surge/profile.cdn.conf Config/shadowrocket/profile.conf Config/shadowrocket/profile.cdn.conf Config/quantumultx/profile.conf Config/quantumultx/profile.cdn.conf Script/mihomoScript.js Script/mihomoScript.cdn.js; then
             echo 'Generated config is already up to date.'
             exit 0
           fi
 
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- Config/mihomoConfig.yaml Config/mihomoConfig.cdn.yaml Script/mihomoScript.js Script/mihomoScript.cdn.js
+          git add -- Config/mihomoConfig.yaml Config/mihomoConfig.cdn.yaml Config/stash/profile.yaml Config/stash/profile.cdn.yaml Config/surge/profile.conf Config/surge/profile.cdn.conf Config/shadowrocket/profile.conf Config/shadowrocket/profile.cdn.conf Config/quantumultx/profile.conf Config/quantumultx/profile.cdn.conf Script/mihomoScript.js Script/mihomoScript.cdn.js
           git commit -m 'chore: refresh script and config SHA, CDN copies'
           git push

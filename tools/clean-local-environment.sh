@@ -3,8 +3,8 @@ set -eu
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 cd "$ROOT"
 
-if [ ! -f "$ROOT/tools/native-workspace.js" ] || ! grep -q '"name": "myclashrules"' "$ROOT/package.json"; then
-  echo "拒绝清理：当前目录未通过 myClashRules 仓库检查（$ROOT）。" >&2
+if [ ! -f "$ROOT/tools/native-workspace.js" ] || ! grep -q '"name": "myproxyrules"' "$ROOT/package.json"; then
+  echo "拒绝清理：当前目录未通过 myProxyRules 仓库检查（$ROOT）。" >&2
   exit 1
 fi
 if [ -L "$ROOT/.local" ] || [ -L "$ROOT/node_modules" ]; then

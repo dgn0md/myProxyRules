@@ -27,7 +27,7 @@ export HOME="$LOCAL/home"
 export TMPDIR="$LOCAL/tmp"
 export PATH="$NODE_BIN:$PATH"
 export NODE_USE_ENV_PROXY=1
-export MYCLASH_LOCAL_RUNTIME=1
+export MYPROXY_LOCAL_RUNTIME=1
 unset NODE_PATH NODE_OPTIONS NPM_CONFIG_PREFIX npm_config_prefix
 if [ "$#" -gt 0 ] && [ "$1" = "--print-bin" ]; then
   printf '%s\n' "$NODE_BIN"

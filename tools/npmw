@@ -28,7 +28,7 @@ export npm_config_cache="$ROOT/.local/npm-cache"
 export npm_config_global=false
 export npm_config_registry=https://registry.npmjs.org/
 export NODE_USE_ENV_PROXY=1
-export MYCLASH_LOCAL_RUNTIME=1
+export MYPROXY_LOCAL_RUNTIME=1
 unset NODE_PATH NODE_OPTIONS
 if [ "$(command -v node)" != "$NODE_BIN/node" ]; then
   echo "PATH 中没有优先使用项目本地 Node；拒绝继续。" >&2

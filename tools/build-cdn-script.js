@@ -8,7 +8,7 @@ const ROOT = path.resolve(__dirname, '..');
 const SCRIPT = path.join(ROOT, 'Script/mihomoScript.js');
 const CDN_SCRIPT = path.join(ROOT, 'Script/mihomoScript.cdn.js');
 const CDN_LINK =
-  /^([ \t]*\* CDN 脚本：https:\/\/cdn\.jsdelivr\.net\/gh\/dgn0md\/myClashRules@main\/Script\/mihomoScript\.cdn\.js)$/gm;
+  /^([ \t]*\* CDN 脚本：https:\/\/cdn\.jsdelivr\.net\/gh\/dgn0md\/myProxyRules@main\/Script\/mihomoScript\.cdn\.js)$/gm;
 const CDN_HASH_FIELD = /^([ \t]*\* 缓存 CDN SHA-256：)[0-9a-f]{64}$/gm;
 
 function replaceCdnHash(source, value) {

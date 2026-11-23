@@ -6,6 +6,8 @@
 
 ## 本仓库重点维护
 
+Stash、Surge、Shadowrocket 和 Quantumult X 的静态原生配置由目标适配器生成。Stash 保留主要 Mihomo 能力；其他客户端受 MRS、逻辑规则与 DNS policy 格式差异影响，覆盖边界见[多客户端兼容性说明](client-compatibility.md)。这些配置不包含各应用独有的脚本或模块。
+
 全量与极简模式下，`GLOBAL` 首次默认选择 `美国`，`默认代理` 首次默认选择 `自动选择ex(大陆&香港)`（由 `排除大陆香港自动选` 开关控制）；候选组不存在时保留其他有效选项，已有客户端选择缓存优先。
 
 | 功能             | 实现范围                                                                                                                                                                                                                                                                                                                                                            |
@@ -15,7 +17,7 @@
 | DNS 控制         | 明确路由到 `直连` 的域名规则与动态域名规则集、`geolocation-cn`、开启国内服务模块时的 11 组 `domestic AND NOT domestic_noncn` 集合与完整百度集合，以及 `国内CDN解析`、`微软下载解析`、`Steam下载解析` 使用阿里/腾讯 DoH；后三者开关默认开启且可独立关闭。代理服务的 DNS 请求经对应服务组选择出口。普通默认查询使用 Cloudflare DoH-H3 与 Google DoH；代理节点域名引导使用阿里/腾讯 DoH 并通过直连建连；`default-nameserver` 使用阿里/腾讯 IP DoH 启动解析。仅因 IP 兜底直连或未命中明确域名 policy 的查询仍使用默认国外 DNS；严格模式不明文降级。 |
 | 机场覆写         | 展开模式只处理节点和节点 hosts 映射，其他机场配置不进入输出。                                                                                                                                                                                                                                                                                                       |
 | 纯 IP 入站识别   | 以 HTTP Host、TLS SNI 和受支持的 QUIC 元数据补充域名，不改写目标地址。                                                                                                                                                                                                                                                                                              |
-| 单一构建来源     | 脚本管理行为；静态 YAML 经构建工具生成，扩展开关须重新构建。                                                                                                                                                                                                                                                                                                        |
+| 单一构建来源     | 脚本管理 Mihomo 行为；静态 YAML 与四个目标 profile 由构建工具生成，扩展开关须重新构建。                                                                                                                                                                                                                                                                                                        |
 | 自动选择排除组   | `排除大陆香港自动选` 控制 `自动选择ex(大陆&香港)`，按节点名称过滤大陆、香港候选并保留台湾节点。                                                                                                                                                                                                                                                                     |
 | 本地控制面       | 生成配置默认不提供外部控制 API 或自动下载控制面；本地客户端可单独配置受密钥保护的管理入口。                                                                                                                                                                                                                                                                         |
 | 隔离策略诊断     | 本地 `diagnose` 命令以真实 Mihomo 规则和合成回环出口，报告 TCP 域名/IP 的命中规则、策略链及域名 DNS policy 候选。                                                                                                                                                                                                                                                   |
@@ -40,6 +42,6 @@ DNS policy 在极简模式和服务组关闭时仍按各自边界生效；HTTP p
 | 静态 YAML | 配置 `proxy-providers.订阅.url` 后导入内核 | 内核按 provider 读取订阅；构建时看不到节点名称或机场 hosts。                                    |
 | 本地展开  | 选项 YAML 与 `--subscription` 本地文件     | 构建工具将节点交给同一脚本处理，默认输出到忽略的 `.local/expanded.yaml`；订阅更新后需重新生成。 |
 
-YAML 中的 `x-myClashRules` 是构建输入，Mihomo 不执行这些扩展字段。开发命令和节点处理测试见 [Test/README.md](../Test/README.md)。
+YAML 中的 `x-myProxyRules` 是构建输入，Mihomo 不执行这些扩展字段；命令行仍读取旧键 `x-myClashRules` 以兼容既有设置文件，生成产物统一使用新键。开发命令和节点处理测试见 [Test/README.md](../Test/README.md)。
 
 静态 provider 在加载时会移除“大陆旗帜 + 台湾文字”的冲突旗帜，再对节点名称运行 Mihomo 正则。展开模式还会处理其他文字与国旗冲突、零宽字符和重名节点，因此两种模式对其他异常名称的地区归类仍可能不同。需要完整节点归类时使用本地展开模式。

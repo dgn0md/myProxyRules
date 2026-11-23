@@ -8,7 +8,7 @@ const ROOT = path.resolve(__dirname, '..');
 const RAW_CONFIG = path.join(ROOT, 'Config/mihomoConfig.yaml');
 const CDN_CONFIG = path.join(ROOT, 'Config/mihomoConfig.cdn.yaml');
 const CDN_LINK =
-  /^([ \t]*# CDN 配置：https:\/\/cdn\.jsdelivr\.net\/gh\/dgn0md\/myClashRules@main\/Config\/mihomoConfig\.cdn\.yaml)$/gm;
+  /^([ \t]*# CDN 配置：https:\/\/cdn\.jsdelivr\.net\/gh\/dgn0md\/myProxyRules@main\/Config\/mihomoConfig\.cdn\.yaml)$/gm;
 const CDN_HASH_FIELD = /^([ \t]*# 缓存 CDN SHA-256：)[0-9a-f]{64}$/gm;
 const RAW_HASH_FIELD = /^# 最新 Raw SHA-256：([0-9a-f]{64})$/gm;
 
