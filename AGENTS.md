@@ -5,8 +5,9 @@
 ## 项目范围与产物
 
 - 项目基于 AIsouler/MyClash `4861619be366c7bacabfed6d581bb8c450de1ca1` 全量版；上游图标约定见 `docs/upstream/AGENT.md`；其中历史规则源与测试数量不替代本仓库当前的 DNS 原则和验收要求。
-- 只维护全量脚本源文件 `Script/mihomoScript.js` 与源配置文件 `Config/mihomoConfig.yaml`，不增加精简版。`Script/mihomoScript.cdn.js` 与 `Config/mihomoConfig.cdn.yaml` 均由 GitHub Actions 生成；`极简分流` 是脚本选项。
-- `Script/mihomoScript.js` 是规则、选项、节点处理和 DNS 行为的唯一来源；推送脚本或配置开关变更后，GitHub Actions 更新脚本与 YAML 的 Raw SHA-256，生成带独立 CDN SHA-256 的 CDN 副本，并提交 YAML 产物，无需本地构建。
+- `Script/mihomoScript.js` 与 `Config/mihomoConfig.yaml` 是 Mihomo 的唯一功能源，不增加精简版脚本；`极简分流` 是脚本选项。
+- `tools/build-targets.js` 从同一 Mihomo 配置对象生成 Stash、Surge、Shadowrocket 和 Quantumult X 原生配置，适配器不是第二套功能源。
+- Mihomo 静态 YAML 与四种目标客户端 profile 及 CDN 副本均由 GitHub Actions 生成。Mihomo YAML 保留 Raw/CDN SHA-256；目标配置使用各自 Raw/CDN SHA-256 标识。
 - YAML 的 `x-myClashRules` 扩展字段只供构建工具读取，Mihomo 内核不会执行。
 
 ## 模块化与动态规则集原则
@@ -17,6 +18,8 @@
 - 同用途复用统一开关；国内服务路由使用 `国内服务优先直连`，不增加厂商独立开关。现有 DNS 白名单开关保持各自边界。
 - 优先用上游集合与子集关系表达范围，实际审查覆盖、海外成员及共享服务；不因规则名或厂商归属直接扩大直连或国内 DNS。
 - 客户端每日直接更新 provider；本仓库不另行维护、筛选合并或发布重复成员清单。测试快照不进入生产产物。
+- Stash 沿用 Clash/Mihomo provider 与 MRS；Surge、Shadowrocket、Quantumult X 只转换已声明的原生规则源。若无法证明域名集合和 AND/NOT 语义等价，不生成国内直连规则；规则集和 DNS 差异记录在 `docs/client-compatibility.md`。
+- 四种目标客户端产物只包含示例订阅 URL，不包含真实节点或凭证。不得把 Mihomo JavaScript 直接改名为其他客户端脚本；当前不生成客户端专属重写、定时任务、MITM 或模块。
 - 删除无用的专用接口、导出、占位包装、独立文件及引用；必要内部复用以实际职责为依据，不为未来假设保留接口。
 - 保留有明确功能依据的 Apple/协议等精确例外；新增例外需记录集合无法表达的原因、范围、优先级和回归依据，不以测试页结果作为补域名理由。
 
@@ -46,11 +49,11 @@
 
 ## 文档、数据与验收
 
-- 更新功能、默认值、组名或 DNS/路由行为时，检查 README、`docs/dns-whitelist.md`、`docs/feature-matrix.md`、`docs/apple-routing.md`、`docs/rule-sources.md`、`docs/validation.md` 和 `Test/README.md`。
+- 更新功能、默认值、组名或 DNS/路由行为时，检查 README、`docs/dns-whitelist.md`、`docs/feature-matrix.md`、`docs/apple-routing.md`、`docs/rule-sources.md`、`docs/client-compatibility.md`、`docs/validation.md` 和 `Test/README.md`.
 - 区分静态 provider 与带 `--subscription` 的本地展开模式；不得声称静态 provider 能读取订阅中的私有 DNS、hosts 或动态节点名称。
 - 不在功能文档混入个人观察、设备日志、真实出口地址或验证记录；不得新增或提交机场链接、密码、节点清单、缓存和运行日志。
 - 图标沿用原 SVG URL，不修改 SVG；遵守 `docs/upstream/AGENT.md`，不补回 CDN 域名直连规则。
 - 国内服务路由模块及其新增原生回归按动态集合组织，不维护单独业务域名清单；测试样本从下载快照自动提取，解码与运行证据只留在忽略目录，不参与客户端规则生成。
-- GitHub Actions 的 `Verify full overrides` 在 runner 上生成 YAML 后运行项目测试、生成一致性检查和可获得的 Mihomo 原生配置校验；`Sync script and generate config` 必须通过相同的行为和原生校验后才能提交产物。维护者可在本地用项目锁定工具链重生不含隐私数据的发布产物以完成回归，不要求最终用户本地生成 YAML。单元测试或配置解析不能描述成用户网络抓包或 Apple 服务可用性实测；行为变化须有回归断言。
+- GitHub Actions 的 `Verify full overrides` 在 runner 上生成 Mihomo YAML 与四种目标客户端 profile，运行项目测试、所有生成一致性检查和可获得的 Mihomo 原生配置校验；`Sync script and generate config` 必须通过相同的行为和原生校验后才能提交产物。目标 profile 的一致性检查不等于四个应用的导入验证。维护者可在本地用项目锁定工具链重生不含隐私数据的发布产物以完成回归，不要求最终用户本地生成配置。单元测试或配置解析不能描述成用户网络抓包或 Apple 服务可用性实测；行为变化须有回归断言。
 - 每次向远端推送前，须在将要推送的提交上依次通过 `./tools/npmw test`、`./tools/npmw run check` 和 `./tools/npmw run native:check`；任一失败或未完成时不得推送。`.githooks/pre-push` 执行同一门禁；使用 GitHub API 等不触发本地 hook 的接口时，也须先手动运行并确认这三项通过。验证后若提交内容有变化，推送前重新运行。
 - 用户要求推送时，门禁通过后使用当前已授权的 GitHub 接口更新远端；不运行 `git push`，也不查找或配置命令行凭证。

@@ -11,9 +11,13 @@ node Test/run-tests.js
 
 `npm test` 会运行这里的兼容性套件，随后运行 `tests/*.test.js` 中针对生成配置的 Node 回归。后者覆盖配置图、服务与 Apple 规则、DNS policy 与路由出口、动态 IP provider 顺序、严格加密 DNS、开关行为和静态生成一致性。
 
-`npm run check` 单独比较默认生成结果与提交的 `Config/mihomoConfig.yaml`。可用官方 Mihomo 内核时，`tools/native-check.js` 和 `tools/native-sniffing.js` 提供额外的原生配置与隔离流量检查。配置测试、原生解析和设备/运营商网络行为是不同的检查范围。
+`npm run check` 比较默认 Mihomo YAML 与提交产物，并检查 Stash、Surge、Shadowrocket、Quantumult X profile 的生成一致性。可用官方 Mihomo 内核时，`tools/native-check.js` 和 `tools/native-sniffing.js` 提供额外的原生配置与隔离流量检查。配置测试、原生解析和设备/运营商网络行为是不同的检查范围。
 
 新增模块与测试遵守 [模块化与动态规则集开发原则](../docs/development-principles.md)，复用统一开关，移除无用接口，避免逐业务域名维护。现有 Apple 精确功能回归按其专项约定保留。
+
+## 多客户端配置
+
+`npm run build` 生成四个客户端 profile；`npm run check` 比较 Mihomo 与各目标 profile 的生成一致性。此门禁不会在 Stash、Surge、Shadowrocket 或 Quantumult X 应用内导入配置；各目标规则源和保守省略项见[兼容性说明](../docs/client-compatibility.md)。
 
 ## 国内服务路由模块
 

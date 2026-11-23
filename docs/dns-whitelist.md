@@ -6,6 +6,8 @@
 
 ## 基本边界
 
+本页列出的精确 DNS policy 以 Mihomo/Stash 产物为准。Surge、Shadowrocket、Quantumult X 使用各自的加密 DNS 能力；目标配置不承诺按每个动态 provider 和服务组复刻本页白名单。目标端省略动态 DNS policy 或无法表达时，不以更广的国内 DNS 集合替代，详细差异见[多客户端兼容性说明](client-compatibility.md)。
+
 - 连接出口和 DNS 解析器分别决定。明确域名规则或动态 domain/classical 规则集命中且目标为 `直连` 时，该规则的 DNS policy 使用国内加密 DNS；代理服务目标组的 DNS 请求经对应服务组选择出口。仅因 IP 兜底规则直连或进入可选服务组，不会把任意未知域名改成国内 DNS。
 - 其他国内业务域名解析由现有 `geolocation-cn` provider、开启国内服务模块时的厂商集合、启用的 DNS 白名单和下文列出的专项例外授权。11 组有同源 `@!cn` 子集的服务按 `domestic AND NOT domestic_noncn` 匹配；百度按完整集合匹配。其余未命中明确直连规则或授权集合的查询使用国外加密 DNS；服务组 policy 仍保留对应组选择出口。
 - 不配置通用 `direct-nameserver`，也不因域名未命中、连接最终直连或国外 DNS 失败而自动切换解析器。`private` 保留本地 hosts/system 或严格模式下的 RCODE 安全处理。`cn_ip` 只承担连接兜底，不提供 DNS 域名集合。
