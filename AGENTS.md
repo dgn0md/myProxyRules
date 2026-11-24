@@ -52,7 +52,7 @@
 - 更新功能、默认值、组名或 DNS/路由行为时，检查 README、`docs/dns-whitelist.md`、`docs/feature-matrix.md`、`docs/apple-routing.md`、`docs/rule-sources.md`、`docs/client-compatibility.md`、`docs/validation.md` 和 `Test/README.md`.
 - 区分静态 provider 与带 `--subscription` 的本地展开模式；不得声称静态 provider 能读取订阅中的私有 DNS、hosts 或动态节点名称。
 - 不在功能文档混入个人观察、设备日志、真实出口地址或验证记录；不得新增或提交机场链接、密码、节点清单、缓存和运行日志。
-- 图标沿用原 SVG URL，不修改 SVG；遵守 `docs/upstream/icon-guidelines.md`，不补回 CDN 域名直连规则。
+- 图标默认沿用原 SVG URL，不修改 SVG；用户确认的 Apple、Twitter 及部分地区图标引用离歌图标库。上游图标约定见 `docs/upstream/icon-guidelines.md`，其固定图标来源的要求不适用于已确认替换项；不补回 CDN 域名直连规则。
 - 国内服务路由模块及其新增原生回归按动态集合组织，不维护单独业务域名清单；测试样本从下载快照自动提取，解码与运行证据只留在忽略目录，不参与客户端规则生成。
 - GitHub Actions 的 `Verify full overrides` 在 runner 上生成 Mihomo YAML 与四种目标客户端 profile，运行项目测试、所有生成一致性检查和可获得的 Mihomo 原生配置校验；`Sync script and generate config` 必须通过相同的行为和原生校验后才能提交产物。目标 profile 的一致性检查不等于四个应用的导入验证。维护者可在本地用项目锁定工具链重生不含隐私数据的发布产物以完成回归，不要求最终用户本地生成配置。单元测试或配置解析不能描述成用户网络抓包或 Apple 服务可用性实测；行为变化须有回归断言。
 - 每次向远端推送前，须在将要推送的提交上依次通过 `./tools/npmw test`、`./tools/npmw run check` 和 `./tools/npmw run native:check`；任一失败或未完成时不得推送。`.githooks/pre-push` 执行同一门禁；使用 GitHub API 等不触发本地 hook 的接口时，也须先手动运行并确认这三项通过。验证后若提交内容有变化，推送前重新运行。

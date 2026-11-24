@@ -79,4 +79,4 @@ npm run build:targets -- --target all
 
 可用 `./tools/npmw run diagnose -- --probe-domain gateway.icloud.com` 或 `--probe-ip 17.0.0.1` 在隔离的 Mihomo 回环环境中查看实际命中的规则与策略链；`--select 'Other Apple Service=美国'` 可模拟一次组内选择。诊断使用合成节点和本机下载的规则快照，所有出口终止在本地，不代表真实订阅当前选择、设备网络或 UDP 行为。
 
-图标继续引用上游 SVG URL；相关 MIT 许可与署名见 [LICENSE](LICENSE)。
+大部分图标引用上游 SVG；Apple、Twitter 及部分地区图标引用 [离歌图标库](https://github.com/lige47/lige_icon/) 的 PNG。上游代码与图标的 MIT 许可和署名见 [LICENSE](LICENSE)；离歌图标库的使用请参阅其项目说明。

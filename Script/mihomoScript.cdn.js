@@ -4,11 +4,11 @@
  * 致谢：AIsouler/MyClash 全量版（commit 4861619be366c7bacabfed6d581bb8c450de1ca1）。
  * 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
  *
- * 最新 Raw SHA-256：36ea43625bf8b1baa27d77f5f126304ec4ec91af15f347cdb69321738eb9ff98
+ * 最新 Raw SHA-256：0e68c0d59482343b04a3f50b5dff627c68ef7bfb57efe0bcc089777f9d10e883
  * Raw 脚本：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js
  * CDN 脚本：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js
  *
- * 缓存 CDN SHA-256：c456ec56a7ce0c435c56aac276d334ee9d14fe117dd75929d89cd16797c3776c
+ * 缓存 CDN SHA-256：e91a4fa8bb26bf33209e56e79768019cf79696476a76678e63b499ffc021958b
  */
 
 // --- 静态配置区域 ---
@@ -206,27 +206,87 @@ const regionDefinitions = [
   ),
   defineRegion('新加坡', '🇸🇬', /新加坡|狮城|\b(SG|SGP)\b|singapore/i, `${iconBaseUrl}Singapore.svg`),
   defineRegion('台湾', '🇹🇼', /台湾|台北|高雄|\b(TW|TWN)\b|taiwan/i, `${iconBaseUrl}Taiwan.svg`),
-  defineRegion('韩国', '🇰🇷', /韩国|首尔|釜山|\b(KR|KOR)\b|south\s*korea|korea/i),
-  defineRegion('澳大利亚', '🇦🇺', /澳大利亚|澳洲|悉尼|墨尔本|珀斯|\b(AU|AUS)\b|australia/i),
+  defineRegion(
+    '韩国',
+    '🇰🇷',
+    /韩国|首尔|釜山|\b(KR|KOR)\b|south\s*korea|korea/i,
+    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Korea(1).png',
+  ),
+  defineRegion(
+    '澳大利亚',
+    '🇦🇺',
+    /澳大利亚|澳洲|悉尼|墨尔本|珀斯|\b(AU|AUS)\b|australia/i,
+    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Australia.png',
+  ),
   defineRegion('印度尼西亚', '🇮🇩', /印度尼西亚|印尼|雅加达|\b(ID|IDN)\b|indonesia/i),
-  defineRegion('印度', '🇮🇳', /印度($|[^尼])|孟买|新德里|\b(IN|IND)\b|india/i),
+  defineRegion(
+    '印度',
+    '🇮🇳',
+    /印度($|[^尼])|孟买|新德里|\b(IN|IND)\b|india/i,
+    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/India(2).png',
+  ),
   defineRegion('加拿大', '🇨🇦', /加拿大|多伦多|温哥华|蒙特利尔|\b(CA|CAN)\b|canada/i),
-  defineRegion('德国', '🇩🇪', /德国|法兰克福|柏林|\b(DE|DEU)\b|germany/i),
-  defineRegion('英国', '🇬🇧', /英国|伦敦|曼彻斯特|\b(UK|GB|GBR)\b|united\s*kingdom|britain|england/i),
+  defineRegion(
+    '德国',
+    '🇩🇪',
+    /德国|法兰克福|柏林|\b(DE|DEU)\b|germany/i,
+    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Germany.png',
+  ),
+  defineRegion(
+    '英国',
+    '🇬🇧',
+    /英国|伦敦|曼彻斯特|\b(UK|GB|GBR)\b|united\s*kingdom|britain|england/i,
+    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/UnitedKingdom.png',
+  ),
   defineRegion('法国', '🇫🇷', /法国|巴黎|\b(FR|FRA)\b|france/i),
-  defineRegion('荷兰', '🇳🇱', /荷兰|阿姆斯特丹|\b(NL|NLD)\b|netherlands|holland/i),
-  defineRegion('西班牙', '🇪🇸', /西班牙|马德里|\b(ES|ESP)\b|spain/i),
-  defineRegion('俄罗斯', '🇷🇺', /俄罗斯|莫斯科|\b(RU|RUS)\b|russia/i),
+  defineRegion(
+    '荷兰',
+    '🇳🇱',
+    /荷兰|阿姆斯特丹|\b(NL|NLD)\b|netherlands|holland/i,
+    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Netherlands(1).png',
+  ),
+  defineRegion(
+    '西班牙',
+    '🇪🇸',
+    /西班牙|马德里|\b(ES|ESP)\b|spain/i,
+    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Spain(2).png',
+  ),
+  defineRegion(
+    '俄罗斯',
+    '🇷🇺',
+    /俄罗斯|莫斯科|\b(RU|RUS)\b|russia/i,
+    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Russia.png',
+  ),
   defineRegion('乌克兰', '🇺🇦', /乌克兰|基辅|\b(UA|UKR)\b|ukraine/i),
-  defineRegion('土耳其', '🇹🇷', /土耳其|伊斯坦布尔|\b(TR|TUR)\b|turkey|türkiye/i),
+  defineRegion(
+    '土耳其',
+    '🇹🇷',
+    /土耳其|伊斯坦布尔|\b(TR|TUR)\b|turkey|türkiye/i,
+    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Turkey.png',
+  ),
   defineRegion('挪威', '🇳🇴', /挪威|奥斯陆|\b(NO|NOR)\b|norway/i),
   defineRegion('瑞士', '🇨🇭', /瑞士|苏黎世|\b(CH|CHE)\b|switzerland|swiss/i),
   defineRegion('瑞典', '🇸🇪', /瑞典|斯德哥尔摩|\b(SE|SWE)\b|sweden/i),
   defineRegion('爱尔兰', '🇮🇪', /爱尔兰|都柏林|\b(IE|IRL)\b|ireland/i),
-  defineRegion('菲律宾', '🇵🇭', /菲律宾|马尼拉|\b(PH|PHL)\b|philippines/i),
+  defineRegion(
+    '菲律宾',
+    '🇵🇭',
+    /菲律宾|马尼拉|\b(PH|PHL)\b|philippines/i,
+    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/RepublicofthePhilippines(1).png',
+  ),
   defineRegion('越南', '🇻🇳', /越南|河内|胡志明|\b(VN|VNM)\b|vietnam/i),
-  defineRegion('泰国', '🇹🇭', /泰国|曼谷|\b(TH|THA)\b|thailand/i),
-  defineRegion('马来西亚', '🇲🇾', /马来西亚|吉隆坡|\b(MY|MYS)\b|malaysia/i),
+  defineRegion(
+    '泰国',
+    '🇹🇭',
+    /泰国|曼谷|\b(TH|THA)\b|thailand/i,
+    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Thailand.png',
+  ),
+  defineRegion(
+    '马来西亚',
+    '🇲🇾',
+    /马来西亚|吉隆坡|\b(MY|MYS)\b|malaysia/i,
+    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Malaysia.png',
+  ),
 ];
 
 // 按节点名称排除大陆与香港候选；不匹配“中国台湾”，以保留台湾节点。
@@ -660,7 +720,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geosite/apple.mrs',
       },
     },
-    icon: `${iconBaseUrl}Apple.svg`,
+    icon: 'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png',
     rules: [`RULE-SET,apple,${appleOtherGroupName}`],
   },
   {
@@ -747,7 +807,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geoip/twitter.mrs',
       },
     },
-    icon: `${iconBaseUrl}Twitter.svg`,
+    icon: 'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/04ProxySoft/twitter(2).png',
     rules: ['RULE-SET,twitter,Twitter'],
     proxyIpRequired: true,
     ipRules: ['RULE-SET,twitter_ip,Twitter,no-resolve'],
@@ -1025,7 +1085,7 @@ for (const { name, option } of appleEndpointDefinitions) {
     baseOption: selectBaseOption,
     direct: true,
     defaultSelected: '美国',
-    icon: `${iconBaseUrl}Apple.svg`,
+    icon: 'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png',
     ...(name === appleProxyGroupName
       ? {
           providers: {
@@ -1966,7 +2026,7 @@ function applyAppleRouting(config, options) {
       group = {
         ...selectBaseOption,
         name,
-        icon: `${iconBaseUrl}Apple.svg`,
+        icon: 'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png',
         proxies:
           name === appleAiGroupName
             ? ['REJECT']
@@ -2036,7 +2096,7 @@ function applyAppleRouting(config, options) {
     groups.splice(1, 0, {
       ...selectBaseOption,
       name: appleOtherDnsEgressGroupName,
-      icon: `${iconBaseUrl}Apple.svg`,
+      icon: 'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png',
       proxies: selected ? [selected, ...candidates.filter((candidate) => candidate !== selected)] : ['REJECT'],
     });
     groups[0].proxies.push(appleOtherDnsEgressGroupName);
@@ -2049,7 +2109,7 @@ function applyAppleRouting(config, options) {
       group = {
         ...selectBaseOption,
         name: appleOtherGroupName,
-        icon: `${iconBaseUrl}Apple.svg`,
+        icon: 'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png',
         proxies: ['默认代理', '直连'],
       };
       groups.splice(1, 0, group);

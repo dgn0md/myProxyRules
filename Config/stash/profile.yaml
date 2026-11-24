@@ -1,7 +1,7 @@
 # myProxyRules Stash profile
 # Raw profile: https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/stash/profile.yaml
 # CDN profile: https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/stash/profile.cdn.yaml
-# Raw SHA-256: 6dc7b3dfbda0b2845af4037f6b211c3010741769a361f07b06be3cc9678b70a4
+# Raw SHA-256: 676bd2af061aa9fa5dcfe6c3d5aa1dfa93ccbb8943f9580afa49a00ba8993b7f
 dns:
   enable: true
   ipv6: true
@@ -733,7 +733,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Other Apple Service
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Apple.svg
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png
     proxies:
       - 直连
       - 默认代理
@@ -894,7 +894,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Twitter
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Twitter.svg
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/04ProxySoft/twitter(2).png
     proxies:
       - 默认代理
       - 手动选择
@@ -1366,7 +1366,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Siri Ai/Apple Intelligence
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Apple.svg
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png
     proxies:
       - 美国
       - 日本
@@ -1398,7 +1398,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: AppleProxy
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Apple.svg
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png
     proxies:
       - 美国
       - 默认代理
@@ -1645,7 +1645,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 韩国
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Korea(1).png
     proxies:
       - 韩国-自动选择
     default-selected: 韩国-自动选择
@@ -1675,7 +1675,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 澳大利亚
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Australia.png
     proxies:
       - 澳大利亚-自动选择
     default-selected: 澳大利亚-自动选择
@@ -1735,7 +1735,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 印度
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/India(2).png
     proxies:
       - 印度-自动选择
     default-selected: 印度-自动选择
@@ -1795,7 +1795,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 德国
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Germany.png
     proxies:
       - 德国-自动选择
     default-selected: 德国-自动选择
@@ -1825,7 +1825,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 英国
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/UnitedKingdom.png
     proxies:
       - 英国-自动选择
     default-selected: 英国-自动选择
@@ -1885,7 +1885,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 荷兰
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Netherlands(1).png
     proxies:
       - 荷兰-自动选择
     default-selected: 荷兰-自动选择
@@ -1915,7 +1915,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 西班牙
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Spain(2).png
     proxies:
       - 西班牙-自动选择
     default-selected: 西班牙-自动选择
@@ -1945,7 +1945,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 俄罗斯
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Russia.png
     proxies:
       - 俄罗斯-自动选择
     default-selected: 俄罗斯-自动选择
@@ -2005,7 +2005,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 土耳其
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Turkey.png
     proxies:
       - 土耳其-自动选择
     default-selected: 土耳其-自动选择
@@ -2155,7 +2155,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 菲律宾
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/RepublicofthePhilippines(1).png
     proxies:
       - 菲律宾-自动选择
     default-selected: 菲律宾-自动选择
@@ -2215,7 +2215,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 泰国
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Thailand.png
     proxies:
       - 泰国-自动选择
     default-selected: 泰国-自动选择
@@ -2245,7 +2245,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 马来西亚
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Malaysia.png
     proxies:
       - 马来西亚-自动选择
     default-selected: 马来西亚-自动选择
