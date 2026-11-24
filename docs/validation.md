@@ -20,7 +20,7 @@
 
 ## 推送前门禁
 
-每次推送前，在最终准备推送的提交上依次运行 `./tools/npmw test`、`./tools/npmw run check` 和 `./tools/npmw run native:check`。三项都通过后才能推送；如果验证后又改了提交内容，须重新运行。仓库的 `.githooks/pre-push` 会自动执行这三项，本机通过 `core.hooksPath=.githooks` 启用。Codex 通过当前已授权的 GitHub 接口推送时，也必须先手动完成同一门禁；不要尝试命令行推送或查找命令行凭证。
+每次推送前，在最终准备推送的提交上依次运行 `./tools/npmw test`、`./tools/npmw run check` 和 `./tools/npmw run native:check`。三项都通过后才能推送；如果验证后又改了提交内容，须重新运行。仓库的 `.githooks/pre-push` 会自动执行这三项，本机通过 `core.hooksPath=.githooks` 启用。通过已授权的 GitHub 接口更新远端时，也必须先手动完成同一门禁；不要尝试命令行推送或查找命令行凭证。
 
 原生检查从 `apple_proxy` 的实际 YAML/classical 快照与 `apple_tv` 的 MRS 快照抽取 Apple 样本，不维护单独的业务域名测试清单。国内服务模块样本从当前 Bett 厂商 MRS 快照提取；有 `@!cn` 子集时同时验证排除成员，百度按完整厂商集合验证。日志与解码样本用于隔离检查，不是发布规则，也不作为手工路由名单。
 

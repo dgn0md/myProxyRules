@@ -2,7 +2,7 @@
 
 以 Mihomo 为唯一功能源和主支持客户端，提供覆写脚本、全量静态配置及 Stash 可用的 Mihomo 风格配置。Surge、Shadowrocket 和 Quantumult X 的原生配置作为独立兼容入口提供，规则与 DNS 覆盖差异见[多客户端兼容性说明](docs/client-compatibility.md)。项目从 [AIsouler/MyClash 全量版](https://github.com/AIsouler/MyClash/commit/4861619be366c7bacabfed6d581bb8c450de1ca1) 起步并独立维护。地区节点分组、倍率与家宽分类、常见服务分流是基础能力；本仓库重点维护以下功能。
 
-开发与后续更新遵守 [模块化与动态规则集开发原则](docs/development-principles.md) 及 [国内 DNS 白名单维护原则](docs/dns-whitelist.md)。
+参与维护的人员和各类 AI 助手开始修改前，请先阅读 [仓库维护约定](AGENTS.md)，并遵守其中引用的 [模块化与动态规则集开发原则](docs/development-principles.md) 和 [国内 DNS 白名单维护原则](docs/dns-whitelist.md)。图标相关工作还须阅读 [上游图标维护约定](docs/upstream/icon-guidelines.md)。`AGENTS.md` 是共享维护规则的入口，适用于所有工具和贡献者。
 
 ## 项目重点
 
