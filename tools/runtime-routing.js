@@ -5,7 +5,7 @@ const dgram = require('node:dgram');
 const assert = require('node:assert/strict');
 const { once } = require('node:events');
 async function freePort() {
-  for (;;) {
+  for (let attempt = 0; attempt < 64; attempt++) {
     const udp = dgram.createSocket('udp4');
     udp.bind(0, '127.0.0.1');
     await once(udp, 'listening');
@@ -23,6 +23,7 @@ async function freePort() {
     await Promise.all([new Promise((resolve) => server.close(resolve)), new Promise((resolve) => udp.close(resolve))]);
     return port;
   }
+  throw new Error('Unable to allocate a free loopback TCP/UDP port after 64 attempts');
 }
 async function listen(server) {
   server.listen(0, '127.0.0.1');
@@ -172,10 +173,18 @@ async function verifyRouting({ port, sinkPort, track, api, cases = CASES, skipMi
     const socket = track(net.connect(port, '127.0.0.1'));
     await once(socket, 'connect');
     socket.write(`CONNECT ${host}:${sinkPort} HTTP/1.1\r\nHost: ${host}:${sinkPort}\r\n\r\n`);
-    const response = await Promise.race([
-      once(socket, 'data'),
-      new Promise((_, reject) => setTimeout(() => reject(new Error(`CONNECT timeout: ${host}`)), 3000)),
-    ]);
+    let connectTimer;
+    let response;
+    try {
+      response = await Promise.race([
+        once(socket, 'data'),
+        new Promise((_, reject) => {
+          connectTimer = setTimeout(() => reject(new Error(`CONNECT timeout: ${host}`)), 3000);
+        }),
+      ]);
+    } finally {
+      clearTimeout(connectTimer);
+    }
     assert.match(response[0].toString(), /200/);
     socket.write('myproxy-routing-probe');
     let connection;

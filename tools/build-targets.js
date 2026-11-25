@@ -225,7 +225,10 @@ function compileRegex(group) {
   const positive = group.filter ? group.filter.replace(/^\(\?i\)/, '') : '';
   const negative = group['exclude-filter'] ? group['exclude-filter'].replace(/^\(\?i\)/, '') : '';
   if (!positive && !negative) return '';
-  const prefix = group.filter && group.filter.startsWith('(?i)') ? '(?i)' : '';
+  const caseInsensitive =
+    (group.filter && group.filter.startsWith('(?i)')) ||
+    (group['exclude-filter'] && group['exclude-filter'].startsWith('(?i)'));
+  const prefix = caseInsensitive ? '(?i)' : '';
   const positivePart = positive ? '(?=.*(?:' + positive + '))' : '';
   const negativePart = negative ? '(?!.*(?:' + negative + '))' : '';
   return prefix + '^' + negativePart + positivePart + '.*$';
@@ -240,7 +243,8 @@ function mapPolicy(target, policy) {
 
 function parseRule(line) {
   const parts = line.split(',');
-  return { parts, type: parts[0], policy: parts[parts.length - 1], options: parts.slice(3) };
+  const policy = parts[0] === 'MATCH' ? parts[1] : parts[2];
+  return { parts, type: parts[0], policy, options: parts.slice(3) };
 }
 
 function finalRule(target, policy) {
@@ -274,10 +278,10 @@ function convertInlineRule(target, parsed) {
   return mappedType + ',' + value + ',' + policy + noResolve;
 }
 
-function appendRule(target, line, config, supported, omitted) {
+function appendRule(target, line, config, supported, omitted, mappedRemoteProviders) {
   const parsed = parseRule(line);
   if (parsed.type === 'MATCH') {
-    supported.push(finalRule(target, mapPolicy(target, parsed.parts[1])));
+    supported.push(finalRule(target, mapPolicy(target, parsed.policy)));
     return;
   }
   if (parsed.type === 'DST-PORT' && parsed.parts[1] === '53') {
@@ -317,6 +321,7 @@ function appendRule(target, line, config, supported, omitted) {
       omitted.push(providerName + ' has no verified same-upstream or client-native replacement.' + detail);
       return;
     }
+    mappedRemoteProviders.push(providerName);
     supported.push(remoteRule(target, source, mapPolicy(target, parsed.policy), parsed.options.includes('no-resolve')));
     return;
   }
@@ -335,14 +340,12 @@ function appendRule(target, line, config, supported, omitted) {
 function buildRules(target, config) {
   const supported = [];
   const omitted = [];
-  for (const line of config.rules || []) appendRule(target, line, config, supported, omitted);
+  const mappedRemoteProviders = [];
+  for (const line of config.rules || []) appendRule(target, line, config, supported, omitted, mappedRemoteProviders);
   return {
     lines: unique(supported),
     omitted: unique(omitted),
-    mappedRemoteProviders: (config.rules || [])
-      .map(parseRule)
-      .filter((rule) => rule.type === 'RULE-SET' && resolveRuleSource(target, rule.parts[1], config))
-      .map((rule) => rule.parts[1]),
+    mappedRemoteProviders,
   };
 }
 
@@ -391,7 +394,8 @@ function quantumultPolicy(group) {
       return 'available = ' + group.name + ', ' + common;
     }
     if (group.type === 'load-balance') return 'round-robin = ' + group.name + ', ' + common;
-    return 'static = ' + group.name + ', ' + common;
+    const prefix = candidates.length ? candidates.join(', ') + ', ' : '';
+    return 'static = ' + group.name + ', ' + prefix + common;
   }
   if (group.type === 'url-test') {
     return (
@@ -448,7 +452,7 @@ function addDnsMappings(config) {
     const urls = unique(
       values
         .filter((item) => typeof item === 'string' && item.startsWith('https://'))
-        .map((item) => item.split('#')[0].replace(/&h3=true$/, '')),
+        .map((item) => item.split('#')[0]),
     );
     if (!urls.length) continue;
     const mappedPattern = pattern.startsWith('+.') ? '/*.' + pattern.slice(2) : '/' + pattern;
@@ -483,7 +487,7 @@ function renderSurge(config, compiled) {
     'encrypted-dns-follow-outbound-mode = true',
     'encrypted-dns-skip-cert-verification = false',
     'hijack-dns = *:53',
-    'ipv6 = true',
+    'ipv6 = ' + Boolean(config.ipv6),
     '',
     '[Proxy]',
     '',
@@ -513,7 +517,7 @@ function renderShadowrocket(config, compiled) {
     'dns-direct-system = false',
     'dns-direct-fallback-proxy = false',
     'hijack-dns = 8.8.8.8:53,8.8.4.4:53',
-    'ipv6 = true',
+    'ipv6 = ' + Boolean(config.ipv6),
     '',
     '[Proxy]',
     '',
@@ -605,17 +609,13 @@ function createArtifact(target, sourceText) {
     '# Raw SHA-256: ' + '0'.repeat(64),
   ].join('\n');
   let rawText = header + '\n' + body;
-  const rawHash = createHash('sha256')
-    .update(setHash(rawText, 'Raw SHA-256', '0'.repeat(64)), 'utf8')
-    .digest('hex');
+  const rawHash = createHash('sha256').update(rawText, 'utf8').digest('hex');
   rawText = setHash(rawText, 'Raw SHA-256', rawHash);
   let cdnText = rawText.replace(
     /^# Raw SHA-256: [0-9a-f]{64}$/m,
     (line) => line + '\n# CDN SHA-256: ' + '0'.repeat(64),
   );
-  const cdnHash = createHash('sha256')
-    .update(setHash(cdnText, 'CDN SHA-256', '0'.repeat(64)), 'utf8')
-    .digest('hex');
+  const cdnHash = createHash('sha256').update(cdnText, 'utf8').digest('hex');
   cdnText = setHash(cdnText, 'CDN SHA-256', cdnHash);
   return { rawText, cdnText, rawHash, cdnHash };
 }

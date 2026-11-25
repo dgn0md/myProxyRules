@@ -38,17 +38,29 @@ function buildCdnScript(source) {
   return { text: replaceCdnHash(template, cdnSha256), sourceSha256, cdnSha256 };
 }
 
-function writeCdnScript() {
+function writeCdnScript({ check = false } = {}) {
   const source = fs.readFileSync(SCRIPT, 'utf8');
   const result = buildCdnScript(source);
+  if (check) {
+    if (!fs.existsSync(CDN_SCRIPT) || fs.readFileSync(CDN_SCRIPT, 'utf8') !== result.text)
+      throw new Error('CDN 脚本已过期，请运行 node tools/build-cdn-script.js 重新生成');
+    return result;
+  }
   fs.writeFileSync(CDN_SCRIPT, result.text);
   return result;
 }
 
+function cli(args) {
+  if (args.length > 1 || (args.length === 1 && args[0] !== '--check'))
+    throw new Error('用法：node tools/build-cdn-script.js [--check]');
+  const check = args[0] === '--check';
+  const { sourceSha256, cdnSha256 } = writeCdnScript({ check });
+  console.log(`${check ? 'Verified' : 'Generated'} CDN script (Raw ${sourceSha256}; CDN ${cdnSha256})`);
+}
+
 if (require.main === module) {
   try {
-    const { sourceSha256, cdnSha256 } = writeCdnScript();
-    console.log(`Generated CDN script (Raw ${sourceSha256}; CDN ${cdnSha256})`);
+    cli(process.argv.slice(2));
   } catch (error) {
     console.error(error.message);
     process.exitCode = 1;

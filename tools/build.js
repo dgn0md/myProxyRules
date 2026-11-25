@@ -7,16 +7,31 @@ const YAML = require('yaml');
 const { updateConfigSha256 } = require('./config-sha');
 const ROOT = path.resolve(__dirname, '..');
 const SCRIPT = path.join(ROOT, 'Script/mihomoScript.js');
+const EXPORT_SUFFIX =
+  '\nglobalThis.api = {main, ruleOptionsEnable, customizeProxies, regionDefinitions, rateRegionDefinitions, homeRegionDefinitions, announcementFilter, excludeFilter, groupBaseOption, healthCheckExpectedStatus};';
+let cachedScriptEntry = null;
+
+function getCompiledScript() {
+  const stat = fs.statSync(SCRIPT);
+  if (cachedScriptEntry && cachedScriptEntry.mtimeMs === stat.mtimeMs && cachedScriptEntry.size === stat.size) {
+    return cachedScriptEntry;
+  }
+  const source = fs.readFileSync(SCRIPT, 'utf8');
+  const script = new vm.Script(source + EXPORT_SUFFIX, { filename: 'mihomoScript.js' });
+  const optionsBlock = /const ruleOptionsEnable = \{([\s\S]*?)\n\};/.exec(source)[1];
+  const descriptions = {};
+  for (const line of optionsBlock.split('\n')) {
+    const m = /^\s*(?:'([^']+)'|"([^"]+)"|(\S+)): (?:true|false),\s*\/\/ (.*)$/.exec(line);
+    if (m) descriptions[m[1] || m[2] || m[3]] = m[4];
+  }
+  cachedScriptEntry = { mtimeMs: stat.mtimeMs, size: stat.size, script, descriptions };
+  return cachedScriptEntry;
+}
+
 function load() {
   const sandbox = {};
   vm.createContext(sandbox);
-  const source = fs.readFileSync(SCRIPT, 'utf8');
-  vm.runInContext(
-    source +
-      '\nglobalThis.api = {main, ruleOptionsEnable, customizeProxies, regionDefinitions, rateRegionDefinitions, homeRegionDefinitions, announcementFilter, excludeFilter, groupBaseOption, healthCheckExpectedStatus};',
-    sandbox,
-    { timeout: 5000 },
-  );
+  getCompiledScript().script.runInContext(sandbox, { timeout: 5000 });
   return sandbox.api;
 }
 function readYaml(file) {
@@ -71,7 +86,7 @@ function configure(api, settings) {
     const target = optionAliases[key];
     if (target) {
       if (!Object.prototype.hasOwnProperty.call(options, target))
-        migratedOptions.set(target, migratedOptions.get(target) || false || value);
+        migratedOptions.set(target, Boolean(migratedOptions.get(target) || value));
       continue;
     }
     if (!Object.prototype.hasOwnProperty.call(api.ruleOptionsEnable, key)) throw new Error(`未知配置项：${key}`);
@@ -106,7 +121,7 @@ function template(api, settings) {
   const includeZeroWidthAbbreviations = (source) =>
     source.replace(/\\b\(([A-Z]+(?:\|[A-Z]+)+)\)\\b/g, (_match, aliases) => {
       const variants = aliases.split('|').map((alias) => [...alias].join('\u200b*'));
-      return `\\b(${aliases}|${variants.join('|')})\\b`;
+      return `\\b(${variants.join('|')})\\b`;
     });
   const filterNonRegion = api.ruleOptionsEnable.过滤公告信息项;
   const announcements = filterNonRegion ? [api.announcementFilter.source] : [];
@@ -123,7 +138,7 @@ function template(api, settings) {
     const baseName = group.name.replace(/-自动选择$/, '');
     const def = definitions.find((r) => r.name === baseName);
     if (def) group.filter = `(?i)${includeZeroWidthAbbreviations(def.regex.source)}`;
-    const configuredExclude = group['exclude-filter']?.replace(/^\(\?i\)/, '');
+    const configuredExclude = group['exclude-filter']?.replace(/^\(\?i\)\(([\s\S]*)\)$/, '$1').replace(/^\(\?i\)/, '');
     const excludes = [...(configuredExclude ? [configuredExclude] : []), ...announcements, ...excludedRates];
     if (baseName === '其他节点') {
       excludes.push(...api.regionDefinitions.map((r) => r.regex.source));
@@ -169,13 +184,7 @@ function template(api, settings) {
   return out;
 }
 function render(config, api, settings) {
-  const scriptSource = fs.readFileSync(SCRIPT, 'utf8');
-  const optionsBlock = /const ruleOptionsEnable = \{([\s\S]*?)\n\};/.exec(scriptSource)[1];
-  const descriptions = {};
-  for (const line of optionsBlock.split('\n')) {
-    const m = /^\s*(?:'([^']+)'|"([^"]+)"|(\S+)): (?:true|false),\s*\/\/ (.*)$/.exec(line);
-    if (m) descriptions[m[1] || m[2] || m[3]] = m[4];
-  }
+  const { descriptions } = getCompiledScript();
   const header = [
     '# myProxyRules Mihomo 全量静态配置',
     '# 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。',

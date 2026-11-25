@@ -18,6 +18,7 @@ async function probe({ port, api, host, protocol, expected, payload, ip = '20.20
   let timeout;
   try {
     await once(socket, 'connect');
+    const sourcePort = String(socket.localPort);
     const destination = `${net.isIPv6(ip) ? `[${ip}]` : ip}:${protocol === 'HTTP' ? 80 : 443}`;
     socket.write(`CONNECT ${destination} HTTP/1.1\r\nHost: ${destination}\r\n\r\n`);
     const [response] = await Promise.race([
@@ -38,7 +39,7 @@ async function probe({ port, api, host, protocol, expected, payload, ip = '20.20
     let connection;
     for (let i = 0; i < 50; i++) {
       connection = (await api('/connections')).connections?.find(
-        (entry) => String(entry.metadata.sourcePort) === String(socket.localPort),
+        (entry) => String(entry.metadata.sourcePort) === sourcePort,
       );
       if (connection) break;
       await new Promise((resolve) => setTimeout(resolve, 50));
@@ -87,6 +88,10 @@ async function verifySniffing({ binary, rulesDir, temp }) {
       group.proxies = ['loopback-sink'];
       // A black-hole exit cannot pass health probes; this fixture tests sniffing, not selection.
       if (['url-test', 'load-balance'].includes(group.type)) group.type = 'select';
+      delete group.url;
+      delete group.interval;
+      delete group.timeout;
+      delete group['expected-status'];
       delete group.use;
       delete group['include-all-providers'];
       delete group['default-selected'];
@@ -107,12 +112,25 @@ async function verifySniffing({ binary, rulesDir, temp }) {
     const api = async (route) =>
       (await fetch(`http://127.0.0.1:${controller}${route}`, { signal: AbortSignal.timeout(2000) })).json();
     try {
+      const expectedProviders = Object.keys(config['rule-providers']).length;
       let ready = false;
       for (let i = 0; i < 50; i++) {
         if (child.exitCode !== null) throw new Error(logs);
         try {
           const providers = (await api('/providers/rules')).providers;
-          ready = providers && Object.values(providers).every((entry) => entry.ruleCount > 0);
+          const entries = Object.values(providers || {});
+          const rulesLoaded = entries.length >= expectedProviders && entries.every((entry) => entry.ruleCount > 0);
+          if (rulesLoaded) {
+            const [rulesRes, proxiesRes, dnsRes] = await Promise.all([
+              api('/rules'),
+              api('/proxies'),
+              api('/dns/query?name=localhost&type=A'),
+            ]);
+            ready =
+              (rulesRes.rules?.length || 0) >= config.rules.length &&
+              Boolean(proxiesRes.proxies?.Microsoft) &&
+              typeof dnsRes.Status === 'number';
+          }
           if (ready) break;
         } catch {}
         await new Promise((resolve) => setTimeout(resolve, 100));

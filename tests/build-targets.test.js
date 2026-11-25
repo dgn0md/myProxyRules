@@ -124,3 +124,59 @@ test('unverified MRS replacements and unsupported compound rules remain omitted'
   assert.ok(result.omitted.some((entry) => entry.startsWith('domestic_alibaba ')));
   assert.ok(result.omitted.some((entry) => entry.startsWith('AND ')));
 });
+
+test('exclude-only groups keep case-insensitive regexes without broken quantifier commas', () => {
+  const config = build().config;
+  for (const target of ['surge', 'shadowrocket', 'quantumultx']) {
+    const { text } = renderTarget(target, config);
+    assert.ok(!text.includes('{2\\,}'), `${target} contains corrupted quantifier comma`);
+    const lines = text.split('\n');
+    for (const groupName of ['手动选择', '自动选择ex(大陆&香港)', '负载均衡', '其他节点']) {
+      const line = lines.find((entry) =>
+        target === 'quantumultx' ? entry.includes(`= ${groupName},`) : entry.startsWith(`${groupName} = `),
+      );
+      assert.ok(line, `${target}: missing ${groupName}`);
+      const match = /(?:policy-regex-filter|server-tag-regex)=([^,]+)/.exec(line);
+      assert.ok(match, `${target}: missing regex filter for ${groupName}`);
+      assert.ok(match[1].startsWith('(?i)'), `${target}: ${groupName} lost (?i) case-insensitive prefix`);
+      const compiled = new RegExp(match[1].slice(4), 'i');
+      assert.equal(compiled.test('PANEL notice'), false, `${target}: ${groupName} should exclude uppercase PANEL`);
+      if (groupName === '自动选择ex(大陆&香港)') {
+        assert.equal(compiled.test('hk 01'), false);
+        assert.equal(compiled.test('china node'), false);
+        assert.equal(compiled.test('taiwan 01'), true);
+      }
+      if (groupName === '其他节点') {
+        assert.equal(compiled.test('Japan 01'), false);
+        assert.equal(compiled.test('Unknown Node 01'), true);
+      }
+    }
+  }
+});
+
+test('parseRule extracts policy before optional parameters such as no-resolve', () => {
+  const surge = buildRules('surge', {
+    rules: ['RULE-SET,google,Google,no-resolve', 'IP-CIDR,1.2.3.4/32,DIRECT,no-resolve'],
+  });
+  assert.deepEqual(surge.lines, [
+    'RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Google/Google.list,Google,no-resolve',
+    'IP-CIDR,1.2.3.4/32,DIRECT,no-resolve',
+  ]);
+  assert.deepEqual(surge.mappedRemoteProviders, ['google']);
+
+  const qx = buildRules('quantumultx', {
+    rules: ['IP-CIDR,1.2.3.4/32,DIRECT,no-resolve'],
+  });
+  assert.deepEqual(qx.lines, ['ip-cidr, 1.2.3.4/32, direct,no-resolve']);
+});
+
+test('Quantumult X static region policies keep their auto-select sub-policy and profiles follow IPv6 option', () => {
+  const defaultConfig = build().config;
+  const qx = renderTarget('quantumultx', defaultConfig).text;
+  assert.match(qx, /^static = 香港, 香港-自动选择, resource-tag-regex=订阅, server-tag-regex=/m);
+  assert.match(qx, /^static = 美国, 美国-自动选择, resource-tag-regex=订阅, server-tag-regex=/m);
+
+  const ipv4Only = build({ settings: { options: { IPv6: false } } }).config;
+  assert.match(renderTarget('surge', ipv4Only).text, /^ipv6 = false$/m);
+  assert.match(renderTarget('shadowrocket', ipv4Only).text, /^ipv6 = false$/m);
+});

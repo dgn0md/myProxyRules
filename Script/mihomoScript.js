@@ -4,7 +4,7 @@
  * 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
  * 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
  *
- * 最新 Raw SHA-256：91483b7104b20193d7b3d2c6cdd09f28699891a5aed173a446cc30d76b72a5ae
+ * 最新 Raw SHA-256：d9d23367bcd4a0988211572d099d05806767e33ba74dc0dac47bb3037d3b6e77
  * Raw 脚本：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js
  * CDN 脚本：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js
  */
@@ -135,7 +135,7 @@ const dialerProxyName = '链式中转';
 // 识别公告、面板和网址。该过滤优先于地区识别，避免带国家名的公告行进入地区组。
 // 保持为 Mihomo Go regexp 兼容语法（不使用 lookaround 或非捕获组）。
 const announcementFilter =
-  /(官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?)/i;
+  /(官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?)/i;
 
 // 定义全局软排除节点的正则表达式，用于排除非地区信息节点。
 const excludeFilter =
@@ -329,6 +329,10 @@ const appleRealIpEndpoints = [
 
 // 全部策略组定义（地区 + 倍率 + 家宽），统一用于节点匹配与归类
 const allRegionDefinitions = [...regionDefinitions, ...rateRegionDefinitions, ...homeRegionDefinitions];
+const countryRegionSet = new Set(regionDefinitions);
+const countryRegionNameSet = new Set(regionDefinitions.map(({ name }) => name));
+const rateRegionSet = new Set(rateRegionDefinitions);
+const homeRegionSet = new Set(homeRegionDefinitions);
 
 // Rule Providers 通用配置
 const ruleProviderCommonDomain = {
@@ -343,6 +347,24 @@ const ruleProviderCommonIpcidr = {
   interval: 86400,
   behavior: 'ipcidr',
 };
+
+function geositeProvider(source, localName = source) {
+  return {
+    ...ruleProviderCommonDomain,
+    url: `${ruleSetBaseUrl}geosite/${source}.mrs`,
+    path: `./ruleset/${localName}.mrs`,
+    'path-in-bundle': `geo/geosite/${source}.mrs`,
+  };
+}
+
+function geoipProvider(source, localName = `${source}_ip`) {
+  return {
+    ...ruleProviderCommonIpcidr,
+    url: `${ruleSetBaseUrl}geoip/${source}.mrs`,
+    path: `./ruleset/${localName}.mrs`,
+    'path-in-bundle': `geo/geoip/${source}.mrs`,
+  };
+}
 
 // 大陆核心服务与基础设施厂商动态集合；子品牌尽量由其厂商集合覆盖。
 // Bett 当前没有 baidu@!cn，百度按完整厂商集合路由和 DNS；其他模块排除同源海外子集。
@@ -367,25 +389,14 @@ function buildDomesticServiceRoutes(providers) {
   const rules = [];
   for (const { source, excludeOverseas = true } of domesticServiceModules) {
     const name = `domestic_${source}`;
-    const fullProvider = {
-      ...ruleProviderCommonDomain,
-      url: `${ruleSetBaseUrl}geosite/${source}.mrs`,
-      path: `./ruleset/${name}.mrs`,
-      'path-in-bundle': `geo/geosite/${source}.mrs`,
-    };
-    providers[name] = fullProvider;
+    providers[name] = geositeProvider(source, name);
     if (!excludeOverseas) {
       rules.push(`RULE-SET,${name},直连`);
       continue;
     }
     const overseas = `${name}_noncn`;
     const overseasFile = `${source}@!cn`;
-    providers[overseas] = {
-      ...ruleProviderCommonDomain,
-      url: `${ruleSetBaseUrl}geosite/${overseasFile}.mrs`,
-      path: `./ruleset/${overseas}.mrs`,
-      'path-in-bundle': `geo/geosite/${overseasFile}.mrs`,
-    };
+    providers[overseas] = geositeProvider(overseasFile, overseas);
     providers[`${name}_dns`] = {
       type: 'inline',
       format: 'text',
@@ -401,36 +412,11 @@ function buildDomesticServiceRoutes(providers) {
 const baseRuleProviders = {
   // --- 直连规则集 ---
 
-  private: {
-    ...ruleProviderCommonDomain,
-    url: `${ruleSetBaseUrl}geosite/private.mrs`,
-    path: './ruleset/private.mrs',
-    'path-in-bundle': 'geo/geosite/private.mrs',
-  },
-  private_ip: {
-    ...ruleProviderCommonIpcidr,
-    url: `${ruleSetBaseUrl}geoip/private.mrs`,
-    path: './ruleset/private_ip.mrs',
-    'path-in-bundle': 'geo/geoip/private.mrs',
-  },
-  games_cn: {
-    ...ruleProviderCommonDomain,
-    url: `${ruleSetBaseUrl}geosite/category-games@cn.mrs`,
-    path: './ruleset/category-games@cn.mrs',
-    'path-in-bundle': 'geo/geosite/category-games@cn.mrs',
-  },
-  synology: {
-    ...ruleProviderCommonDomain,
-    url: `${ruleSetBaseUrl}geosite/synology.mrs`,
-    path: './ruleset/synology.mrs',
-    'path-in-bundle': 'geo/geosite/synology.mrs',
-  },
-  nvidia_cn: {
-    ...ruleProviderCommonDomain,
-    url: `${ruleSetBaseUrl}geosite/nvidia@cn.mrs`,
-    path: './ruleset/nvidia@cn.mrs',
-    'path-in-bundle': 'geo/geosite/nvidia@cn.mrs',
-  },
+  private: geositeProvider('private'),
+  private_ip: geoipProvider('private'),
+  games_cn: geositeProvider('category-games@cn'),
+  synology: geositeProvider('synology'),
+  nvidia_cn: geositeProvider('nvidia@cn'),
   apple_cn: {
     type: 'http',
     format: 'text',
@@ -440,54 +426,19 @@ const baseRuleProviders = {
     url: 'https://fastly.jsdelivr.net/gh/SukkaW/Surge@0afc9c2ee92aadbf79ce1c9caf03f724135073ea/Source/non_ip/apple_cn.conf',
     path: './ruleset/apple_cn.list',
   },
-  microsoft_cn: {
-    ...ruleProviderCommonDomain,
-    url: `${ruleSetBaseUrl}geosite/microsoft@cn.mrs`,
-    path: './ruleset/microsoft@cn.mrs',
-    'path-in-bundle': 'geo/geosite/microsoft@cn.mrs',
-  },
-  'geolocation-cn': {
-    ...ruleProviderCommonDomain,
-    url: `${ruleSetBaseUrl}geosite/geolocation-cn.mrs`,
-    path: './ruleset/geolocation-cn.mrs',
-    'path-in-bundle': 'geo/geosite/geolocation-cn.mrs',
-  },
-  cn_ip: {
-    ...ruleProviderCommonIpcidr,
-    url: `${ruleSetBaseUrl}geoip/cn.mrs`,
-    path: './ruleset/cn_ip.mrs',
-    'path-in-bundle': 'geo/geoip/cn.mrs',
-  },
+  microsoft_cn: geositeProvider('microsoft@cn'),
+  'geolocation-cn': geositeProvider('geolocation-cn'),
+  cn_ip: geoipProvider('cn'),
 
   // --- 代理规则集 ---
 
-  'geolocation-!cn': {
-    ...ruleProviderCommonDomain,
-    url: `${ruleSetBaseUrl}geosite/geolocation-!cn.mrs`,
-    path: './ruleset/geolocation-!cn.mrs',
-    'path-in-bundle': 'geo/geosite/geolocation-!cn.mrs',
-  },
+  'geolocation-!cn': geositeProvider('geolocation-!cn'),
 
   // --- 其他规则集 ---
 
-  fakeip_filter: {
-    ...ruleProviderCommonDomain,
-    url: `${ruleSetBaseUrl}geosite/fakeip-filter.mrs`,
-    path: './ruleset/fakeip-filter.mrs',
-    'path-in-bundle': 'geo/geosite/fakeip-filter.mrs',
-  },
-  cn: {
-    ...ruleProviderCommonDomain,
-    url: `${ruleSetBaseUrl}geosite/cn.mrs`,
-    path: './ruleset/cn.mrs',
-    'path-in-bundle': 'geo/geosite/cn.mrs',
-  },
-  douyin: {
-    ...ruleProviderCommonDomain,
-    url: `${ruleSetBaseUrl}geosite/douyin.mrs`,
-    path: './ruleset/douyin.mrs',
-    'path-in-bundle': 'geo/geosite/douyin.mrs',
-  },
+  fakeip_filter: geositeProvider('fakeip-filter'),
+  cn: geositeProvider('cn'),
+  douyin: geositeProvider('douyin'),
 };
 
 const healthCheckExpectedStatus = 200;
@@ -565,28 +516,14 @@ const serviceConfigs = [
     baseOption: selectBaseOption,
     direct: true,
     defaultSelected: '直连',
-    providers: {
-      googlefcm: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/googlefcm.mrs`,
-        path: './ruleset/googlefcm.mrs',
-        'path-in-bundle': 'geo/geosite/googlefcm.mrs',
-      },
-    },
+    providers: { googlefcm: geositeProvider('googlefcm') },
     icon: `${iconBaseUrl}common/FCM.svg`,
     rules: ['RULE-SET,googlefcm,FCM'],
   },
   {
     name: 'YouTube',
     baseOption: selectBaseOption,
-    providers: {
-      youtube: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/youtube.mrs`,
-        path: './ruleset/youtube.mrs',
-        'path-in-bundle': 'geo/geosite/youtube.mrs',
-      },
-    },
+    providers: { youtube: geositeProvider('youtube') },
     icon: `${iconBaseUrl}common/YouTube.svg`,
     rules: ['RULE-SET,youtube,YouTube'],
   },
@@ -595,18 +532,8 @@ const serviceConfigs = [
     baseOption: selectBaseOption,
     defaultSelected: '美国',
     providers: {
-      google: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/google.mrs`,
-        path: './ruleset/google.mrs',
-        'path-in-bundle': 'geo/geosite/google.mrs',
-      },
-      google_ip: {
-        ...ruleProviderCommonIpcidr,
-        url: `${ruleSetBaseUrl}geoip/google.mrs`,
-        path: './ruleset/google_ip.mrs',
-        'path-in-bundle': 'geo/geoip/google.mrs',
-      },
+      google: geositeProvider('google'),
+      google_ip: geoipProvider('google'),
     },
     icon: `${iconBaseUrl}common/Google.svg`,
     rules: ['RULE-SET,google,Google'],
@@ -617,28 +544,14 @@ const serviceConfigs = [
     name: 'AI',
     baseOption: selectBaseOption,
     defaultSelected: '美国',
-    providers: {
-      ai: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/category-ai-!cn.mrs`,
-        path: './ruleset/ai.mrs',
-        'path-in-bundle': 'geo/geosite/category-ai-!cn.mrs',
-      },
-    },
+    providers: { ai: geositeProvider('category-ai-!cn', 'ai') },
     icon: `${iconBaseUrl}common/ChatGPT.svg`,
     rules: ['RULE-SET,ai,AI'],
   },
   {
     name: 'GitHub',
     baseOption: selectBaseOption,
-    providers: {
-      github: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/github.mrs`,
-        path: './ruleset/github.mrs',
-        'path-in-bundle': 'geo/geosite/github.mrs',
-      },
-    },
+    providers: { github: geositeProvider('github') },
     icon: `${iconBaseUrl}common/GitHub.svg`,
     rules: ['RULE-SET,github,GitHub'],
   },
@@ -647,18 +560,8 @@ const serviceConfigs = [
     baseOption: selectBaseOption,
     direct: true,
     providers: {
-      microsoft: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/microsoft.mrs`,
-        path: './ruleset/microsoft.mrs',
-        'path-in-bundle': 'geo/geosite/microsoft.mrs',
-      },
-      microsoft_ip: {
-        ...ruleProviderCommonIpcidr,
-        url: `${ruleSetBaseUrl}geoip/microsoft.mrs`,
-        path: './ruleset/microsoft_ip.mrs',
-        'path-in-bundle': 'geo/geoip/microsoft.mrs',
-      },
+      microsoft: geositeProvider('microsoft'),
+      microsoft_ip: geoipProvider('microsoft'),
     },
     icon: `${iconBaseUrl}common/Microsoft.svg`,
     rules: ['RULE-SET,microsoft,Microsoft'],
@@ -669,14 +572,7 @@ const serviceConfigs = [
     option: 'Apple其他服务',
     baseOption: selectBaseOption,
     direct: true,
-    providers: {
-      apple: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/apple.mrs`,
-        path: './ruleset/apple.mrs',
-        'path-in-bundle': 'geo/geosite/apple.mrs',
-      },
-    },
+    providers: { apple: geositeProvider('apple') },
     icon: `${iconBaseUrl}common/Apple.svg`,
     rules: [`RULE-SET,apple,${appleOtherGroupName}`],
   },
@@ -684,18 +580,8 @@ const serviceConfigs = [
     name: 'Telegram',
     baseOption: selectBaseOption,
     providers: {
-      telegram: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/telegram.mrs`,
-        path: './ruleset/telegram.mrs',
-        'path-in-bundle': 'geo/geosite/telegram.mrs',
-      },
-      telegram_ip: {
-        ...ruleProviderCommonIpcidr,
-        url: `${ruleSetBaseUrl}geoip/telegram.mrs`,
-        path: './ruleset/telegram_ip.mrs',
-        'path-in-bundle': 'geo/geoip/telegram.mrs',
-      },
+      telegram: geositeProvider('telegram'),
+      telegram_ip: geoipProvider('telegram'),
     },
     icon: `${iconBaseUrl}common/Telegram.svg`,
     rules: ['RULE-SET,telegram,Telegram'],
@@ -707,18 +593,8 @@ const serviceConfigs = [
     baseOption: selectBaseOption,
     direct: true,
     providers: {
-      steam: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/steam.mrs`,
-        path: './ruleset/steam.mrs',
-        'path-in-bundle': 'geo/geosite/steam.mrs',
-      },
-      steam_ip: {
-        ...ruleProviderCommonIpcidr,
-        url: `${ruleSetBaseUrl}geoip/steam.mrs`,
-        path: './ruleset/steam_ip.mrs',
-        'path-in-bundle': 'geo/geoip/steam.mrs',
-      },
+      steam: geositeProvider('steam'),
+      steam_ip: geoipProvider('steam'),
     },
     icon: `${iconBaseUrl}common/Steam.svg`,
     rules: ['RULE-SET,steam,Steam'],
@@ -729,18 +605,8 @@ const serviceConfigs = [
     baseOption: selectBaseOption,
     defaultSelected: '美国',
     providers: {
-      tiktok: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/tiktok.mrs`,
-        path: './ruleset/tiktok.mrs',
-        'path-in-bundle': 'geo/geosite/tiktok.mrs',
-      },
-      tiktok_ip: {
-        ...ruleProviderCommonIpcidr,
-        url: `${ruleSetBaseUrl}geoip/tiktok.mrs`,
-        path: './ruleset/tiktok_ip.mrs',
-        'path-in-bundle': 'geo/geoip/tiktok.mrs',
-      },
+      tiktok: geositeProvider('tiktok'),
+      tiktok_ip: geoipProvider('tiktok'),
     },
     icon: `${iconBaseUrl}common/TikTok.svg`,
     rules: ['RULE-SET,tiktok,TikTok'],
@@ -751,18 +617,8 @@ const serviceConfigs = [
     name: 'Twitter',
     baseOption: selectBaseOption,
     providers: {
-      twitter: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/twitter.mrs`,
-        path: './ruleset/twitter.mrs',
-        'path-in-bundle': 'geo/geosite/twitter.mrs',
-      },
-      twitter_ip: {
-        ...ruleProviderCommonIpcidr,
-        url: `${ruleSetBaseUrl}geoip/twitter.mrs`,
-        path: './ruleset/twitter_ip.mrs',
-        'path-in-bundle': 'geo/geoip/twitter.mrs',
-      },
+      twitter: geositeProvider('twitter'),
+      twitter_ip: geoipProvider('twitter'),
     },
     icon: `${iconBaseUrl}common/X.svg`,
     rules: ['RULE-SET,twitter,Twitter'],
@@ -774,18 +630,8 @@ const serviceConfigs = [
     baseOption: selectBaseOption,
     defaultSelected: '美国',
     providers: {
-      meta: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/meta.mrs`,
-        path: './ruleset/meta.mrs',
-        'path-in-bundle': 'geo/geosite/meta.mrs',
-      },
-      facebook_ip: {
-        ...ruleProviderCommonIpcidr,
-        url: `${ruleSetBaseUrl}geoip/facebook.mrs`,
-        path: './ruleset/facebook_ip.mrs',
-        'path-in-bundle': 'geo/geoip/facebook.mrs',
-      },
+      meta: geositeProvider('meta'),
+      facebook_ip: geoipProvider('facebook'),
     },
     icon: `${iconBaseUrl}common/Meta.svg`,
     rules: ['RULE-SET,meta,Meta'],
@@ -795,14 +641,7 @@ const serviceConfigs = [
   {
     name: 'Line',
     baseOption: selectBaseOption,
-    providers: {
-      line: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/line.mrs`,
-        path: './ruleset/line.mrs',
-        'path-in-bundle': 'geo/geosite/line.mrs',
-      },
-    },
+    providers: { line: geositeProvider('line') },
     icon: `${iconBaseUrl}common/Line.svg`,
     rules: ['RULE-SET,line,Line'],
   },
@@ -810,18 +649,8 @@ const serviceConfigs = [
     name: 'Netflix',
     baseOption: selectBaseOption,
     providers: {
-      netflix: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/netflix.mrs`,
-        path: './ruleset/netflix.mrs',
-        'path-in-bundle': 'geo/geosite/netflix.mrs',
-      },
-      netflix_ip: {
-        ...ruleProviderCommonIpcidr,
-        url: `${ruleSetBaseUrl}geoip/netflix.mrs`,
-        path: './ruleset/netflix_ip.mrs',
-        'path-in-bundle': 'geo/geoip/netflix.mrs',
-      },
+      netflix: geositeProvider('netflix'),
+      netflix_ip: geoipProvider('netflix'),
     },
     icon: `${iconBaseUrl}common/Netflix.svg`,
     rules: ['RULE-SET,netflix,Netflix'],
@@ -832,12 +661,7 @@ const serviceConfigs = [
     baseOption: selectBaseOption,
     direct: true,
     providers: {
-      emby: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/category-emby.mrs`,
-        path: './ruleset/emby.mrs',
-        'path-in-bundle': 'geo/geosite/category-emby.mrs',
-      },
+      emby: geositeProvider('category-emby', 'emby'),
       emby_keyword: {
         type: 'inline',
         format: 'text',
@@ -857,14 +681,7 @@ const serviceConfigs = [
     name: 'PikPak',
     baseOption: selectBaseOption,
     direct: true,
-    providers: {
-      pikpak: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/pikpak.mrs`,
-        path: './ruleset/pikpak.mrs',
-        'path-in-bundle': 'geo/geosite/pikpak.mrs',
-      },
-    },
+    providers: { pikpak: geositeProvider('pikpak') },
     icon: `${iconBaseUrl}common/PikPak.svg`,
     rules: ['RULE-SET,pikpak,PikPak'],
   },
@@ -873,18 +690,8 @@ const serviceConfigs = [
     baseOption: selectBaseOption,
     direct: true,
     providers: {
-      spotify: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/spotify.mrs`,
-        path: './ruleset/spotify.mrs',
-        'path-in-bundle': 'geo/geosite/spotify.mrs',
-      },
-      spotify_ip: {
-        ...ruleProviderCommonIpcidr,
-        url: `${ruleSetBaseUrl}geoip/spotify.mrs`,
-        path: './ruleset/spotify_ip.mrs',
-        'path-in-bundle': 'geo/geoip/spotify.mrs',
-      },
+      spotify: geositeProvider('spotify'),
+      spotify_ip: geoipProvider('spotify'),
     },
     icon: `${iconBaseUrl}common/Spotify.svg`,
     rules: ['RULE-SET,spotify,Spotify'],
@@ -894,14 +701,7 @@ const serviceConfigs = [
     name: 'Crypto',
     baseOption: selectBaseOption,
     defaultSelected: '日本',
-    providers: {
-      cryptocurrency: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/category-cryptocurrency.mrs`,
-        path: './ruleset/cryptocurrency.mrs',
-        'path-in-bundle': 'geo/geosite/category-cryptocurrency.mrs',
-      },
-    },
+    providers: { cryptocurrency: geositeProvider('category-cryptocurrency', 'cryptocurrency') },
     icon: `${iconBaseUrl}common/Bitcoin.svg`,
     rules: ['RULE-SET,cryptocurrency,Crypto'],
   },
@@ -909,14 +709,7 @@ const serviceConfigs = [
     name: 'PayPal',
     baseOption: selectBaseOption,
     defaultSelected: '美国',
-    providers: {
-      paypal: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/paypal.mrs`,
-        path: './ruleset/paypal.mrs',
-        'path-in-bundle': 'geo/geosite/paypal.mrs',
-      },
-    },
+    providers: { paypal: geositeProvider('paypal') },
     icon: `${iconBaseUrl}common/PayPal.svg`,
     rules: ['RULE-SET,paypal,PayPal'],
   },
@@ -924,14 +717,7 @@ const serviceConfigs = [
     name: 'Patreon',
     baseOption: selectBaseOption,
     defaultSelected: '香港',
-    providers: {
-      patreon: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/patreon.mrs`,
-        path: './ruleset/patreon.mrs',
-        'path-in-bundle': 'geo/geosite/patreon.mrs',
-      },
-    },
+    providers: { patreon: geositeProvider('patreon') },
     icon: `${iconBaseUrl}common/Patreon.svg`,
     rules: ['RULE-SET,patreon,Patreon'],
   },
@@ -940,14 +726,7 @@ const serviceConfigs = [
     baseOption: selectBaseOption,
     direct: true,
     defaultSelected: '美国',
-    providers: {
-      ehentai: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/ehentai.mrs`,
-        path: './ruleset/ehentai.mrs',
-        'path-in-bundle': 'geo/geosite/ehentai.mrs',
-      },
-    },
+    providers: { ehentai: geositeProvider('ehentai') },
     icon: `${iconBaseUrl}common/EHentai.svg`,
     rules: ['RULE-SET,ehentai,EHentai'],
   },
@@ -956,14 +735,7 @@ const serviceConfigs = [
     baseOption: selectBaseOption,
     reject: true,
     priority: true,
-    providers: {
-      'category-ads': {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/category-ads.mrs`,
-        path: './ruleset/category-ads.mrs',
-        'path-in-bundle': 'geo/geosite/category-ads.mrs',
-      },
-    },
+    providers: { 'category-ads': geositeProvider('category-ads') },
     icon: `${iconBaseUrl}common/AdBlock.svg`,
     rules: ['RULE-SET,category-ads,AdBlock'],
   },
@@ -1027,6 +799,8 @@ const appleProxyRuleProvider = {
   url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AppleProxy/AppleProxy.yaml',
   path: './ruleset/apple_proxy.yaml',
 };
+const appleIpRuleProvider = geoipProvider('apple');
+const appleTvRuleProvider = geositeProvider('apple-tvplus', 'apple_tv');
 const appleOtherExactEndpoints = ['gateway.icloud.com', 'setup.icloud.com'];
 const appleOverseasMediaEndpoints = [
   'buy.itunes.apple.com',
@@ -1047,12 +821,7 @@ for (const { name, option } of appleEndpointDefinitions) {
       ? {
           providers: {
             apple_proxy: appleProxyRuleProvider,
-            apple_ip: {
-              ...ruleProviderCommonIpcidr,
-              url: `${ruleSetBaseUrl}geoip/apple.mrs`,
-              path: './ruleset/apple_ip.mrs',
-              'path-in-bundle': 'geo/geoip/apple.mrs',
-            },
+            apple_ip: appleIpRuleProvider,
           },
           ipRules: [`RULE-SET,apple_ip,${appleProxyGroupName},no-resolve`],
         }
@@ -1064,7 +833,7 @@ for (const { name, option } of appleEndpointDefinitions) {
  * 适配 Bettbox 策略组开关
  * 声明哪些开关属于策略组：基础策略组 + 全部分流策略组。
  */
-Compatible_With_Bettbox.policyGroupOptions = serviceConfigs.map((svc) => svc.name);
+Compatible_With_Bettbox.policyGroupOptions = serviceConfigs.map((svc) => svc.option || svc.name);
 
 // ---节点过滤、重命名及验证---
 
@@ -1089,18 +858,19 @@ function toMatchableName(name) {
  * 节点匹配缓存，避免重复执行正则
  */
 const regionMatchCache = new Map();
-function getMatchedRegions(proxyName, cache = regionMatchCache) {
+const flagRegex = /[\u{1F1E6}-\u{1F1FF}]{2}/u;
+function getMatchedRegions(proxyName, cache = regionMatchCache, precomputedMatchableName) {
   if (cache.has(proxyName)) {
     return cache.get(proxyName);
   }
 
-  const matchableName = toMatchableName(proxyName);
-  const namedRegions = [];
-  for (const region of regionDefinitions) if (region.nameRegex.test(matchableName)) namedRegions.push(region);
+  const matchableName = precomputedMatchableName ?? toMatchableName(proxyName);
+  const regions = [];
+  for (const region of regionDefinitions) if (region.nameRegex.test(matchableName)) regions.push(region);
 
-  const regions = namedRegions;
-  if (!namedRegions.length)
+  if (!regions.length && flagRegex.test(matchableName)) {
     for (const region of regionDefinitions) if (matchableName.includes(region.flag)) regions.push(region);
+  }
   for (const region of rateRegionDefinitions) if (region.regex.test(matchableName)) regions.push(region);
   for (const region of homeRegionDefinitions) if (region.regex.test(matchableName)) regions.push(region);
   cache.set(proxyName, regions);
@@ -1111,15 +881,14 @@ function getMatchedRegions(proxyName, cache = regionMatchCache) {
 /**
  * 标准化节点名称：补全地区国旗、折叠多余空格，并预缓存匹配结果
  */
-const flagRegex = /[\u{1F1E6}-\u{1F1FF}]{2}/u;
-function normalizeProxyName(proxy, cache = regionMatchCache) {
+function normalizeProxyName(proxy, cache = regionMatchCache, precomputedMatchableName) {
   const originalName = proxy.name;
 
   const flag = originalName.match(flagRegex)?.[0];
 
   const nameWithoutFlag = (flag ? originalName.replace(flag, '') : originalName).replace(/\s+/g, ' ').trim();
 
-  const matchedRegions = getMatchedRegions(originalName, cache);
+  const matchedRegions = getMatchedRegions(originalName, cache, precomputedMatchableName);
 
   const regionFlag = matchedRegions.find((region) => region.flag)?.flag || flag;
 
@@ -1197,13 +966,13 @@ function filterAndNormalizeProxies(config, classificationCache = new Map()) {
 
     if (filterNonRegionProxiesEnabled) {
       if (announcementFilter.test(matchableName)) continue;
-      const isRegionProxy = getMatchedRegions(rawProxy.name, classificationCache).some((region) =>
-        regionDefinitions.includes(region),
+      const isRegionProxy = getMatchedRegions(rawProxy.name, classificationCache, matchableName).some((region) =>
+        countryRegionSet.has(region),
       );
       if (!isRegionProxy && excludeFilter.test(matchableName)) continue;
     }
 
-    const normalized = normalizeProxyName(rawProxy, classificationCache);
+    const normalized = normalizeProxyName(rawProxy, classificationCache, matchableName);
     if (renameMap && normalized.name !== rawProxy.name) {
       renameMap.set(rawProxy.name, normalized.name);
     }
@@ -1215,8 +984,7 @@ function filterAndNormalizeProxies(config, classificationCache = new Map()) {
 
   let filteredProxies = normalizedProxies;
   if (renameMap) {
-    const normalizedProxyNames = new Set(normalizedProxies.map((proxy) => proxy.name));
-    filteredProxies = normalizedProxies.map((proxy) => fixDialerProxy(proxy, renameMap, normalizedProxyNames));
+    filteredProxies = normalizedProxies.map((proxy) => fixDialerProxy(proxy, renameMap, uniqueNames));
   }
 
   if (!filteredProxies.length) {
@@ -1244,7 +1012,7 @@ function createRegionGroup(name, icon, proxies) {
 
   if (generateRegionAutoSelectEnabled) {
     const urlTestName = `${name}-自动选择`;
-    const isCountryRegion = regionDefinitions.some((region) => region.name === name);
+    const isCountryRegion = countryRegionNameSet.has(name);
     return [
       {
         ...selectBaseOption,
@@ -1284,7 +1052,7 @@ function buildRegionGroups(filteredProxies, customProxies, classificationCache =
 
   const addProxy = (proxy) => {
     const matchedRegions = getMatchedRegions(proxy.name, classificationCache);
-    const isRegionProxy = matchedRegions.some((region) => regionDefinitions.includes(region));
+    const isRegionProxy = matchedRegions.some((region) => countryRegionSet.has(region));
 
     for (const region of matchedRegions) {
       regionGroups[region.name].push(proxy.name);
@@ -1301,8 +1069,8 @@ function buildRegionGroups(filteredProxies, customProxies, classificationCache =
     .filter(
       (r) =>
         regionGroups[r.name].length > 0 &&
-        (generateRateGroupEnabled || !rateRegionDefinitions.includes(r)) &&
-        (generateHomeGroupEnabled || !homeRegionDefinitions.includes(r)),
+        (generateRateGroupEnabled || !rateRegionSet.has(r)) &&
+        (generateHomeGroupEnabled || !homeRegionSet.has(r)),
     )
     .flatMap((r) => createRegionGroup(r.name, r.icon, regionGroups[r.name]));
 
@@ -1359,11 +1127,14 @@ function buildCustomizeGroups(
   for (const proxy of customizeList) {
     const normalized = normalizeProxyName(proxy, classificationCache);
     let name = normalized.name;
-    while (usedNames.has(name)) {
-      name = normalizeProxyName({ name: `${customPrefix}${name}` }, classificationCache).name.replace(
-        `${customPrefix} `,
-        customPrefix,
-      );
+    if (usedNames.has(name)) {
+      const flag = name.match(flagRegex)?.[0];
+      let body = (flag ? name.replace(flag, '') : name).trim();
+      while (usedNames.has(name)) {
+        body = `${customPrefix}${body}`;
+        name = flag ? `${flag} ${body}` : body;
+      }
+      classificationCache.set(name, getMatchedRegions(normalized.name, classificationCache));
     }
     usedNames.add(name);
 
@@ -1606,6 +1377,9 @@ const bootstrapDNS = [
 const appleOtherDnsEgressGroupName = appleAiGroupName;
 const defaultDNS = [...bootstrapDNS];
 const proxyServerDNS = [...chinaDNS];
+function dnsForGroup(groupName) {
+  return foreignDNS.map((dns) => dns.replace('#默认代理', `#${groupName}`));
+}
 
 /**
  * hosts 匹配优先级：精确 > +. > . > *（同级按出现顺序）
@@ -1657,7 +1431,7 @@ function matchDomainPattern(pattern, domains) {
 
 /**
  * 预编译 hosts 条目，返回「域名 → 命中条目」的查找函数。
- * 精确 / `+.` / `.` 三类按模式建索引，通配模式保底逐个比对；
+ * 精确 / `+.` / `.` 三类按模式建索引，通配模式按标签段数分桶比对；
  * 同类型命中时取 hosts 中靠前者，与「按优先级排序后线性查找」的结果保持一致。
  * 入参需已按 hostSpecificity 降序排列（同一键只保留最先出现的一条）
  */
@@ -1665,13 +1439,19 @@ function createHostFinder(hostEntries) {
   const exact = new Map();
   const plus = new Map();
   const dot = new Map();
-  const wildcards = [];
+  const wildcardsByLength = new Map();
 
   hostEntries.forEach((entry, index) => {
     const pattern = entry[0].toLowerCase();
     const level = hostSpecificity(pattern);
     if (level === 0) {
-      wildcards.push(entry);
+      const parts = pattern.split('.');
+      let bucket = wildcardsByLength.get(parts.length);
+      if (!bucket) {
+        bucket = [];
+        wildcardsByLength.set(parts.length, bucket);
+      }
+      bucket.push({ parts, entry });
       return;
     }
     const [map, key] =
@@ -1679,26 +1459,52 @@ function createHostFinder(hostEntries) {
     if (!map.has(key)) map.set(key, { entry, index });
   });
 
-  const firstOf = (map, keys) => {
-    let found = null;
-    for (const key of keys) {
-      const item = map.get(key);
-      if (item && (!found || item.index < found.index)) found = item;
-    }
-    return found?.entry;
-  };
+  const hasSuffixMaps = plus.size > 0 || dot.size > 0;
+  const hasWildcards = wildcardsByLength.size > 0;
 
   return (domain) => {
     const exactEntry = exact.get(domain)?.entry;
     if (exactEntry) return exactEntry;
 
-    const parts = domain.split('.');
-    const suffixes = parts.map((_, i) => parts.slice(i).join('.'));
-    return (
-      firstOf(plus, suffixes) ??
-      firstOf(dot, suffixes.slice(1)) ??
-      wildcards.find(([pattern]) => matchDomainPattern(pattern, domain))
-    );
+    if (hasSuffixMaps) {
+      let bestPlus = null;
+      let bestDot = null;
+      for (let pos = 0; ;) {
+        const suffix = pos === 0 ? domain : domain.slice(pos);
+        if (plus.size > 0) {
+          const item = plus.get(suffix);
+          if (item && (!bestPlus || item.index < bestPlus.index)) bestPlus = item;
+        }
+        if (pos > 0 && dot.size > 0) {
+          const item = dot.get(suffix);
+          if (item && (!bestDot || item.index < bestDot.index)) bestDot = item;
+        }
+        const nextDot = domain.indexOf('.', pos);
+        if (nextDot === -1) break;
+        pos = nextDot + 1;
+      }
+      if (bestPlus) return bestPlus.entry;
+      if (bestDot) return bestDot.entry;
+    }
+
+    if (hasWildcards) {
+      const domainParts = domain.split('.');
+      const bucket = wildcardsByLength.get(domainParts.length);
+      if (bucket) {
+        for (const { parts, entry } of bucket) {
+          let matched = true;
+          for (let i = 0; i < parts.length; i++) {
+            if (parts[i] !== '*' && parts[i] !== domainParts[i]) {
+              matched = false;
+              break;
+            }
+          }
+          if (matched) return entry;
+        }
+      }
+    }
+
+    return undefined;
   };
 }
 
@@ -1726,22 +1532,25 @@ function applyHostsToProxies(proxies, hosts) {
   const findHost = createHostFinder(hostEntries);
   const resolveCache = new Map();
   const resolve = (server) => {
-    const cached = resolveCache.get(server);
-    if (cached !== undefined) return cached;
+    const lowerServer = server.toLowerCase();
+    if (resolveCache.has(lowerServer)) {
+      const cached = resolveCache.get(lowerServer);
+      return cached === null ? server : cached;
+    }
 
     const seen = new Set();
-    let current = server.toLowerCase();
-    let result = server;
+    let current = lowerServer;
+    let resolved = null;
     while (!seen.has(current)) {
       seen.add(current);
       const entry = findHost(current);
       const target = entry && targetOf(entry[1]);
       if (!target) break;
-      result = target;
+      resolved = target;
       current = target.toLowerCase();
     }
-    resolveCache.set(server, result);
-    return result;
+    resolveCache.set(lowerServer, resolved);
+    return resolved === null ? server : resolved;
   };
 
   return proxies.map((proxy) => {
@@ -1791,10 +1600,10 @@ function buildDnsAndHostsConfig(config, filteredProxies) {
       ...(minimalModeEnabled ? [] : ruleOptionsEnable['FCM'] ? ['rule-set:googlefcm'] : []),
       ...appleRealIpEndpoints,
     ],
-    'default-nameserver': defaultDNS,
-    'proxy-server-nameserver': proxyServerDNS,
+    'default-nameserver': [...defaultDNS],
+    'proxy-server-nameserver': [...proxyServerDNS],
     'proxy-server-nameserver-policy': {},
-    nameserver: foreignDNS,
+    nameserver: [...foreignDNS],
     'nameserver-policy': {
       'rule-set:private': 'system',
     },
@@ -1969,10 +1778,28 @@ function prioritizePreferredGroups(config) {
   }
 }
 
+function selectEligibleRegionProxies(groups) {
+  const candidates = groups
+    .filter((entry) => entry.type === 'select' && serviceRegionNames.has(entry.name))
+    .map((entry) => entry.name);
+  const selected = candidates.includes(unitedStatesRegion.name) ? unitedStatesRegion.name : candidates[0];
+  return selected ? [selected, ...candidates.filter((candidate) => candidate !== selected)] : ['REJECT'];
+}
+
+function sameDnsResolvers(a, b) {
+  if (a === b) return true;
+  if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
+}
+
 function applyAppleRouting(config, options) {
   const groups = config['proxy-groups'];
-  const usGroup = groups.find((group) => group.name === unitedStatesRegion.name);
   const specialRules = [];
+  const specialIpRules = [];
+  const eligibleRegionNames = groups
+    .filter((entry) => entry.type === 'select' && serviceRegionNames.has(entry.name))
+    .map((entry) => entry.name);
   // 极简模式仅关闭常规服务组；安全与 Apple 精细例外仍由各自开关控制。
   for (const { name, option, domains } of appleEndpointDefinitions) {
     if (!options[option]) continue;
@@ -1986,7 +1813,7 @@ function applyAppleRouting(config, options) {
           name === appleAiGroupName
             ? ['REJECT']
             : name === appleProxyGroupName
-              ? ['默认代理', ...(usGroup ? [unitedStatesRegion.name] : []), '直连']
+              ? ['默认代理', ...eligibleRegionNames, '直连']
               : ['默认代理', '直连'],
       };
       groups.splice(1, 0, group);
@@ -1994,11 +1821,7 @@ function applyAppleRouting(config, options) {
     }
     if (name === appleAiGroupName) {
       // Keep Apple AI/Siri on eligible country groups; prefer the US when available.
-      const candidates = groups
-        .filter((entry) => entry.type === 'select' && serviceRegionNames.has(entry.name))
-        .map((entry) => entry.name);
-      const selected = candidates.includes(unitedStatesRegion.name) ? unitedStatesRegion.name : candidates[0];
-      group.proxies = selected ? [selected, ...candidates.filter((candidate) => candidate !== selected)] : ['REJECT'];
+      group.proxies = selectEligibleRegionProxies(groups);
       delete group['default-selected'];
     } else {
       // Default first item is the US candidate group; do not rely on default-selected support.
@@ -2010,49 +1833,29 @@ function applyAppleRouting(config, options) {
       specialRules.push(
         `${domain.startsWith('+.') ? 'DOMAIN-SUFFIX' : 'DOMAIN'},${domain.replace(/^\+\./, '')},${name}`,
       );
-      config.dns['nameserver-policy'][domain] = foreignDNS.map((dns) => dns.replace('#默认代理', `#${name}`));
     }
     if (name === appleProxyGroupName) {
       // TV+ 动态规则与其他产品共享同一地区选择器。
       config['rule-providers'].apple_proxy = appleProxyRuleProvider;
       if (!config['rule-providers'].apple_ip) {
-        config['rule-providers'].apple_ip = {
-          ...ruleProviderCommonIpcidr,
-          url: `${ruleSetBaseUrl}geoip/apple.mrs`,
-          path: './ruleset/apple_ip.mrs',
-          'path-in-bundle': 'geo/geoip/apple.mrs',
-        };
-        specialRules.push(`RULE-SET,apple_ip,${appleProxyGroupName},no-resolve`);
+        config['rule-providers'].apple_ip = appleIpRuleProvider;
+        specialIpRules.push(`RULE-SET,apple_ip,${appleProxyGroupName},no-resolve`);
       }
-      config['rule-providers'].apple_tv = {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/apple-tvplus.mrs`,
-        path: './ruleset/apple_tv.mrs',
-      };
+      config['rule-providers'].apple_tv = appleTvRuleProvider;
       specialRules.push(`RULE-SET,apple_tv,${appleProxyGroupName}`);
-      config.dns['nameserver-policy']['rule-set:apple_tv'] = foreignDNS.map((dns) =>
-        dns.replace('#默认代理', `#${appleProxyGroupName}`),
-      );
       if (options.Apple媒体代理) {
         for (const domain of appleOverseasMediaEndpoints) {
           specialRules.push(`DOMAIN,${domain},${appleProxyGroupName}`);
-          config.dns['nameserver-policy'][domain] = foreignDNS.map((dns) =>
-            dns.replace('#默认代理', `#${appleProxyGroupName}`),
-          );
         }
       }
     }
   }
   if (options.Apple其他服务 && !groups.some((group) => group.name === appleOtherDnsEgressGroupName)) {
-    const candidates = groups
-      .filter((entry) => entry.type === 'select' && serviceRegionNames.has(entry.name))
-      .map((entry) => entry.name);
-    const selected = candidates.includes(unitedStatesRegion.name) ? unitedStatesRegion.name : candidates[0];
     groups.splice(1, 0, {
       ...selectBaseOption,
       name: appleOtherDnsEgressGroupName,
       icon: `${iconBaseUrl}common/Apple.svg`,
-      proxies: selected ? [selected, ...candidates.filter((candidate) => candidate !== selected)] : ['REJECT'],
+      proxies: selectEligibleRegionProxies(groups),
     });
     groups[0].proxies.push(appleOtherDnsEgressGroupName);
   }
@@ -2086,7 +1889,6 @@ function applyAppleRouting(config, options) {
     // Apple 官方软件/资源 CDN；这些域名是共享资源端点，不能只按 AI 模型识别。
     for (const domain of ['gdmf.apple.com', 'mesu.apple.com', 'updates.cdn-apple.com', 'assets.cdn-apple.com']) {
       specialRules.push(`DOMAIN,${domain},直连`);
-      config.dns['nameserver-policy'][domain] = chinaDNS;
     }
   }
   if (options[appleProxyGroupName]) {
@@ -2094,12 +1896,12 @@ function applyAppleRouting(config, options) {
     specialRules.push(`RULE-SET,apple_proxy,${appleProxyGroupName}`);
   }
 
-  return specialRules;
+  return { specialRules, specialIpRules };
 }
 
-function applyDnsPolicies(config, options, specialRules) {
+function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
   const groups = config['proxy-groups'];
-  // DNS 白名单与连接路由分开：只加载启用的集合，仍由客户端每日直接更新。
+  const groupByName = new Map(groups.map((group) => [group.name, group]));
   const dnsWhitelist = {
     国内CDN解析: [
       'dns_domestic_cdn',
@@ -2132,29 +1934,18 @@ function applyDnsPolicies(config, options, specialRules) {
       },
     ],
   };
-  for (const [option, [name, provider]] of Object.entries(dnsWhitelist)) {
-    if (!options[option]) continue;
-    config['rule-providers'][name] = provider;
-    config.dns['nameserver-policy'][`rule-set:${name}`] = chinaDNS;
-  }
-  // Steam @cn 成品含宽泛的服务器/用户内容域；这些域名始终保持国外解析。
-  const steamDnsGroup = groups.some((group) => group.name === 'Steam') ? 'Steam' : '默认代理';
-  for (const suffix of ['+.steamserver.net', '+.steamusercontent.com'])
-    config.dns['nameserver-policy'][suffix] = foreignDNS.map((dns) => dns.replace('#默认代理', `#${steamDnsGroup}`));
 
   // 直连目标使用国内 DNS；代理服务的 DNS 请求经对应路由组建立连接。
   // Other Apple Service 的 DNS 例外明确使用 Siri 的选择器。
+  const rejectTargets = new Set(['REJECT', 'REJECT-DROP', 'PASS']);
   const dnsForRoute = (target, dnsEgressGroupName, dnsEgressGroup) => {
-    if (target === '直连') return chinaDNS;
-    if (
-      dnsEgressGroup?.proxies.length &&
-      dnsEgressGroup.proxies.every((proxy) => ['REJECT', 'REJECT-DROP', 'PASS'].includes(proxy))
-    ) {
+    if (target === '直连') return [...chinaDNS];
+    if (dnsEgressGroup?.proxies.length && dnsEgressGroup.proxies.every((proxy) => rejectTargets.has(proxy))) {
       // Ordinary Apple traffic remains directly usable when there is no eligible Siri region.
-      if (target === appleOtherGroupName && options.Apple其他默认直连) return chinaDNS;
+      if (target === appleOtherGroupName && options.Apple其他默认直连) return [...chinaDNS];
       return 'rcode://name_error';
     }
-    return foreignDNS.map((dns) => dns.replace('#默认代理', `#${dnsEgressGroupName}`));
+    return dnsForGroup(dnsEgressGroupName);
   };
   if (!options.PCDN拦截) {
     for (const name of Object.keys(config.hosts))
@@ -2165,84 +1956,136 @@ function applyDnsPolicies(config, options, specialRules) {
   while (usedNames.has(dnsOutbound)) dnsOutbound = `my-${dnsOutbound}`;
   if (options.接管DNS53) config.proxies.push({ name: dnsOutbound, type: 'dns' });
   const safetyRules = options.接管DNS53 ? [`DST-PORT,53,${dnsOutbound}`] : [];
-  config.rules = [
-    ...safetyRules,
-    ...specialRules,
-    ...config.rules.filter(
-      (rule) =>
-        !specialRules.includes(rule) &&
-        (options.国内服务优先直连 || (!prefixRules.slice(1).includes(rule) && rule !== geolocationCnRule)),
-    ),
-  ];
-  const domainRuleSetEgress = new Map();
+  const specialRuleSet = new Set(specialRules);
+  const specialIpRuleSet = new Set(specialIpRules);
+  const domesticPrefixRuleSet = new Set(prefixRules.slice(1));
+  const remainingRules = [];
   for (const rule of config.rules) {
-    const match = /^RULE-SET,([^,]+),([^,]+)(?:,|$)/.exec(rule);
-    if (!match) continue;
-    const [, providerName, target] = match;
-    const provider = config['rule-providers'][providerName];
-    if (!provider || !['domain', 'classical'].includes(provider.behavior)) continue;
-    if (['REJECT', 'REJECT-DROP', 'PASS'].includes(target)) continue;
-    if (!domainRuleSetEgress.has(providerName)) domainRuleSetEgress.set(providerName, target);
+    if (specialRuleSet.has(rule) || specialIpRuleSet.has(rule)) continue;
+    if (!options.国内服务优先直连 && (domesticPrefixRuleSet.has(rule) || rule === geolocationCnRule)) continue;
+    remainingRules.push(rule);
   }
-  for (const [providerName, target] of domainRuleSetEgress) {
-    // Domestic vendor route providers use their narrower compound DNS policies below.
-    if (providerName === 'private' || providerName.startsWith('domestic_')) continue;
-    const dnsEgressGroupName = target === appleOtherGroupName ? appleOtherDnsEgressGroupName : target;
-    const dnsEgressGroup = config['proxy-groups'].find((group) => group.name === dnsEgressGroupName);
-    config.dns['nameserver-policy'][`rule-set:${providerName}`] = ['apple_cn', 'geolocation-cn'].includes(providerName)
-      ? chinaDNS
-      : dnsForRoute(target, dnsEgressGroupName, dnsEgressGroup);
+  if (specialIpRules.length) {
+    const privateIpIndex = remainingRules.indexOf('RULE-SET,private_ip,直连,no-resolve');
+    const cnIpIndex = remainingRules.indexOf('RULE-SET,cn_ip,直连');
+    const insertIndex = privateIpIndex >= 0 ? privateIpIndex : cnIpIndex >= 0 ? cnIpIndex : remainingRules.length;
+    remainingRules.splice(insertIndex, 0, ...specialIpRules);
+  }
+  config.rules = [...safetyRules, ...specialRules, ...remainingRules];
+
+  const domainRuleSetEgress = new Map();
+  const literalDomainEgress = new Map();
+  for (const rule of config.rules) {
+    const ruleSetMatch = /^RULE-SET,([^,]+),([^,]+)(?:,|$)/.exec(rule);
+    if (ruleSetMatch) {
+      const [, providerName, target] = ruleSetMatch;
+      const provider = config['rule-providers'][providerName];
+      if (!provider || (provider.behavior !== 'domain' && provider.behavior !== 'classical')) continue;
+      if (rejectTargets.has(target)) continue;
+      if (!domainRuleSetEgress.has(providerName)) domainRuleSetEgress.set(providerName, target);
+      continue;
+    }
+    const literalMatch = /^(DOMAIN|DOMAIN-SUFFIX),([^,]+),([^,]+)(?:,|$)/.exec(rule);
+    if (literalMatch) {
+      const [, type, domain, target] = literalMatch;
+      if (rejectTargets.has(target)) continue;
+      const policyKey = type === 'DOMAIN-SUFFIX' ? `+.${domain}` : domain;
+      if (!literalDomainEgress.has(policyKey)) literalDomainEgress.set(policyKey, target);
+    }
+  }
+
+  const orderedDnsPolicyEntries = [];
+  const existingDnsPolicy = config.dns['nameserver-policy'] || {};
+  const literalEntries = new Map();
+  const extraRuleSetEntries = new Map();
+  for (const [key, value] of Object.entries(existingDnsPolicy)) {
+    if (key.startsWith('rule-set:')) {
+      if (key !== 'rule-set:private') extraRuleSetEntries.set(key, value);
+    } else {
+      literalEntries.set(key, value);
+    }
   }
   // 显式域名规则的 DNS policy 与目标一致：直连使用国内加密 DNS，服务组经同一选择组查询 DNS。
   // DOMAIN-KEYWORD/REGEX 通过 classical rule-set 匹配相同域名范围。
-  const literalDomainEgress = new Map();
-  for (const rule of config.rules) {
-    const match = /^(DOMAIN|DOMAIN-SUFFIX),([^,]+),([^,]+)(?:,|$)/.exec(rule);
-    if (!match) continue;
-    const [, type, domain, target] = match;
-    if (['REJECT', 'REJECT-DROP', 'PASS'].includes(target)) continue;
-    const policyKey = type === 'DOMAIN-SUFFIX' ? `+.${domain}` : domain;
-    if (!literalDomainEgress.has(policyKey)) literalDomainEgress.set(policyKey, target);
-  }
   for (const [policyKey, target] of literalDomainEgress) {
     if (target === '直连') {
-      config.dns['nameserver-policy'][policyKey] = chinaDNS;
+      literalEntries.set(policyKey, [...chinaDNS]);
       continue;
     }
-    const targetGroup = groups.find((group) => group.name === target);
-    if (!targetGroup) continue;
+    if (!groupByName.has(target)) continue;
     const dnsEgressGroupName = target === appleOtherGroupName ? appleOtherDnsEgressGroupName : target;
-    const dnsEgressGroup = groups.find((group) => group.name === dnsEgressGroupName);
-    config.dns['nameserver-policy'][policyKey] = dnsForRoute(target, dnsEgressGroupName, dnsEgressGroup);
+    const dnsEgressGroup = groupByName.get(dnsEgressGroupName);
+    literalEntries.set(policyKey, dnsForRoute(target, dnsEgressGroupName, dnsEgressGroup));
+  }
+  // Steam @cn 成品含宽泛的服务器/用户内容域；这些域名始终保持国外解析。
+  const steamDnsGroup = groupByName.has('Steam') ? 'Steam' : '默认代理';
+  for (const suffix of ['+.steamserver.net', '+.steamusercontent.com']) {
+    literalEntries.set(suffix, dnsForGroup(steamDnsGroup));
+  }
+  orderedDnsPolicyEntries.push(...literalEntries.entries());
+
+  // Mihomo 按 policy 顺序匹配：显式主机/后缀 → private / apple_tv / DNS 白名单 / 服务集合 → 国内厂商集合 → 广域 geolocation 集合。
+  if (Object.hasOwn(existingDnsPolicy, 'rule-set:private')) {
+    orderedDnsPolicyEntries.push(['rule-set:private', existingDnsPolicy['rule-set:private']]);
+  }
+  const resolveProviderDns = (providerName, target) => {
+    if (providerName === 'apple_cn' || providerName === 'geolocation-cn') return [...chinaDNS];
+    const dnsEgressGroupName = target === appleOtherGroupName ? appleOtherDnsEgressGroupName : target;
+    return dnsForRoute(target, dnsEgressGroupName, groupByName.get(dnsEgressGroupName));
+  };
+  const addedRuleSetKeys = new Set(['rule-set:private']);
+  const pushRuleSetPolicy = (key, value) => {
+    addedRuleSetKeys.add(key);
+    orderedDnsPolicyEntries.push([key, value]);
+  };
+  if (domainRuleSetEgress.has('apple_tv')) {
+    pushRuleSetPolicy('rule-set:apple_tv', resolveProviderDns('apple_tv', domainRuleSetEgress.get('apple_tv')));
+  }
+  // DNS 白名单与连接路由分开：只加载启用的集合，仍由客户端每日直接更新。
+  for (const [option, [name, provider]] of Object.entries(dnsWhitelist)) {
+    if (!options[option]) continue;
+    config['rule-providers'][name] = provider;
+    pushRuleSetPolicy(`rule-set:${name}`, [...chinaDNS]);
+  }
+  for (const [providerName, target] of domainRuleSetEgress) {
+    if (
+      providerName === 'private' ||
+      providerName === 'apple_tv' ||
+      providerName.startsWith('domestic_') ||
+      providerName.startsWith('geolocation-')
+    ) {
+      continue;
+    }
+    pushRuleSetPolicy(`rule-set:${providerName}`, resolveProviderDns(providerName, target));
+  }
+  for (const [key, value] of extraRuleSetEntries) {
+    if (!addedRuleSetKeys.has(key)) pushRuleSetPolicy(key, value);
   }
   // Domestic vendor DNS policies follow the domestic-service route switch: paired sets use the
   // same AND NOT predicate as routing, while Baidu has no upstream @!cn subset and uses its full set.
   for (const { source, excludeOverseas = true } of domesticServiceModules) {
     const providerName = excludeOverseas ? `domestic_${source}_dns` : `domestic_${source}`;
-    if (config['rule-providers'][providerName]) config.dns['nameserver-policy'][`rule-set:${providerName}`] = chinaDNS;
+    if (config['rule-providers'][providerName]) pushRuleSetPolicy(`rule-set:${providerName}`, [...chinaDNS]);
   }
   // geolocation-cn is the existing mainland domain DNS match set. Keep its policy even
   // when the domestic-route switch removes its routing rule; specific policies must win.
-  if (config['rule-providers']['geolocation-cn']) config.dns['nameserver-policy']['rule-set:geolocation-cn'] = chinaDNS;
-  // Mihomo 按 policy 顺序匹配；显式主机/后缀必须先于动态集合，不能只依赖键的具体程度。
-  const dnsPolicyEntries = Object.entries(config.dns['nameserver-policy']);
-  const ruleSetEntries = dnsPolicyEntries.filter(([key]) => key.startsWith('rule-set:'));
-  const ruleSetProviders = (key) => key.slice('rule-set:'.length).split(',');
-  const isDomesticVendorPolicy = (key) => ruleSetProviders(key).some((name) => name.startsWith('domestic_'));
-  const isGeolocationPolicy = (key) => ruleSetProviders(key).some((name) => name.startsWith('geolocation-'));
-  const orderedDnsPolicyEntries = [
-    ...dnsPolicyEntries.filter(([key]) => !key.startsWith('rule-set:')),
-    ...ruleSetEntries.filter(([key]) => !isDomesticVendorPolicy(key) && !isGeolocationPolicy(key)),
-    ...ruleSetEntries.filter(([key]) => isDomesticVendorPolicy(key)),
-    ...ruleSetEntries.filter(([key]) => isGeolocationPolicy(key)),
-  ];
+  if (config['rule-providers']['geolocation-cn']) {
+    pushRuleSetPolicy('rule-set:geolocation-cn', [...chinaDNS]);
+  }
+  if (domainRuleSetEgress.has('geolocation-!cn')) {
+    pushRuleSetPolicy(
+      'rule-set:geolocation-!cn',
+      resolveProviderDns('geolocation-!cn', domainRuleSetEgress.get('geolocation-!cn')),
+    );
+  }
+
   const compactDnsPolicyEntries = [];
   for (const [key, resolvers] of orderedDnsPolicyEntries) {
     const previous = compactDnsPolicyEntries[compactDnsPolicyEntries.length - 1];
     if (
       key.startsWith('rule-set:') &&
       previous?.[0].startsWith('rule-set:') &&
-      JSON.stringify(previous[1]) === JSON.stringify(resolvers)
+      sameDnsResolvers(previous[1], resolvers)
     ) {
       previous[0] += `,${key.slice('rule-set:'.length)}`;
     } else {
@@ -2258,6 +2101,7 @@ function validateStrictDnsSettings(config, options) {
     config.dns['use-system-hosts'] = false;
     // 不向系统 DNS 查询 LAN 名称；局域网名称通过用户 hosts 显式维护。
     config.dns['nameserver-policy']['rule-set:private'] = 'rcode://success';
+    const validOutbounds = new Set(['DIRECT', ...groups.map((group) => group.name)]);
     const encrypted = (value, field) => {
       for (const server of Array.isArray(value) ? value : [value]) {
         if (typeof server !== 'string') throw new Error(`严格DNS校验：${field} 必须使用加密 DNS`);
@@ -2268,7 +2112,7 @@ function validateStrictDnsSettings(config, options) {
           parts.length > 2 ||
           !/^(https|tls|quic):\/\/[^\s#@]+$/i.test(parts[0]) ||
           /skip-cert-verify|@/i.test(server) ||
-          (parts.length === 2 && !['DIRECT', ...groups.map((group) => group.name)].includes(outbound)) ||
+          (parts.length === 2 && !validOutbounds.has(outbound)) ||
           parameters.some((parameter) => !/^(?:name-cert-verify=[a-z0-9.-]+|h3=true)$/i.test(parameter))
         )
           throw new Error(`严格DNS校验：脚本生成的 ${field} 含不受支持或明文 DNS；严格模式不会降级。`);
@@ -2306,8 +2150,8 @@ function finalizeMyProxyRules(config) {
   const options = ruleOptionsEnable;
   applyRuntimeConfigOptions(config, options);
   prioritizePreferredGroups(config);
-  const specialRules = applyAppleRouting(config, options);
-  applyDnsPolicies(config, options, specialRules);
+  const appleRules = applyAppleRouting(config, options);
+  applyDnsPolicies(config, options, appleRules);
   validateStrictDnsSettings(config, options);
   cleanupUnusedRuleProviders(config);
   return config;
