@@ -17,11 +17,12 @@ const shouldRunES2026 = runAll || ARGS.has('--es2026');
 const shouldRunQuickJS = runAll || ARGS.has('--quickjs');
 
 /** 打印一份覆写结果概览，便于快速确认输出规模 */
-function printDemo(api, label, meta) {
+function printDemo(api, label) {
   try {
     const out = api.main(fx.typicalSubscription());
     const groups = out['proxy-groups'];
-    const regionSelect = groups.filter((g) => g.type === 'select' && meta.regions.includes(g.name)).map((g) => g.name);
+    const regionNames = new Set(api.regionDefinitions.map((r) => r.name));
+    const regionSelect = groups.filter((g) => g.type === 'select' && regionNames.has(g.name)).map((g) => g.name);
     const other = groups.some((g) => g.name === '其他节点') ? ['其他节点'] : [];
     console.log(`\n  ── 覆写结果概览 (${label}) ──`);
     console.log(`     代理节点: ${out.proxies.length}`);
@@ -58,7 +59,7 @@ async function main() {
 
       runUnitTests(h, api);
       runIntegrationTests(h, api, fx, loadScript, script.file);
-      printDemo(api, script.label, script.meta);
+      printDemo(api, script.label);
 
       const s = h.summary();
       totalPassed += s.passed;

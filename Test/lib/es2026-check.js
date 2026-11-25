@@ -101,7 +101,7 @@ function runES2026Checks({ harness }) {
   if (!espree) {
     harness.section('ES2026 兼容性检查（已跳过）');
     console.log('    ⚠ 未安装 espree 依赖，已跳过 ES2026 兼容性检查。');
-    console.log('      如需启用：npm --prefix Test install');
+    console.log('      如需启用：./tools/npmw ci');
     return;
   }
 

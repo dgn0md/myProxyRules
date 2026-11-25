@@ -1,12 +1,12 @@
 /**
- * 用真实 QuickJS 引擎验证 Script/Script.js 与 Script/mihomoScript.js 的兼容性。
+ * 用真实 QuickJS 引擎验证 Script/mihomoScript.js 的兼容性。
  *
  * 覆盖两层验证：
  * 1. 语法解析 + 顶层执行（含所有正则字面量编译）
  * 2. 集成验证：在 QuickJS 上下文实际调用 main() 处理 typicalSubscription 配置，
  *    确认输出结构完整（proxies / proxy-groups / rules / dns / hosts）。
  *
- * 由 Test/run-tests.js 调用（npm --prefix Test run test:quickjs，需要已安装 quickjs-emscripten）。
+ * 由 Test/run-tests.js 调用（./tools/nodew Test/run-tests.js --quickjs，需要已安装 quickjs-emscripten）。
  */
 'use strict';
 
@@ -53,7 +53,7 @@ async function runQuickJSChecks({ harness, fixtures }) {
   if (!quickjs) {
     harness.section('QuickJS 引擎兼容性验证（已跳过）');
     console.log('    ⚠ 未安装 quickjs-emscripten 依赖，已跳过 QuickJS 验证。');
-    console.log('      如需启用：npm --prefix Test install');
+    console.log('      如需启用：./tools/npmw ci');
     return;
   }
 

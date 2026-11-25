@@ -54,8 +54,11 @@ jobs:
           npm run check
       - name: Download and verify pinned Mihomo
         run: |
-          curl -fsSL --retry 3 https://github.com/MetaCubeX/mihomo/releases/download/v1.19.34/mihomo-linux-amd64-compatible-v1.19.34.gz -o /tmp/mihomo.gz
-          echo '2763f5b414527f7baf6dc57e3f82f3ab561eedf34bfd7c2f2cde1f7e592efe06  /tmp/mihomo.gz' | sha256sum -c -
+          read -r URL SHA256 <<EOF
+          $(node -e 'const l = require("./tools/mihomo.lock.json"), s = l.platforms["linux-x64"]; console.log(`${l.release}/${s.archive} ${s.sha256}`);')
+          EOF
+          curl -fsSL --retry 3 "$URL" -o /tmp/mihomo.gz
+          printf '%s  /tmp/mihomo.gz\n' "$SHA256" | sha256sum -c -
           gzip -d /tmp/mihomo.gz
           chmod +x /tmp/mihomo
       - name: Validate native routing

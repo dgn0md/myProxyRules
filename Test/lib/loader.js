@@ -22,6 +22,8 @@ const EXPORT_SUFFIX = `
   fixDialerProxy,
   buildCustomizeGroups,
   collectRuleSetReferences,
+  regionDefinitions,
+  Compatible_With_Bettbox,
   ruleOptionsEnable
 };`;
 
