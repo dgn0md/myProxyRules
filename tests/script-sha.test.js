@@ -36,6 +36,7 @@ test('source and generated CDN copy carry distinct version identifiers', () => {
   assert.match(cdnScript, new RegExp(`最新 Raw SHA-256：${rawSha256}`));
   assert.match(cdnScript, new RegExp(`缓存 CDN SHA-256：${cdn.cdnSha256}`));
   assert.equal(computeCdnScriptSha256(cdnScript), cdn.cdnSha256);
+  assert.equal(fs.readFileSync('Script/mihomoScript.cdn.js', 'utf8'), cdnScript);
   assert.notEqual(rawSha256, cdn.cdnSha256);
   assert.ok(cdnScript.includes(cdnUrl));
   assert.ok(!text.includes(rawUrl));
