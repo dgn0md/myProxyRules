@@ -1767,3 +1767,35 @@ test('CLI refuses private subscription output inside tracked repository paths', 
   assert.notEqual(withUrl.status, 0);
   assert.match(withUrl.stderr, /只能输出到仓库内 .local/);
 });
+
+test('minimal mode keeps apple_ip in the IP section and includes eligible regions in AppleProxy', () => {
+  const multiRegionSub = { proxies: [proxy('美国 测试'), proxy('日本 测试')] };
+  for (const subscription of [undefined, multiRegionSub]) {
+    const config = build({ subscription, settings: { options: { 极简分流: true } } }).config;
+    const appleIpIndex = config.rules.indexOf(`RULE-SET,apple_ip,${appleProxyGroup},no-resolve`);
+    const privateIpIndex = config.rules.indexOf('RULE-SET,private_ip,直连,no-resolve');
+    const geolocationNonCnIndex = config.rules.indexOf('RULE-SET,geolocation-!cn,默认代理');
+    const appleProxyIndex = config.rules.indexOf(`RULE-SET,apple_proxy,${appleProxyGroup}`);
+    assert.ok(appleIpIndex > appleProxyIndex, 'apple_ip must stay after AppleProxy domain rules');
+    assert.ok(appleIpIndex > geolocationNonCnIndex, 'apple_ip must stay in the IP rules section');
+    assert.ok(appleIpIndex < privateIpIndex, 'apple_ip must precede private_ip');
+
+    const appleProxy = config['proxy-groups'].find((group) => group.name === appleProxyGroup);
+    assert.equal(appleProxy.proxies[0], '美国');
+    assert.ok(appleProxy.proxies.includes('日本'));
+    assert.ok(appleProxy.proxies.includes('直连'));
+  }
+});
+
+test('Compatible_With_Bettbox policyGroupOptions align with ruleOptionsEnable keys and DNS arrays do not alias across runs', () => {
+  const api = loadScript('Script/mihomoScript.js');
+  for (const option of api.Compatible_With_Bettbox.policyGroupOptions) {
+    assert.ok(Object.hasOwn(api.ruleOptionsEnable, option), `unknown policyGroupOption ${option}`);
+  }
+  const first = api.main(clean());
+  first.dns.nameserver.push('mutated');
+  first.dns['proxy-server-nameserver'].push('mutated');
+  const second = api.main(clean());
+  assert.ok(!second.dns.nameserver.includes('mutated'));
+  assert.ok(!second.dns['proxy-server-nameserver'].includes('mutated'));
+});
