@@ -1,8 +1,8 @@
 # myProxyRules
 
-以 Mihomo 为唯一功能源和主支持客户端，提供覆写脚本、全量静态配置及 Stash 可用的 Mihomo 风格配置。Surge、Shadowrocket 和 Quantumult X 的原生配置作为独立兼容入口提供，规则与 DNS 覆盖差异见[多客户端兼容性说明](docs/client-compatibility.md)。项目从 [AIsouler/MyClash 全量版](https://github.com/AIsouler/MyClash/commit/4861619be366c7bacabfed6d581bb8c450de1ca1) 起步并独立维护。地区节点分组、倍率与家宽分类、常见服务分流是基础能力；本仓库重点维护以下功能。
+myProxyRules 以 Mihomo 为唯一功能源和主支持客户端，提供覆写脚本、静态配置及 Stash 可用的 Mihomo 风格配置。Surge、Shadowrocket 和 Quantumult X 的原生配置作为兼容入口提供，规则与 DNS 覆盖差异见[多客户端兼容性说明](docs/client-compatibility.md)。项目最初基于 [AIsouler/MyClash](https://github.com/AIsouler/MyClash/commit/4861619be366c7bacabfed6d581bb8c450de1ca1)，现独立维护功能和版本，不与其同步。地区节点分组、倍率与家宽分类、常见服务分流是基础能力；本仓库重点维护以下功能。
 
-参与维护的人员和各类 AI 助手开始修改前，请先阅读 [仓库维护约定](AGENTS.md)，并遵守其中引用的 [模块化与动态规则集开发原则](docs/development-principles.md) 和 [国内 DNS 白名单维护原则](docs/dns-whitelist.md)。图标相关工作还须阅读 [上游图标维护约定](docs/upstream/icon-guidelines.md)。`AGENTS.md` 是共享维护规则的入口，适用于所有工具和贡献者。
+参与维护的人员和各类 AI 助手开始修改前，请先阅读 [仓库维护约定](AGENTS.md)，并遵守其中引用的 [模块化与动态规则集开发原则](docs/development-principles.md) 和 [国内 DNS 白名单维护原则](docs/dns-whitelist.md)。`AGENTS.md` 是共享维护规则的入口，适用于所有工具和贡献者；图标来源和许可见文末说明。
 
 ## 项目重点
 
@@ -52,6 +52,8 @@ Mihomo 是本项目的主要支持客户端，功能源为覆写脚本和全量�
 
 静态 YAML 中的扩展开关不会由 Mihomo 内核执行。更改 `Config/mihomoConfig.yaml` 中的选项并推送后，GitHub Actions 会自动重新生成 Raw YAML 和带独立 CDN SHA-256 的 `Config/mihomoConfig.cdn.yaml`，同时更新 Stash 和其他客户端 profile。
 
+旧设置文件使用 `x-myClashRules` 时，请将该键改为 `x-myProxyRules`；构建工具不再读取旧键，并会提示迁移。
+
 GitHub Actions 每天定时验证并重生静态配置；脚本、配置开关、构建器或依赖锁文件变更时也会触发。只有生成内容变化且 Mihomo 行为与原生校验通过时，Action 才会提交更新后的 YAML、Stash 和其他客户端配置及 CDN 副本。也可在仓库的 Actions 页面手动运行 `Sync script and generate config`。
 
 脚本和配置都由 GitHub Actions 生成 CDN 副本；Mihomo YAML 与客户端 profile 分别显示 Raw SHA-256 和 CDN SHA-256。Mihomo YAML CDN 入口直接链接 `mihomoConfig.cdn.yaml`。
@@ -79,4 +81,8 @@ npm run build:targets -- --target all
 
 可用 `./tools/npmw run diagnose -- --probe-domain gateway.icloud.com` 或 `--probe-ip 17.0.0.1` 在隔离的 Mihomo 回环环境中查看实际命中的规则与策略链；`--select 'Other Apple Service=美国'` 可模拟一次组内选择。诊断使用合成节点和本机下载的规则快照，所有出口终止在本地，不代表真实订阅当前选择、设备网络或 UDP 行为。
 
-大部分图标引用上游 SVG；Apple、Twitter 及部分地区图标引用 [离歌图标库](https://github.com/lige47/lige_icon/) 的 PNG。上游代码与图标的 MIT 许可和署名见 [LICENSE](LICENSE)；离歌图标库的使用请参阅其项目说明。
+## 来源与许可
+
+本项目包含基于 AIsouler/MyClash 的代码；原作者 AIsouler 的版权声明与 MIT 许可保留在 [LICENSE](LICENSE)，上游原许可证另见 [docs/upstream/LICENSE](docs/upstream/LICENSE)。
+
+策略组和地区图标使用本仓库 [Icons/svg](Icons/svg) 中的 SVG，通过本仓库 CDN 地址引用。图标来自 [aaANDkk / Qure-Style-SVG](https://github.com/aaANDkk/Qure_Style_SVG)，由计划任务每周同步该图标库；当前上游提交记录在 [REVISION](Icons/upstream/REVISION)。图标集包含多种来源，Qure 参考及重绘素材需保留 Koolson/Qure 署名，仅供学习交流，不用于商业盈利；具体来源、版权和许可见随附的[第三方说明](Icons/upstream/THIRD_PARTY_NOTICES.md)及[许可文本](Icons/upstream/licenses/)。各品牌名称和标志归其权利人所有。本项目代码的 MIT 许可不取代图标各自的许可。

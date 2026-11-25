@@ -170,7 +170,7 @@ function render(config, api, settings) {
   }
   const header = [
     '# myProxyRules Mihomo 全量静态配置',
-    '# 致谢：AIsouler/MyClash 全量版（commit 4861619be366c7bacabfed6d581bb8c450de1ca1）。',
+    '# 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。',
     '# 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。',
     `# 最新 Raw SHA-256：${'0'.repeat(64)}`,
     '# Raw 配置：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/mihomoConfig.yaml',
@@ -224,7 +224,10 @@ function cli(args) {
     else throw new Error(`未知或缺少值的参数：${name}`);
   }
   const input = flags.settings ? readYaml(flags.settings) : {};
-  const settings = input['x-myProxyRules'] || input['x-myClashRules'] || input;
+  if (Object.hasOwn(input, 'x-myClashRules')) {
+    throw new Error('不再支持 x-myClashRules，请迁移为 x-myProxyRules');
+  }
+  const settings = input['x-myProxyRules'] || input;
   if (input['proxy-providers']?.订阅?.url) settings.subscription = { url: input['proxy-providers'].订阅.url };
   const result = build({ settings, subscription: flags.subscription ? readYaml(flags.subscription) : undefined });
   const output = path.resolve(

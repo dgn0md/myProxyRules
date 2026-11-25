@@ -42,6 +42,6 @@ DNS policy 在极简模式和服务组关闭时仍按各自边界生效；HTTP p
 | 静态 YAML | 配置 `proxy-providers.订阅.url` 后导入内核 | 内核按 provider 读取订阅；构建时看不到节点名称或机场 hosts。                                    |
 | 本地展开  | 选项 YAML 与 `--subscription` 本地文件     | 构建工具将节点交给同一脚本处理，默认输出到忽略的 `.local/expanded.yaml`；订阅更新后需重新生成。 |
 
-YAML 中的 `x-myProxyRules` 是构建输入，Mihomo 不执行这些扩展字段；命令行仍读取旧键 `x-myClashRules` 以兼容既有设置文件，生成产物统一使用新键。开发命令和节点处理测试见 [Test/README.md](../Test/README.md)。
+YAML 中的 `x-myProxyRules` 是构建输入，Mihomo 不执行这些扩展字段。旧设置文件须将 `x-myClashRules` 改名为 `x-myProxyRules`；构建工具遇到旧键会报错，避免静默忽略设置。开发命令和节点处理测试见 [Test/README.md](../Test/README.md)。
 
 静态 provider 在加载时会移除“大陆旗帜 + 台湾文字”的冲突旗帜，再对节点名称运行 Mihomo 正则。展开模式还会处理其他文字与国旗冲突、零宽字符和重名节点，因此两种模式对其他异常名称的地区归类仍可能不同。需要完整节点归类时使用本地展开模式。

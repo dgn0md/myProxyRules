@@ -1,0 +1,76 @@
+name: Sync upstream icons
+
+on:
+  schedule:
+    - cron: '23 19 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-icons-main
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6
+        with:
+          repository: aaANDkk/Qure_Style_SVG
+          ref: main
+          path: .local/qure-upstream
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - run: npm ci
+      - name: Sync SVG files and upstream notices
+        run: |
+          set -euo pipefail
+          upstream=.local/qure-upstream
+          test -f "$upstream/THIRD_PARTY_NOTICES.md"
+          test -d "$upstream/licenses"
+          test -d "$upstream/icon/svg/common"
+          test -d "$upstream/icon/svg/flag"
+          if find "$upstream/icon/svg" "$upstream/licenses" -type l -print -quit | grep -q .; then
+            echo 'Unexpected symbolic link in upstream assets' >&2
+            exit 1
+          fi
+          rsync -a --delete --include='*/' --include='*.svg' --exclude='*' "$upstream/icon/svg/common/" Icons/svg/common/
+          rsync -a --delete --include='*/' --include='*.svg' --exclude='*' "$upstream/icon/svg/flag/" Icons/svg/flag/
+          rsync -a --delete "$upstream/licenses/" Icons/upstream/licenses/
+          cp "$upstream/THIRD_PARTY_NOTICES.md" Icons/upstream/THIRD_PARTY_NOTICES.md
+          git -C "$upstream" rev-parse HEAD > Icons/upstream/REVISION
+          node tools/check-icons.js
+      - name: Test and check configuration
+        run: |
+          npm test
+          npm run check
+      - name: Download and verify pinned Mihomo
+        run: |
+          curl -fsSL --retry 3 https://github.com/MetaCubeX/mihomo/releases/download/v1.19.34/mihomo-linux-amd64-compatible-v1.19.34.gz -o /tmp/mihomo.gz
+          echo '2763f5b414527f7baf6dc57e3f82f3ab561eedf34bfd7c2f2cde1f7e592efe06  /tmp/mihomo.gz' | sha256sum -c -
+          gzip -d /tmp/mihomo.gz
+          chmod +x /tmp/mihomo
+      - name: Validate native routing
+        run: |
+          node tools/download-rules.js .local/rules
+          node tools/native-check.js /tmp/mihomo .local/rules
+      - name: Publish synchronized icons
+        run: |
+          set -euo pipefail
+          git add -- Icons/svg Icons/upstream
+          if git diff --cached --quiet; then
+            echo 'Icons are already up to date.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'chore: sync upstream icons'
+          git push

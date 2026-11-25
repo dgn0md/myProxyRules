@@ -1,8 +1,8 @@
 # myProxyRules Stash profile
 # Raw profile: https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/stash/profile.yaml
 # CDN profile: https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/stash/profile.cdn.yaml
-# Raw SHA-256: 676bd2af061aa9fa5dcfe6c3d5aa1dfa93ccbb8943f9580afa49a00ba8993b7f
-# CDN SHA-256: c524e47491eb45b67cad246daab23c5e3010a432ee587fb9edaf1894995a5fa6
+# Raw SHA-256: bde9f23d50931109010f7af249b4c1cca6ae1632d24b5a4283baa066eeea1909
+# CDN SHA-256: 15fcd10aab03c28ebed66c0ce724d6e25cb2839eedcc64e14167e3e9d7be0fd1
 dns:
   enable: true
   ipv6: true
@@ -411,7 +411,7 @@ proxy-groups:
       - 家宽节点-自动选择
       - 其他节点
       - 其他节点-自动选择
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Global.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Global.svg
   - timeout: 5000
     url: https://cp.cloudflare.com/generate_204
     max-failed-times: 3
@@ -452,14 +452,14 @@ proxy-groups:
       - 其他节点
       - 手动选择
       - 负载均衡
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Proxy.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Proxy.svg
   - timeout: 5000
     url: https://cp.cloudflare.com/generate_204
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
     name: 手动选择
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Static.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Static.svg
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
@@ -472,7 +472,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 自动选择ex(大陆&香港)
     exclude-filter: (?i)((🇭🇰|香港|\b(HK|HKG)\b|hong\s*kong|🇨🇳|大陆|内地|\b(CN|CHN|PRC)\b|\bChina\b|\bMainland\b)|(官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?))
@@ -486,7 +486,7 @@ proxy-groups:
     lazy: true
     strategy: sticky-sessions
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/RoundRobin.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Round_Robin.svg
     hidden: true
     name: 负载均衡
     include-all-providers: true
@@ -497,7 +497,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: FCM
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Fcm.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/FCM.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -541,7 +541,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: YouTube
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/YouTube.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/YouTube.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -583,7 +583,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Google
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Google.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Google.svg
     proxies:
       - 日本
       - 美国
@@ -616,7 +616,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: AI
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/OpenAI.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/ChatGPT.svg
     proxies:
       - 日本
       - 美国
@@ -649,7 +649,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: GitHub
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/GitHub.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/GitHub.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -691,7 +691,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Microsoft
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Microsoft.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Microsoft.svg
     proxies:
       - 直连
       - 默认代理
@@ -734,7 +734,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Other Apple Service
-    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Apple.svg
     proxies:
       - 直连
       - 默认代理
@@ -777,7 +777,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Telegram
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Telegram.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Telegram.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -819,7 +819,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Steam
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Steam.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Steam.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -862,7 +862,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: TikTok
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/TikTok.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/TikTok.svg
     proxies:
       - 日本
       - 美国
@@ -895,7 +895,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Twitter
-    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/04ProxySoft/twitter(2).png
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/X.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -937,7 +937,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Meta
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Meta.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Meta.svg
     proxies:
       - 日本
       - 美国
@@ -970,7 +970,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Line
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Line.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Line.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -1012,7 +1012,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Netflix
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Netflix.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Netflix.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -1054,7 +1054,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Emby
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Emby.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Emby.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -1097,7 +1097,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: PikPak
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/PikPak.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/PikPak.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -1140,7 +1140,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Spotify
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Spotify.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Spotify.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -1183,7 +1183,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Crypto
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Bitcoin.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Bitcoin.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -1226,7 +1226,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: PayPal
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/PayPal.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/PayPal.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -1269,7 +1269,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Patreon
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Patreon.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Patreon.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -1312,7 +1312,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: EHentai
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/EHentai.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/EHentai.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -1356,7 +1356,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: AdBlock
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/AdBlock.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/AdBlock.svg
     proxies:
       - REJECT
       - REJECT-DROP
@@ -1367,7 +1367,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: Siri Ai/Apple Intelligence
-    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Apple.svg
     proxies:
       - 美国
       - 日本
@@ -1399,7 +1399,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: AppleProxy
-    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Apple.svg
     proxies:
       - 美国
       - 默认代理
@@ -1475,7 +1475,7 @@ proxy-groups:
       - 高倍率节点
       - 家宽节点
       - 其他节点
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Stack.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Stack.svg
   - timeout: 5000
     url: https://cp.cloudflare.com/generate_204
     max-failed-times: 3
@@ -1488,7 +1488,7 @@ proxy-groups:
       - 🇨🇳 直连 | IPv6优先
       - 🇨🇳 直连 | 仅IPv4
       - 🇨🇳 直连 | 仅IPv6
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/China.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/China.svg
     hidden: false
   - timeout: 5000
     url: https://cp.cloudflare.com/generate_204
@@ -1496,7 +1496,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 香港
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/HongKong.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Hong_Kong.svg
     proxies:
       - 香港-自动选择
     default-selected: 香港-自动选择
@@ -1514,7 +1514,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 香港-自动选择
     include-all-providers: true
@@ -1526,7 +1526,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 日本
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Japan.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Japan.svg
     proxies:
       - 日本-自动选择
     default-selected: 日本-自动选择
@@ -1544,7 +1544,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 日本-自动选择
     include-all-providers: true
@@ -1556,7 +1556,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 美国
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/America.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/United_States.svg
     proxies:
       - 美国-自动选择
     default-selected: 美国-自动选择
@@ -1574,7 +1574,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 美国-自动选择
     include-all-providers: true
@@ -1586,7 +1586,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 新加坡
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Singapore.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Singapore.svg
     proxies:
       - 新加坡-自动选择
     default-selected: 新加坡-自动选择
@@ -1604,7 +1604,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 新加坡-自动选择
     include-all-providers: true
@@ -1616,7 +1616,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 台湾
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Taiwan.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/China_Taiwan.svg
     proxies:
       - 台湾-自动选择
     default-selected: 台湾-自动选择
@@ -1634,7 +1634,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 台湾-自动选择
     include-all-providers: true
@@ -1646,7 +1646,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 韩国
-    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Korea(1).png
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/South_Korea.svg
     proxies:
       - 韩国-自动选择
     default-selected: 韩国-自动选择
@@ -1664,7 +1664,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 韩国-自动选择
     include-all-providers: true
@@ -1676,7 +1676,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 澳大利亚
-    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Australia.png
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Australia.svg
     proxies:
       - 澳大利亚-自动选择
     default-selected: 澳大利亚-自动选择
@@ -1694,7 +1694,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 澳大利亚-自动选择
     include-all-providers: true
@@ -1706,7 +1706,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 印度尼西亚
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Indonesia.svg
     proxies:
       - 印度尼西亚-自动选择
     default-selected: 印度尼西亚-自动选择
@@ -1724,7 +1724,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 印度尼西亚-自动选择
     include-all-providers: true
@@ -1736,7 +1736,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 印度
-    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/India(2).png
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/India.svg
     proxies:
       - 印度-自动选择
     default-selected: 印度-自动选择
@@ -1754,7 +1754,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 印度-自动选择
     include-all-providers: true
@@ -1766,7 +1766,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 加拿大
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Canada.svg
     proxies:
       - 加拿大-自动选择
     default-selected: 加拿大-自动选择
@@ -1784,7 +1784,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 加拿大-自动选择
     include-all-providers: true
@@ -1796,7 +1796,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 德国
-    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Germany.png
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Germany.svg
     proxies:
       - 德国-自动选择
     default-selected: 德国-自动选择
@@ -1814,7 +1814,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 德国-自动选择
     include-all-providers: true
@@ -1826,7 +1826,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 英国
-    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/UnitedKingdom.png
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/United_Kingdom.svg
     proxies:
       - 英国-自动选择
     default-selected: 英国-自动选择
@@ -1844,7 +1844,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 英国-自动选择
     include-all-providers: true
@@ -1856,7 +1856,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 法国
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/France.svg
     proxies:
       - 法国-自动选择
     default-selected: 法国-自动选择
@@ -1874,7 +1874,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 法国-自动选择
     include-all-providers: true
@@ -1886,7 +1886,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 荷兰
-    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Netherlands(1).png
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Netherlands.svg
     proxies:
       - 荷兰-自动选择
     default-selected: 荷兰-自动选择
@@ -1904,7 +1904,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 荷兰-自动选择
     include-all-providers: true
@@ -1916,7 +1916,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 西班牙
-    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Spain(2).png
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Spain.svg
     proxies:
       - 西班牙-自动选择
     default-selected: 西班牙-自动选择
@@ -1934,7 +1934,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 西班牙-自动选择
     include-all-providers: true
@@ -1946,7 +1946,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 俄罗斯
-    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Russia.png
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Russia.svg
     proxies:
       - 俄罗斯-自动选择
     default-selected: 俄罗斯-自动选择
@@ -1964,7 +1964,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 俄罗斯-自动选择
     include-all-providers: true
@@ -1976,7 +1976,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 乌克兰
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Ukraine.svg
     proxies:
       - 乌克兰-自动选择
     default-selected: 乌克兰-自动选择
@@ -1994,7 +1994,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 乌克兰-自动选择
     include-all-providers: true
@@ -2006,7 +2006,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 土耳其
-    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Turkey.png
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Turkey.svg
     proxies:
       - 土耳其-自动选择
     default-selected: 土耳其-自动选择
@@ -2024,7 +2024,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 土耳其-自动选择
     include-all-providers: true
@@ -2036,7 +2036,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 挪威
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Norway.svg
     proxies:
       - 挪威-自动选择
     default-selected: 挪威-自动选择
@@ -2054,7 +2054,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 挪威-自动选择
     include-all-providers: true
@@ -2066,7 +2066,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 瑞士
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Switzerland.svg
     proxies:
       - 瑞士-自动选择
     default-selected: 瑞士-自动选择
@@ -2084,7 +2084,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 瑞士-自动选择
     include-all-providers: true
@@ -2096,7 +2096,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 瑞典
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Sweden.svg
     proxies:
       - 瑞典-自动选择
     default-selected: 瑞典-自动选择
@@ -2114,7 +2114,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 瑞典-自动选择
     include-all-providers: true
@@ -2126,7 +2126,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 爱尔兰
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Ireland.svg
     proxies:
       - 爱尔兰-自动选择
     default-selected: 爱尔兰-自动选择
@@ -2144,7 +2144,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 爱尔兰-自动选择
     include-all-providers: true
@@ -2156,7 +2156,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 菲律宾
-    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/RepublicofthePhilippines(1).png
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Philippines.svg
     proxies:
       - 菲律宾-自动选择
     default-selected: 菲律宾-自动选择
@@ -2174,7 +2174,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 菲律宾-自动选择
     include-all-providers: true
@@ -2186,7 +2186,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 越南
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Vietnam.svg
     proxies:
       - 越南-自动选择
     default-selected: 越南-自动选择
@@ -2204,7 +2204,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 越南-自动选择
     include-all-providers: true
@@ -2216,7 +2216,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 泰国
-    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Thailand.png
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Thailand.svg
     proxies:
       - 泰国-自动选择
     default-selected: 泰国-自动选择
@@ -2234,7 +2234,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 泰国-自动选择
     include-all-providers: true
@@ -2246,7 +2246,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 马来西亚
-    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Malaysia.png
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Malaysia.svg
     proxies:
       - 马来西亚-自动选择
     default-selected: 马来西亚-自动选择
@@ -2264,7 +2264,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 马来西亚-自动选择
     include-all-providers: true
@@ -2276,7 +2276,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 低倍率节点
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Available.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Available.svg
     proxies:
       - 低倍率节点-自动选择
     hidden: false
@@ -2294,7 +2294,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 低倍率节点-自动选择
     include-all-providers: true
@@ -2307,7 +2307,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 高倍率节点
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Airport.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Airport.svg
     proxies:
       - 高倍率节点-自动选择
     hidden: false
@@ -2326,7 +2326,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 高倍率节点-自动选择
     include-all-providers: true
@@ -2340,7 +2340,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 家宽节点
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Home.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Home.svg
     proxies:
       - 家宽节点-自动选择
     hidden: false
@@ -2357,7 +2357,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 家宽节点-自动选择
     include-all-providers: true
@@ -2369,7 +2369,7 @@ proxy-groups:
     empty-fallback: REJECT
     type: select
     name: 其他节点
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/WorldMap.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/World_Map.svg
     proxies:
       - 其他节点-自动选择
     hidden: false
@@ -2385,7 +2385,7 @@ proxy-groups:
     lazy: true
     tolerance: 50
     exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/Auto.svg
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Auto.svg
     hidden: true
     name: 其他节点-自动选择
     include-all-providers: true

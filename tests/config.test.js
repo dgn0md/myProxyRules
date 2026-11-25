@@ -1698,7 +1698,7 @@ test('CLI applies edited booleans and preserves the subscription URL from a sett
   assert.ok(generated['proxy-groups'].some((group) => group.name === siriAiGroup));
   assert.ok(generated.dns['nameserver-policy']['rule-set:apple'].every((dns) => dnsRouteFor(dns) === siriAiGroup));
 });
-test('CLI accepts legacy x-myClashRules metadata and emits x-myProxyRules', () => {
+test('CLI rejects removed x-myClashRules metadata with a migration message', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'myproxylegacy-'));
   const settings = YAML.parse(build().text);
   const legacyMetadata = settings['x-myProxyRules'];
@@ -1711,10 +1711,9 @@ test('CLI accepts legacy x-myClashRules metadata and emits x-myProxyRules', () =
   const result = spawnSync(process.execPath, ['tools/build.js', '--settings', input, '--output', output], {
     encoding: 'utf8',
   });
-  assert.equal(result.status, 0, result.stderr);
-  const generated = YAML.parse(fs.readFileSync(output, 'utf8'));
-  assert.equal(generated['x-myProxyRules'].options[siriAiOption], false);
-  assert.ok(!Object.hasOwn(generated, 'x-myClashRules'));
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /不再支持 x-myClashRules.*x-myProxyRules/);
+  assert.ok(!fs.existsSync(output));
 });
 
 test('CLI refuses private subscription output inside tracked repository paths', () => {

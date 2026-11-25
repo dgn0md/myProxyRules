@@ -11,7 +11,7 @@
     "build": "node tools/build.js && node tools/build-cdn-config.js && node tools/build-targets.js",
     "build:targets": "node tools/build-targets.js",
     "test": "node Test/run-tests.js && node --test tests/*.test.js",
-    "check": "node tools/build.js --check && node tools/build-cdn-config.js --check && node tools/build-targets.js --check && prettier --check \"Script/**/*.js\" \"tools/**/*.js\" \"Test/*.js\" \"Test/**/*.js\" \"tests/*.js\"",
+    "check": "node tools/check-icons.js && node tools/build.js --check && node tools/build-cdn-config.js --check && node tools/build-targets.js --check && prettier --check \"Script/**/*.js\" \"tools/**/*.js\" \"Test/*.js\" \"Test/**/*.js\" \"tests/*.js\"",
     "native:setup": "node tools/native-workspace.js",
     "native:check": "node tools/native-workspace.js --check",
     "diagnose": "node tools/native-workspace.js --diagnose",

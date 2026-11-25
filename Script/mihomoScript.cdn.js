@@ -1,14 +1,14 @@
 /**
  * myProxyRules Mihomo 配置全量覆写脚本
  * 项目地址：dgn0md/myProxyRules
- * 致谢：AIsouler/MyClash 全量版（commit 4861619be366c7bacabfed6d581bb8c450de1ca1）。
+ * 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
  * 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
  *
- * 最新 Raw SHA-256：0e68c0d59482343b04a3f50b5dff627c68ef7bfb57efe0bcc089777f9d10e883
+ * 最新 Raw SHA-256：f6176f72d594bce2668a6fb9e39c47eecf86ac7487ccba00ffa218d273b48c16
  * Raw 脚本：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js
  * CDN 脚本：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js
  *
- * 缓存 CDN SHA-256：e91a4fa8bb26bf33209e56e79768019cf79696476a76678e63b499ffc021958b
+ * 缓存 CDN SHA-256：1e3ef4133239db487139d14cb09e0aa921ab9c886582ef8e575243c744e16d89
  */
 
 // --- 静态配置区域 ---
@@ -178,14 +178,14 @@ const directProxies = [
 const directProxyNames = directProxies.map(({ name }) => name);
 
 // 图标 URL 公共前缀
-const iconBaseUrl = 'https://fastly.jsdelivr.net/gh/AIsouler/MyClash@main/Icons/svg/';
+const iconBaseUrl = 'https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/';
 
 // 规则集 URL 公共前缀
 const ruleSetBaseUrl = 'https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/';
 
 // 定义地区策略组。regex 只使用 Mihomo Go regexp 支持的语法；
 // nameRegex 用于名称文字与国旗冲突时选择正确国旗。
-function defineRegion(name, flag, nameRegex, icon = `${iconBaseUrl}WorldMap.svg`) {
+function defineRegion(name, flag, nameRegex, icon = `${iconBaseUrl}common/World_Map.svg`) {
   return {
     name,
     flag,
@@ -196,97 +196,52 @@ function defineRegion(name, flag, nameRegex, icon = `${iconBaseUrl}WorldMap.svg`
 }
 
 const regionDefinitions = [
-  defineRegion('香港', '🇭🇰', /香港|\b(HK|HKG)\b|hong\s*kong/i, `${iconBaseUrl}HongKong.svg`),
-  defineRegion('日本', '🇯🇵', /日本|东京|大阪|京都|\b(JP|JPN)\b|japan/i, `${iconBaseUrl}Japan.svg`),
+  defineRegion('香港', '🇭🇰', /香港|\b(HK|HKG)\b|hong\s*kong/i, `${iconBaseUrl}flag/Hong_Kong.svg`),
+  defineRegion('日本', '🇯🇵', /日本|东京|大阪|京都|\b(JP|JPN)\b|japan/i, `${iconBaseUrl}flag/Japan.svg`),
   defineRegion(
     '美国',
     '🇺🇸',
     /美国|纽约|洛杉矶|旧金山|芝加哥|休斯顿|迈阿密|西雅图|波士顿|华盛顿|拉斯维加斯|圣何塞|\b(US|USA)\b|america|united\s*states/i,
-    `${iconBaseUrl}America.svg`,
+    `${iconBaseUrl}flag/United_States.svg`,
   ),
-  defineRegion('新加坡', '🇸🇬', /新加坡|狮城|\b(SG|SGP)\b|singapore/i, `${iconBaseUrl}Singapore.svg`),
-  defineRegion('台湾', '🇹🇼', /台湾|台北|高雄|\b(TW|TWN)\b|taiwan/i, `${iconBaseUrl}Taiwan.svg`),
-  defineRegion(
-    '韩国',
-    '🇰🇷',
-    /韩国|首尔|釜山|\b(KR|KOR)\b|south\s*korea|korea/i,
-    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Korea(1).png',
-  ),
+  defineRegion('新加坡', '🇸🇬', /新加坡|狮城|\b(SG|SGP)\b|singapore/i, `${iconBaseUrl}flag/Singapore.svg`),
+  defineRegion('台湾', '🇹🇼', /台湾|台北|高雄|\b(TW|TWN)\b|taiwan/i, `${iconBaseUrl}flag/China_Taiwan.svg`),
+  defineRegion('韩国', '🇰🇷', /韩国|首尔|釜山|\b(KR|KOR)\b|south\s*korea|korea/i, `${iconBaseUrl}flag/South_Korea.svg`),
   defineRegion(
     '澳大利亚',
     '🇦🇺',
     /澳大利亚|澳洲|悉尼|墨尔本|珀斯|\b(AU|AUS)\b|australia/i,
-    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Australia.png',
+    `${iconBaseUrl}flag/Australia.svg`,
   ),
-  defineRegion('印度尼西亚', '🇮🇩', /印度尼西亚|印尼|雅加达|\b(ID|IDN)\b|indonesia/i),
   defineRegion(
-    '印度',
-    '🇮🇳',
-    /印度($|[^尼])|孟买|新德里|\b(IN|IND)\b|india/i,
-    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/India(2).png',
+    '印度尼西亚',
+    '🇮🇩',
+    /印度尼西亚|印尼|雅加达|\b(ID|IDN)\b|indonesia/i,
+    `${iconBaseUrl}flag/Indonesia.svg`,
   ),
-  defineRegion('加拿大', '🇨🇦', /加拿大|多伦多|温哥华|蒙特利尔|\b(CA|CAN)\b|canada/i),
-  defineRegion(
-    '德国',
-    '🇩🇪',
-    /德国|法兰克福|柏林|\b(DE|DEU)\b|germany/i,
-    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Germany.png',
-  ),
+  defineRegion('印度', '🇮🇳', /印度($|[^尼])|孟买|新德里|\b(IN|IND)\b|india/i, `${iconBaseUrl}flag/India.svg`),
+  defineRegion('加拿大', '🇨🇦', /加拿大|多伦多|温哥华|蒙特利尔|\b(CA|CAN)\b|canada/i, `${iconBaseUrl}flag/Canada.svg`),
+  defineRegion('德国', '🇩🇪', /德国|法兰克福|柏林|\b(DE|DEU)\b|germany/i, `${iconBaseUrl}flag/Germany.svg`),
   defineRegion(
     '英国',
     '🇬🇧',
     /英国|伦敦|曼彻斯特|\b(UK|GB|GBR)\b|united\s*kingdom|britain|england/i,
-    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/UnitedKingdom.png',
+    `${iconBaseUrl}flag/United_Kingdom.svg`,
   ),
-  defineRegion('法国', '🇫🇷', /法国|巴黎|\b(FR|FRA)\b|france/i),
-  defineRegion(
-    '荷兰',
-    '🇳🇱',
-    /荷兰|阿姆斯特丹|\b(NL|NLD)\b|netherlands|holland/i,
-    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Netherlands(1).png',
-  ),
-  defineRegion(
-    '西班牙',
-    '🇪🇸',
-    /西班牙|马德里|\b(ES|ESP)\b|spain/i,
-    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Spain(2).png',
-  ),
-  defineRegion(
-    '俄罗斯',
-    '🇷🇺',
-    /俄罗斯|莫斯科|\b(RU|RUS)\b|russia/i,
-    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Russia.png',
-  ),
-  defineRegion('乌克兰', '🇺🇦', /乌克兰|基辅|\b(UA|UKR)\b|ukraine/i),
-  defineRegion(
-    '土耳其',
-    '🇹🇷',
-    /土耳其|伊斯坦布尔|\b(TR|TUR)\b|turkey|türkiye/i,
-    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Turkey.png',
-  ),
-  defineRegion('挪威', '🇳🇴', /挪威|奥斯陆|\b(NO|NOR)\b|norway/i),
-  defineRegion('瑞士', '🇨🇭', /瑞士|苏黎世|\b(CH|CHE)\b|switzerland|swiss/i),
-  defineRegion('瑞典', '🇸🇪', /瑞典|斯德哥尔摩|\b(SE|SWE)\b|sweden/i),
-  defineRegion('爱尔兰', '🇮🇪', /爱尔兰|都柏林|\b(IE|IRL)\b|ireland/i),
-  defineRegion(
-    '菲律宾',
-    '🇵🇭',
-    /菲律宾|马尼拉|\b(PH|PHL)\b|philippines/i,
-    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/RepublicofthePhilippines(1).png',
-  ),
-  defineRegion('越南', '🇻🇳', /越南|河内|胡志明|\b(VN|VNM)\b|vietnam/i),
-  defineRegion(
-    '泰国',
-    '🇹🇭',
-    /泰国|曼谷|\b(TH|THA)\b|thailand/i,
-    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Thailand.png',
-  ),
-  defineRegion(
-    '马来西亚',
-    '🇲🇾',
-    /马来西亚|吉隆坡|\b(MY|MYS)\b|malaysia/i,
-    'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Malaysia.png',
-  ),
+  defineRegion('法国', '🇫🇷', /法国|巴黎|\b(FR|FRA)\b|france/i, `${iconBaseUrl}flag/France.svg`),
+  defineRegion('荷兰', '🇳🇱', /荷兰|阿姆斯特丹|\b(NL|NLD)\b|netherlands|holland/i, `${iconBaseUrl}flag/Netherlands.svg`),
+  defineRegion('西班牙', '🇪🇸', /西班牙|马德里|\b(ES|ESP)\b|spain/i, `${iconBaseUrl}flag/Spain.svg`),
+  defineRegion('俄罗斯', '🇷🇺', /俄罗斯|莫斯科|\b(RU|RUS)\b|russia/i, `${iconBaseUrl}flag/Russia.svg`),
+  defineRegion('乌克兰', '🇺🇦', /乌克兰|基辅|\b(UA|UKR)\b|ukraine/i, `${iconBaseUrl}flag/Ukraine.svg`),
+  defineRegion('土耳其', '🇹🇷', /土耳其|伊斯坦布尔|\b(TR|TUR)\b|turkey|türkiye/i, `${iconBaseUrl}flag/Turkey.svg`),
+  defineRegion('挪威', '🇳🇴', /挪威|奥斯陆|\b(NO|NOR)\b|norway/i, `${iconBaseUrl}flag/Norway.svg`),
+  defineRegion('瑞士', '🇨🇭', /瑞士|苏黎世|\b(CH|CHE)\b|switzerland|swiss/i, `${iconBaseUrl}flag/Switzerland.svg`),
+  defineRegion('瑞典', '🇸🇪', /瑞典|斯德哥尔摩|\b(SE|SWE)\b|sweden/i, `${iconBaseUrl}flag/Sweden.svg`),
+  defineRegion('爱尔兰', '🇮🇪', /爱尔兰|都柏林|\b(IE|IRL)\b|ireland/i, `${iconBaseUrl}flag/Ireland.svg`),
+  defineRegion('菲律宾', '🇵🇭', /菲律宾|马尼拉|\b(PH|PHL)\b|philippines/i, `${iconBaseUrl}flag/Philippines.svg`),
+  defineRegion('越南', '🇻🇳', /越南|河内|胡志明|\b(VN|VNM)\b|vietnam/i, `${iconBaseUrl}flag/Vietnam.svg`),
+  defineRegion('泰国', '🇹🇭', /泰国|曼谷|\b(TH|THA)\b|thailand/i, `${iconBaseUrl}flag/Thailand.svg`),
+  defineRegion('马来西亚', '🇲🇾', /马来西亚|吉隆坡|\b(MY|MYS)\b|malaysia/i, `${iconBaseUrl}flag/Malaysia.svg`),
 ];
 
 // 按节点名称排除大陆与香港候选；不匹配“中国台湾”，以保留台湾节点。
@@ -305,7 +260,7 @@ const rateRegionDefinitions = [
       '(^|[^A-Za-z0-9.])([*×✕✖⨯⨉xX] *(0(\\.[0-5][0-9]*)?|\\.[0-5][0-9]*)|(0(\\.[0-5][0-9]*)?|\\.[0-5][0-9]*) *(倍(率)?|[*×✕✖⨯⨉xX]))($|[^A-Za-z0-9.])|低倍|免费|\\bfree\\b',
       'i',
     ),
-    icon: `${iconBaseUrl}Available.svg`,
+    icon: `${iconBaseUrl}common/Available.svg`,
   },
   {
     name: highRateRegionName,
@@ -313,7 +268,7 @@ const rateRegionDefinitions = [
       '(^|[^A-Za-z0-9.])([*×✕✖⨯⨉xX] *(([2-9][0-9]*|[1-9][0-9]+)(\\.[0-9]+)?|1\\.[0-9]*[1-9][0-9]*)|(([2-9][0-9]*|[1-9][0-9]+)(\\.[0-9]+)?|1\\.[0-9]*[1-9][0-9]*) *(倍(率)?|[*×✕✖⨯⨉xX]))($|[^A-Za-z0-9.])',
       'i',
     ),
-    icon: `${iconBaseUrl}Airport.svg`,
+    icon: `${iconBaseUrl}common/Airport.svg`,
   },
 ];
 
@@ -324,7 +279,7 @@ const homeRegionDefinitions = [
   {
     name: homeRegionName,
     regex: /家宽|住宅|原生(\s*IP)?|家庭宽带|家庭网络|\bISP\b|\bRES\b|residential|home\s*broadband|native\s*IP/i,
-    icon: `${iconBaseUrl}Home.svg`,
+    icon: `${iconBaseUrl}common/Home.svg`,
   },
 ];
 
@@ -559,7 +514,7 @@ const urlTestBaseOption = {
   lazy: true,
   tolerance: 50,
   'exclude-type': 'DIRECT',
-  icon: `${iconBaseUrl}Auto.svg`,
+  icon: `${iconBaseUrl}common/Auto.svg`,
   hidden: true,
 };
 
@@ -571,7 +526,7 @@ const loadBalanceBaseOption = {
   lazy: true,
   strategy: 'sticky-sessions',
   'exclude-type': 'DIRECT',
-  icon: `${iconBaseUrl}RoundRobin.svg`,
+  icon: `${iconBaseUrl}common/Round_Robin.svg`,
   hidden: true,
 };
 
@@ -581,7 +536,7 @@ const baseGroups = [
     name: '手动选择',
     baseOption: selectBaseOption,
     includeAll: true,
-    icon: `${iconBaseUrl}Static.svg`,
+    icon: `${iconBaseUrl}common/Static.svg`,
   },
   {
     name: autoSelectExMainlandHongKongGroupName,
@@ -590,13 +545,13 @@ const baseGroups = [
     includeAll: true,
     excludeProxyNameRegex: autoSelectExMainlandHongKongNodeNameRegex,
     excludeFilter: autoSelectExMainlandHongKongNodeNameRegex.source,
-    icon: `${iconBaseUrl}Auto.svg`,
+    icon: `${iconBaseUrl}common/Auto.svg`,
   },
   {
     name: '负载均衡',
     baseOption: loadBalanceBaseOption,
     includeAll: true,
-    icon: `${iconBaseUrl}RoundRobin.svg`,
+    icon: `${iconBaseUrl}common/Round_Robin.svg`,
   },
 ];
 
@@ -616,7 +571,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geosite/googlefcm.mrs',
       },
     },
-    icon: `${iconBaseUrl}Fcm.svg`,
+    icon: `${iconBaseUrl}common/FCM.svg`,
     rules: ['RULE-SET,googlefcm,FCM'],
   },
   {
@@ -630,7 +585,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geosite/youtube.mrs',
       },
     },
-    icon: `${iconBaseUrl}YouTube.svg`,
+    icon: `${iconBaseUrl}common/YouTube.svg`,
     rules: ['RULE-SET,youtube,YouTube'],
   },
   {
@@ -651,7 +606,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geoip/google.mrs',
       },
     },
-    icon: `${iconBaseUrl}Google.svg`,
+    icon: `${iconBaseUrl}common/Google.svg`,
     rules: ['RULE-SET,google,Google'],
     proxyIpRequired: true,
     ipRules: ['RULE-SET,google_ip,Google,no-resolve'],
@@ -668,7 +623,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geosite/category-ai-!cn.mrs',
       },
     },
-    icon: `${iconBaseUrl}OpenAI.svg`,
+    icon: `${iconBaseUrl}common/ChatGPT.svg`,
     rules: ['RULE-SET,ai,AI'],
   },
   {
@@ -682,7 +637,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geosite/github.mrs',
       },
     },
-    icon: `${iconBaseUrl}GitHub.svg`,
+    icon: `${iconBaseUrl}common/GitHub.svg`,
     rules: ['RULE-SET,github,GitHub'],
   },
   {
@@ -703,7 +658,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geoip/microsoft.mrs',
       },
     },
-    icon: `${iconBaseUrl}Microsoft.svg`,
+    icon: `${iconBaseUrl}common/Microsoft.svg`,
     rules: ['RULE-SET,microsoft,Microsoft'],
     ipRules: ['RULE-SET,microsoft_ip,Microsoft,no-resolve'],
   },
@@ -720,7 +675,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geosite/apple.mrs',
       },
     },
-    icon: 'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png',
+    icon: `${iconBaseUrl}common/Apple.svg`,
     rules: [`RULE-SET,apple,${appleOtherGroupName}`],
   },
   {
@@ -740,7 +695,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geoip/telegram.mrs',
       },
     },
-    icon: `${iconBaseUrl}Telegram.svg`,
+    icon: `${iconBaseUrl}common/Telegram.svg`,
     rules: ['RULE-SET,telegram,Telegram'],
     proxyIpRequired: true,
     ipRules: ['RULE-SET,telegram_ip,Telegram,no-resolve'],
@@ -763,7 +718,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geoip/steam.mrs',
       },
     },
-    icon: `${iconBaseUrl}Steam.svg`,
+    icon: `${iconBaseUrl}common/Steam.svg`,
     rules: ['RULE-SET,steam,Steam'],
     ipRules: ['RULE-SET,steam_ip,Steam,no-resolve'],
   },
@@ -785,7 +740,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geoip/tiktok.mrs',
       },
     },
-    icon: `${iconBaseUrl}TikTok.svg`,
+    icon: `${iconBaseUrl}common/TikTok.svg`,
     rules: ['RULE-SET,tiktok,TikTok'],
     proxyIpRequired: true,
     ipRules: ['RULE-SET,tiktok_ip,TikTok,no-resolve'],
@@ -807,7 +762,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geoip/twitter.mrs',
       },
     },
-    icon: 'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/04ProxySoft/twitter(2).png',
+    icon: `${iconBaseUrl}common/X.svg`,
     rules: ['RULE-SET,twitter,Twitter'],
     proxyIpRequired: true,
     ipRules: ['RULE-SET,twitter_ip,Twitter,no-resolve'],
@@ -830,7 +785,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geoip/facebook.mrs',
       },
     },
-    icon: `${iconBaseUrl}Meta.svg`,
+    icon: `${iconBaseUrl}common/Meta.svg`,
     rules: ['RULE-SET,meta,Meta'],
     proxyIpRequired: true,
     ipRules: ['RULE-SET,facebook_ip,Meta,no-resolve'],
@@ -846,7 +801,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geosite/line.mrs',
       },
     },
-    icon: `${iconBaseUrl}Line.svg`,
+    icon: `${iconBaseUrl}common/Line.svg`,
     rules: ['RULE-SET,line,Line'],
   },
   {
@@ -866,7 +821,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geoip/netflix.mrs',
       },
     },
-    icon: `${iconBaseUrl}Netflix.svg`,
+    icon: `${iconBaseUrl}common/Netflix.svg`,
     rules: ['RULE-SET,netflix,Netflix'],
     ipRules: ['RULE-SET,netflix_ip,Netflix,no-resolve'],
   },
@@ -888,7 +843,7 @@ const serviceConfigs = [
         payload: ['DOMAIN-KEYWORD,emby'],
       },
     },
-    icon: `${iconBaseUrl}Emby.svg`,
+    icon: `${iconBaseUrl}common/Emby.svg`,
     rules: [
       'RULE-SET,emby,Emby',
       'DOMAIN-SUFFIX,mb3admin.com,Emby',
@@ -908,7 +863,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geosite/pikpak.mrs',
       },
     },
-    icon: `${iconBaseUrl}PikPak.svg`,
+    icon: `${iconBaseUrl}common/PikPak.svg`,
     rules: ['RULE-SET,pikpak,PikPak'],
   },
   {
@@ -929,7 +884,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geoip/spotify.mrs',
       },
     },
-    icon: `${iconBaseUrl}Spotify.svg`,
+    icon: `${iconBaseUrl}common/Spotify.svg`,
     rules: ['RULE-SET,spotify,Spotify'],
     ipRules: ['RULE-SET,spotify_ip,Spotify,no-resolve'],
   },
@@ -945,7 +900,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geosite/category-cryptocurrency.mrs',
       },
     },
-    icon: `${iconBaseUrl}Bitcoin.svg`,
+    icon: `${iconBaseUrl}common/Bitcoin.svg`,
     rules: ['RULE-SET,cryptocurrency,Crypto'],
   },
   {
@@ -960,7 +915,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geosite/paypal.mrs',
       },
     },
-    icon: `${iconBaseUrl}PayPal.svg`,
+    icon: `${iconBaseUrl}common/PayPal.svg`,
     rules: ['RULE-SET,paypal,PayPal'],
   },
   {
@@ -975,7 +930,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geosite/patreon.mrs',
       },
     },
-    icon: `${iconBaseUrl}Patreon.svg`,
+    icon: `${iconBaseUrl}common/Patreon.svg`,
     rules: ['RULE-SET,patreon,Patreon'],
   },
   {
@@ -991,7 +946,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geosite/ehentai.mrs',
       },
     },
-    icon: `${iconBaseUrl}EHentai.svg`,
+    icon: `${iconBaseUrl}common/EHentai.svg`,
     rules: ['RULE-SET,ehentai,EHentai'],
   },
   {
@@ -1007,7 +962,7 @@ const serviceConfigs = [
         'path-in-bundle': 'geo/geosite/category-ads.mrs',
       },
     },
-    icon: `${iconBaseUrl}AdBlock.svg`,
+    icon: `${iconBaseUrl}common/AdBlock.svg`,
     rules: ['RULE-SET,category-ads,AdBlock'],
   },
 ];
@@ -1085,7 +1040,7 @@ for (const { name, option } of appleEndpointDefinitions) {
     baseOption: selectBaseOption,
     direct: true,
     defaultSelected: '美国',
-    icon: 'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png',
+    icon: `${iconBaseUrl}common/Apple.svg`,
     ...(name === appleProxyGroupName
       ? {
           providers: {
@@ -1350,7 +1305,7 @@ function buildRegionGroups(filteredProxies, customProxies, classificationCache =
     .flatMap((r) => createRegionGroup(r.name, r.icon, regionGroups[r.name]));
 
   if (otherProxies.length > 0) {
-    generatedRegionGroups.push(...createRegionGroup('其他节点', `${iconBaseUrl}WorldMap.svg`, otherProxies));
+    generatedRegionGroups.push(...createRegionGroup('其他节点', `${iconBaseUrl}common/World_Map.svg`, otherProxies));
   }
 
   return generatedRegionGroups;
@@ -1422,7 +1377,7 @@ function buildCustomizeGroups(
     ...selectBaseOption,
     name: chainEnabled ? '链式落地' : '自建节点',
     proxies: customProxyNames,
-    icon: `${iconBaseUrl}Server.svg`,
+    icon: `${iconBaseUrl}common/Server.svg`,
   };
 
   return {
@@ -1493,7 +1448,7 @@ function buildFunctionalGroups(filteredProxies, generatedRegionGroups, customize
           ...selectBaseOption,
           name: dialerProxyName,
           proxies: filteredProxyNames,
-          icon: `${iconBaseUrl}Bypass.svg`,
+          icon: `${iconBaseUrl}common/Bypass.svg`,
         }
       : null;
 
@@ -1507,7 +1462,7 @@ function buildFunctionalGroups(filteredProxies, generatedRegionGroups, customize
         ...allProxiesNames,
         ...(autoSelectExMainlandHongKongEnabled ? [autoSelectExMainlandHongKongGroupName] : []),
       ],
-      icon: `${iconBaseUrl}Proxy.svg`,
+      icon: `${iconBaseUrl}common/Proxy.svg`,
     };
 
     const autoSelectExMainlandHongKongGroup = {
@@ -1522,7 +1477,7 @@ function buildFunctionalGroups(filteredProxies, generatedRegionGroups, customize
       ...selectBaseOption,
       name: '直连',
       proxies: [...directProxyNames],
-      icon: `${iconBaseUrl}China.svg`,
+      icon: `${iconBaseUrl}flag/China.svg`,
       hidden: true,
     };
 
@@ -1536,7 +1491,7 @@ function buildFunctionalGroups(filteredProxies, generatedRegionGroups, customize
         ...(autoSelectExMainlandHongKongEnabled ? [autoSelectExMainlandHongKongGroup.name] : []),
         '直连',
       ],
-      icon: `${iconBaseUrl}Global.svg`,
+      icon: `${iconBaseUrl}common/Global.svg`,
     };
 
     return {
@@ -1558,7 +1513,7 @@ function buildFunctionalGroups(filteredProxies, generatedRegionGroups, customize
     ...selectBaseOption,
     name: '默认代理',
     proxies: [...groupNamesOfSelect, ...baseGroupNames, ...customGroupNames],
-    icon: `${iconBaseUrl}Proxy.svg`,
+    icon: `${iconBaseUrl}common/Proxy.svg`,
   });
 
   for (const svc of serviceConfigs) {
@@ -1597,14 +1552,14 @@ function buildFunctionalGroups(filteredProxies, generatedRegionGroups, customize
     ...selectBaseOption,
     name: '漏网之鱼',
     proxies: ['默认代理', '直连', ...groupNamesOfSelect],
-    icon: `${iconBaseUrl}Stack.svg`,
+    icon: `${iconBaseUrl}common/Stack.svg`,
   });
 
   const directGroup = {
     ...selectBaseOption,
     name: '直连',
     proxies: [...directProxyNames],
-    icon: `${iconBaseUrl}China.svg`,
+    icon: `${iconBaseUrl}flag/China.svg`,
     hidden: hideManualSelectGroupEnabled,
   };
 
@@ -1618,7 +1573,7 @@ function buildFunctionalGroups(filteredProxies, generatedRegionGroups, customize
       directGroup.name,
       ...generatedRegionGroups.map((g) => g.name),
     ],
-    icon: `${iconBaseUrl}Global.svg`,
+    icon: `${iconBaseUrl}common/Global.svg`,
   };
 
   return {
@@ -2026,7 +1981,7 @@ function applyAppleRouting(config, options) {
       group = {
         ...selectBaseOption,
         name,
-        icon: 'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png',
+        icon: `${iconBaseUrl}common/Apple.svg`,
         proxies:
           name === appleAiGroupName
             ? ['REJECT']
@@ -2096,7 +2051,7 @@ function applyAppleRouting(config, options) {
     groups.splice(1, 0, {
       ...selectBaseOption,
       name: appleOtherDnsEgressGroupName,
-      icon: 'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png',
+      icon: `${iconBaseUrl}common/Apple.svg`,
       proxies: selected ? [selected, ...candidates.filter((candidate) => candidate !== selected)] : ['REJECT'],
     });
     groups[0].proxies.push(appleOtherDnsEgressGroupName);
@@ -2109,7 +2064,7 @@ function applyAppleRouting(config, options) {
       group = {
         ...selectBaseOption,
         name: appleOtherGroupName,
-        icon: 'https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png',
+        icon: `${iconBaseUrl}common/Apple.svg`,
         proxies: ['默认代理', '直连'],
       };
       groups.splice(1, 0, group);

@@ -4,7 +4,7 @@
 
 ## 项目范围与产物
 
-- 项目基于 AIsouler/MyClash `4861619be366c7bacabfed6d581bb8c450de1ca1` 全量版；上游图标约定见 `docs/upstream/icon-guidelines.md`；其中历史规则源与测试数量不替代本仓库当前的 DNS 原则和验收要求。
+- myProxyRules 独立维护和发布，功能、版本与规则按本仓库需求演进，不与 MyClash 同步。项目最初基于 AIsouler/MyClash `4861619be366c7bacabfed6d581bb8c450de1ca1`，须保留适用的来源与版权声明。`docs/upstream/icon-guidelines.md` 是历史资料，不是现行规范。
 - `Script/mihomoScript.js` 与 `Config/mihomoConfig.yaml` 是 Mihomo 的唯一功能源，不增加精简版脚本；`极简分流` 是脚本选项。
 - `tools/build-targets.js` 从同一 Mihomo 配置对象生成 Stash、Surge、Shadowrocket 和 Quantumult X 原生配置，适配器不是第二套功能源。
 - Mihomo 静态 YAML 与四种目标客户端 profile 及 CDN 副本均由 GitHub Actions 生成。Mihomo YAML 保留 Raw/CDN SHA-256；目标配置使用各自 Raw/CDN SHA-256 标识。
@@ -25,7 +25,7 @@
 
 ## 必须保留的行为
 
-- 保留上游地区、倍率、家宽分类，以及节点清理/补旗、零宽字符处理、去重、`dialer-proxy` 和节点 hosts 映射算法及其回归测试。
+- 保留本项目的地区、倍率、家宽分类，以及节点清理/补旗、零宽字符处理、去重、`dialer-proxy` 和节点 hosts 映射行为及其回归测试。
 - 覆写或展开机场配置时，只处理节点信息。机场 DNS、`fake-ip-filter`、DNS policy、hosts 表、路由、策略组和其他非节点设置不得进入输出；这些设置由脚本生成。机场 DNS 只可用于节点解析安全检查和 hosts 改写条件判断；机场 hosts 只可用于改写节点 server。
 - 严格加密 DNS 默认拒绝 system/DHCP、明文 UDP/TCP、跳过证书校验和不受支持的私有明文解析；不得静默回退。严格检查针对脚本生成的 DNS 配置，文档须区分机场输入与生成结果。
 - 发布配置默认不启用外部控制 API，也不自动下载 Web 控制面；本地管理入口由客户端另行配置密钥。
@@ -52,7 +52,7 @@
 - 更新功能、默认值、组名或 DNS/路由行为时，检查 README、`docs/dns-whitelist.md`、`docs/feature-matrix.md`、`docs/apple-routing.md`、`docs/rule-sources.md`、`docs/client-compatibility.md`、`docs/validation.md` 和 `Test/README.md`.
 - 区分静态 provider 与带 `--subscription` 的本地展开模式；不得声称静态 provider 能读取订阅中的私有 DNS、hosts 或动态节点名称。
 - 不在功能文档混入个人观察、设备日志、真实出口地址或验证记录；不得新增或提交机场链接、密码、节点清单、缓存和运行日志。
-- 图标默认沿用原 SVG URL，不修改 SVG；用户确认的 Apple、Twitter 及部分地区图标引用离歌图标库。上游图标约定见 `docs/upstream/icon-guidelines.md`，其固定图标来源的要求不适用于已确认替换项；不补回 CDN 域名直连规则。
+- 图标按用户确认引用本仓库 Icons/svg 中的 Qure-Style-SVG 原始 SVG，不修改素材；定期同步该图标库时保留版权声明，且不得删除仍被引用的图标。来源、署名和使用条件见 README；不补回 CDN 域名直连规则。
 - 国内服务路由模块及其新增原生回归按动态集合组织，不维护单独业务域名清单；测试样本从下载快照自动提取，解码与运行证据只留在忽略目录，不参与客户端规则生成。
 - GitHub Actions 的 `Verify full overrides` 在 runner 上生成 Mihomo YAML 与四种目标客户端 profile，运行项目测试、所有生成一致性检查和可获得的 Mihomo 原生配置校验；`Sync script and generate config` 必须通过相同的行为和原生校验后才能提交产物。目标 profile 的一致性检查不等于四个应用的导入验证。维护者可在本地用项目锁定工具链重生不含隐私数据的发布产物以完成回归，不要求最终用户本地生成配置。单元测试或配置解析不能描述成用户网络抓包或 Apple 服务可用性实测；行为变化须有回归断言。
 - 每次向远端推送前，须在将要推送的提交上依次通过 `./tools/npmw test`、`./tools/npmw run check` 和 `./tools/npmw run native:check`；任一失败或未完成时不得推送。`.githooks/pre-push` 执行同一门禁；使用 GitHub API 等不触发本地 hook 的接口时，也须先手动运行并确认这三项通过。验证后若提交内容有变化，推送前重新运行。

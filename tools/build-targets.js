@@ -623,7 +623,10 @@ function createArtifact(target, sourceText) {
 
 function loadSettings() {
   const input = readYaml(SOURCE_CONFIG);
-  const settings = JSON.parse(JSON.stringify(input['x-myProxyRules'] || input['x-myClashRules'] || {}));
+  if (Object.hasOwn(input, 'x-myClashRules')) {
+    throw new Error('不再支持 x-myClashRules，请迁移为 x-myProxyRules');
+  }
+  const settings = JSON.parse(JSON.stringify(input['x-myProxyRules'] || {}));
   if (settings.customProxies && settings.customProxies.length) {
     throw new Error(
       'Target profiles are generated without custom node definitions; keep private nodes out of tracked files.',

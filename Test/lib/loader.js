@@ -20,17 +20,14 @@ const EXPORT_SUFFIX = `
   toMatchableName,
   normalizeProxyName,
   fixDialerProxy,
+  buildCustomizeGroups,
   collectRuleSetReferences,
   ruleOptionsEnable
-};
-// 仅全量版存在 buildCustomizeGroups，精简版无此函数时保持导出不报错
-if (typeof buildCustomizeGroups !== 'undefined') {
-  module.exports.buildCustomizeGroups = buildCustomizeGroups;
-}`;
+};`;
 
 /**
  * 加载指定覆写脚本，返回其导出的符号。
- * @param {string} scriptPath 相对仓库根目录的脚本路径，如 'Script/Script.js'
+ * @param {string} scriptPath 相对仓库根目录的脚本路径，如 'Script/mihomoScript.js'
  * @param {(code: string) => string} [transform] 可选：在沙箱执行前对源码做字符串变换（用于注入自定义节点等静态配置）
  */
 function loadScript(scriptPath, transform) {
