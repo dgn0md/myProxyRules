@@ -31,6 +31,7 @@ async function listen(server) {
 }
 async function fixtures() {
   const sockets = new Set();
+  let datagrams = 0;
   const track = (socket) => {
     sockets.add(socket);
     socket.on('close', () => sockets.delete(socket));
@@ -57,6 +58,22 @@ async function fixtures() {
         if (buffer.length < 5) return;
         const end = buffer[3] === 1 ? 10 : buffer[3] === 4 ? 22 : 7 + buffer[4];
         if (buffer.length < end) return;
+        if (buffer[1] === 3) {
+          const udp = dgram.createSocket('udp4');
+          udp.on('message', () => {
+            datagrams++;
+          });
+          socket.once('close', () => {
+            udp.close();
+          });
+          udp.bind(0, '127.0.0.1', () => {
+            const port = udp.address().port;
+            socket.write(Buffer.from([5, 0, 0, 1, 127, 0, 0, 1, port >> 8, port & 255]));
+          });
+          stage = 2;
+          socket.removeListener('data', parse);
+          return;
+        }
         // Deliberately ignore requested destination: no external packets can leave this fixture.
         const rest = buffer.subarray(end);
         buffer = Buffer.alloc(0);
@@ -78,6 +95,7 @@ async function fixtures() {
     sinkPort,
     socksPort,
     track,
+    udpDatagrams: () => datagrams,
     close: async () => {
       for (const socket of sockets) socket.destroy();
       await Promise.all([new Promise((r) => sink.close(r)), new Promise((r) => socks.close(r))]);
@@ -88,6 +106,7 @@ const APPLE_AI_GROUP = 'Siri Ai/Apple Intelligence';
 const APPLE_PROXY_GROUP = 'AppleProxy';
 const OTHER_APPLE_GROUP = 'Other Apple Service';
 const CASES = [
+  ['www.apple.com', OTHER_APPLE_GROUP, 'apple'],
   ['apple-relay.apple.com', APPLE_AI_GROUP],
   ['apple-relay.cloudflare.com', APPLE_AI_GROUP],
   ['cp4.cloudflare.com', APPLE_AI_GROUP],

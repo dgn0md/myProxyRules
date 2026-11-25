@@ -11,6 +11,8 @@ const YAML = require('yaml');
 const { build, load } = require('./build');
 const { fixtures, verifyRouting, verifyICloudContentDnsPolicy, CASES, freePort } = require('./runtime-routing');
 const { verifySniffing } = require('./native-sniffing');
+const { verifyHealth } = require('./native-health');
+const { cacheBench } = require('./native-cache-bench');
 const { verifyDnsWhitelist } = require('./native-dns-whitelist');
 async function run() {
   const binary = process.argv[2];
@@ -448,7 +450,15 @@ async function run() {
   }
   const sniffing = await verifySniffing({ binary, rulesDir, temp });
   fs.writeFileSync(path.join(temp, 'sniffing.json'), JSON.stringify(sniffing, null, 2));
-  console.log(`Offline sniffing: ${sniffing.length} pure-IP HTTP/TLS routing decisions verified`);
+  console.log(`Offline sniffing: ${sniffing.length} pure-IP HTTP/TLS/QUIC routing decisions verified`);
+  const health = await verifyHealth({ binary, temp });
+  fs.writeFileSync(path.join(temp, 'health.json'), JSON.stringify(health, null, 2));
+  console.log(`Offline health check: ${health.length} response and timeout cases verified`);
+  if (process.env.MYPROXY_CACHE_BENCH === '1') {
+    const cache = await cacheBench({ binary, temp });
+    fs.writeFileSync(path.join(temp, 'cache-benchmark.json'), JSON.stringify(cache, null, 2));
+    console.log(`Synthetic cache comparison: ${JSON.stringify(cache)}`);
+  }
   const whitelistDns = await verifyDnsWhitelist({ binary, rulesDir, temp });
   fs.writeFileSync(path.join(temp, 'dns-policy.json'), JSON.stringify(whitelistDns, null, 2));
   console.log('Proxy node bootstrap DNS: mainland resolver verified with a synthetic node');

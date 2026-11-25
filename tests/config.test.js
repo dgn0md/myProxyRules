@@ -248,6 +248,36 @@ test('static provider removes contradictory mainland flag from Taiwan names befo
   assert.match(provider.override['proxy-name'][0].pattern, /🇨🇳/);
 });
 
+test('health checks use the Apple endpoint and require HTTP 200 in static and expanded modes', () => {
+  for (const subscription of [undefined, clean()]) {
+    const config = build({ subscription }).config;
+    for (const group of config['proxy-groups'].filter((entry) => ['url-test', 'load-balance'].includes(entry.type))) {
+      assert.equal(group.url, 'http://www.apple.com/library/test/success.html', group.name);
+      assert.equal(group['expected-status'], 200, group.name);
+    }
+    if (!subscription) {
+      assert.equal(
+        config['proxy-providers'].订阅['health-check'].url,
+        'http://www.apple.com/library/test/success.html',
+      );
+      assert.equal(config['proxy-providers'].订阅['health-check']['expected-status'], 200);
+    }
+    assert.equal(config.dns['cache-algorithm'], 'arc');
+  }
+});
+
+test('static and expanded modes classify region codes containing zero-width spaces', () => {
+  const name = 'H\u200bK sample';
+  const expanded = build({ subscription: { proxies: [proxy(name)] } }).config;
+  const hk = expanded['proxy-groups'].find((group) => group.name === '香港');
+  assert.ok(hk.proxies.some((member) => member.includes(name)));
+  const staticFilter = build().config['proxy-groups'].find((group) => group.name === '香港').filter;
+  assert.equal(new RegExp(staticFilter.replace(/^\(\?i\)/, ''), 'i').test(name), true);
+  assert.equal(new RegExp(staticFilter.replace(/^\(\?i\)/, ''), 'i').test('SH\u200bK sample'), false);
+  const other = build().config['proxy-groups'].find((group) => group.name === '其他节点')['exclude-filter'];
+  assert.equal(new RegExp(other.replace(/^\(\?i\)/, ''), 'i').test(name), true);
+});
+
 test('mainland/Hong Kong auto-select group excludes those labels and keeps Taiwan', () => {
   const subscription = {
     proxies: [
@@ -550,11 +580,11 @@ test('default script and provider YAML have complete graphs and encrypted DNS', 
     graph(config);
     encryptedDns(config);
     assert.equal(config['allow-lan'], false);
-    assert.equal(config.tun.stack, 'mixed');
+    assert.equal(config.tun.stack, 'mips');
     assert.deepEqual(config.tun['dns-hijack'], ['any:53', 'tcp://any:53']);
   }
 });
-test('latency test domain uses the default proxy route and encrypted proxy DNS in both modes', () => {
+test('changing the test URL does not add a global Apple-domain routing or DNS exception', () => {
   for (const subscription of [undefined, clean()]) {
     for (const minimal of [false, true]) {
       for (const domesticFirst of [false, true]) {
@@ -568,12 +598,10 @@ test('latency test domain uses the default proxy route and encrypted proxy DNS i
             },
           },
         }).config;
-        const index = config.rules.indexOf('DOMAIN,cp.cloudflare.com,默认代理');
-        assert.ok(index >= 0);
-        assert.ok(index < config.rules.indexOf('RULE-SET,private,直连'));
-        assert.ok(index < config.rules.findIndex((rule) => rule.startsWith('AND,')));
-        assert.deepEqual(config.dns['nameserver-policy']['cp.cloudflare.com'], config.dns.nameserver);
-        assert.ok(config.dns.nameserver.every((dns) => /^https:\/\//.test(dns) && dnsRouteFor(dns) === '默认代理'));
+        assert.ok(!config.rules.some((rule) => rule.startsWith('DOMAIN,cp.cloudflare.com,')));
+        assert.ok(!config.rules.some((rule) => rule.startsWith('DOMAIN,www.apple.com,')));
+        assert.equal(config.dns['nameserver-policy']['cp.cloudflare.com'], undefined);
+        assert.equal(config.dns['nameserver-policy']['www.apple.com'], undefined);
       }
     }
   }
@@ -1674,7 +1702,7 @@ test('airport fake-IP filters, DNS policies, and extra DNS settings never leak i
   assert.ok(!config.rules.includes('DOMAIN,airport.example,DIRECT'));
   assert.ok(!config['proxy-groups'].some((group) => group.name === '机场自定义组'));
   assert.ok(!config['rule-providers'].airport);
-  assert.equal(config.tun.stack, 'mixed');
+  assert.equal(config.tun.stack, 'mips');
   assert.equal(config.tun.enable, true);
   assert.equal(config.profile['store-fake-ip'], true);
   assert.equal(config['external-controller'], undefined);

@@ -13,7 +13,7 @@ function load() {
   const source = fs.readFileSync(SCRIPT, 'utf8');
   vm.runInContext(
     source +
-      '\nglobalThis.api = {main, ruleOptionsEnable, customizeProxies, regionDefinitions, rateRegionDefinitions, homeRegionDefinitions, announcementFilter, excludeFilter};',
+      '\nglobalThis.api = {main, ruleOptionsEnable, customizeProxies, regionDefinitions, rateRegionDefinitions, homeRegionDefinitions, announcementFilter, excludeFilter, groupBaseOption, healthCheckExpectedStatus};',
     sandbox,
     { timeout: 5000 },
   );
@@ -101,6 +101,13 @@ function template(api, settings) {
   const seedNames = new Set(out.proxies.filter((p) => p.password === 'template').map((p) => p.name));
   out.proxies = out.proxies.filter((p) => !seedNames.has(p.name));
   const definitions = [...api.regionDefinitions, ...api.rateRegionDefinitions, ...api.homeRegionDefinitions];
+  // Match U+200B between letters of existing region abbreviations without renaming
+  // provider nodes or changing their dialer-proxy references.
+  const includeZeroWidthAbbreviations = (source) =>
+    source.replace(/\\b\(([A-Z]+(?:\|[A-Z]+)+)\)\\b/g, (_match, aliases) => {
+      const variants = aliases.split('|').map((alias) => [...alias].join('\u200b*'));
+      return `\\b(${aliases}|${variants.join('|')})\\b`;
+    });
   const filterNonRegion = api.ruleOptionsEnable.过滤公告信息项;
   const announcements = filterNonRegion ? [api.announcementFilter.source] : [];
   const softInfo = filterNonRegion ? [api.excludeFilter.source] : [];
@@ -115,7 +122,7 @@ function template(api, settings) {
     group['exclude-type'] = 'DIRECT|REJECT|REMATCH';
     const baseName = group.name.replace(/-自动选择$/, '');
     const def = definitions.find((r) => r.name === baseName);
-    if (def) group.filter = `(?i)${def.regex.source}`;
+    if (def) group.filter = `(?i)${includeZeroWidthAbbreviations(def.regex.source)}`;
     const configuredExclude = group['exclude-filter']?.replace(/^\(\?i\)/, '');
     const excludes = [...(configuredExclude ? [configuredExclude] : []), ...announcements, ...excludedRates];
     if (baseName === '其他节点') {
@@ -124,7 +131,7 @@ function template(api, settings) {
     } else if (baseName === '低倍率节点' || baseName === '高倍率节点' || baseName === '家宽节点') {
       excludes.push(...softInfo);
     }
-    if (excludes.length) group['exclude-filter'] = `(?i)(${excludes.join('|')})`;
+    if (excludes.length) group['exclude-filter'] = `(?i)(${includeZeroWidthAbbreviations(excludes.join('|'))})`;
     if (!group.proxies.length) delete group.proxies;
   }
   const provider = settings.subscription || {};
@@ -145,7 +152,8 @@ function template(api, settings) {
       'exclude-type': 'DIRECT|REJECT|REMATCH',
       'health-check': {
         enable: true,
-        url: 'https://cp.cloudflare.com/generate_204',
+        url: api.groupBaseOption.url,
+        'expected-status': api.healthCheckExpectedStatus,
         interval: 600,
         lazy: true,
       },

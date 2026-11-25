@@ -10,7 +10,6 @@ const ROOT = path.resolve(__dirname, '..');
 const SOURCE_CONFIG = path.join(ROOT, 'Config/mihomoConfig.yaml');
 const CLIENT_ROOT = path.join(ROOT, 'Config');
 const SUBSCRIPTION_PLACEHOLDER = 'https://example.invalid/replace-with-your-subscription';
-const PROXY_TEST_URL = 'https://cp.cloudflare.com/generate_204';
 const DNS_CLOUDFLARE = 'https://cloudflare-dns.com/dns-query';
 const DNS_GOOGLE = 'https://dns.google/dns-query';
 const DNS_ALI = 'https://dns.alidns.com/dns-query';
@@ -540,7 +539,7 @@ function renderQuantumultX(config, compiled) {
     '# myProxyRules Quantumult X full profile',
     '# Server subscription must be a Quantumult X server snippet. Rule resources use native QX format.',
     '[general]',
-    'server_check_url = ' + PROXY_TEST_URL,
+    'server_check_url = ' + config['proxy-groups'].find((group) => group.url)?.url,
     'fallback_udp_policy = reject',
     '; Dynamic url-test groups use available to retain tag filters; QX cannot combine tag regex with url-latency-benchmark.',
     '',

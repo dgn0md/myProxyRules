@@ -2,15 +2,37 @@
 
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
+const YAML = require('yaml');
 const {
   RULE_SOURCE_REGISTRY,
   buildRules,
   resolveRuleSource,
   sameUpstreamRuleCandidates,
+  renderTarget,
 } = require('../tools/build-targets');
+const { build } = require('../tools/build');
 
 const appleCnUrl =
   'https://raw.githubusercontent.com/SukkaW/Surge/0afc9c2ee92aadbf79ce1c9caf03f724135073ea/Source/non_ip/apple_cn.conf';
+
+test('generated clients use the Apple health-check URL', () => {
+  const config = build().config;
+  const url = 'http://www.apple.com/library/test/success.html';
+  for (const target of ['stash', 'surge', 'shadowrocket', 'quantumultx']) {
+    const { text } = renderTarget(target, config);
+    assert.ok(text.includes(url), `${target} does not use the Apple health-check URL`);
+    assert.ok(!text.includes('cp.cloudflare.com/generate_204'));
+    if (target === 'quantumultx') assert.ok(text.includes(`server_check_url = ${url}`));
+    if (target === 'stash') {
+      assert.deepEqual(YAML.parse(text), JSON.parse(JSON.stringify(config)));
+    } else if (target !== 'quantumultx') {
+      const groups = text.split('[Proxy Group]\n')[1].split('\n[Rule]')[0].split('\n');
+      const automatic = groups.filter((line) => /= (?:url-test|load-balance),/.test(line));
+      assert.ok(automatic.length > 0, `${target} has no automatic groups`);
+      for (const line of automatic) assert.ok(line.includes(`url=${url}`), `${target}: ${line}`);
+    }
+  }
+});
 
 test('AppleProxy uses native fallback when same-upstream variants are not equivalent', () => {
   for (const target of ['surge', 'shadowrocket', 'quantumultx']) {

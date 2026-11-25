@@ -73,6 +73,8 @@ Stash 的 MRS provider 保留项目规则，但 Stash iOS/tvOS 因 Network Exten
 
 各目标配置把五种 Mihomo 直连节点变体合并为客户端 DIRECT，因此不会保留 Mihomo 的 IPv4/IPv6 优先和仅 IPv4/IPv6 选择。Surge、Shadowrocket 与 Stash 的自动测速组保留测速 URL 与间隔；Quantumult X 对带节点标签正则的动态测速组使用 `available`，因为其 `url-latency-benchmark` 不支持标签正则筛选。这保留了节点候选过滤，但选择第一个可用节点，不按延迟排序。没有动态标签筛选的明确候选组仍可使用延迟测速。各应用的组选择状态、空组行为和测速实现由应用决定。
 
+Mihomo 配置使用 `mips` TUN 栈及 HTTP 200 测速期望状态；Stash profile 保留这些字段，但仓库原生检查只运行 Mihomo，不能证明 Stash 应用的导入或运行行为。其他客户端的健康检查和 TUN 行为由各应用决定，不宣称与 Mihomo 等价。静态地区筛选对缩写字母间零宽空格的匹配也需要各应用的正则引擎支持。
+
 ## DNS 边界
 
 - **Stash**：沿用生成的 Mihomo DNS 配置与动态 policy。

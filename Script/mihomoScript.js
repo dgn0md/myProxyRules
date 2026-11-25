@@ -4,7 +4,7 @@
  * 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
  * 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
  *
- * 最新 Raw SHA-256：f6176f72d594bce2668a6fb9e39c47eecf86ac7487ccba00ffa218d273b48c16
+ * 最新 Raw SHA-256：91483b7104b20193d7b3d2c6cdd09f28699891a5aed173a446cc30d76b72a5ae
  * Raw 脚本：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js
  * CDN 脚本：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js
  */
@@ -490,10 +490,12 @@ const baseRuleProviders = {
   },
 };
 
+const healthCheckExpectedStatus = 200;
+
 // 策略组公共配置
 const groupBaseOption = {
   timeout: 5000,
-  url: 'https://cp.cloudflare.com/generate_204',
+  url: 'http://www.apple.com/library/test/success.html',
   'max-failed-times': 3,
   'empty-fallback': 'REJECT',
 };
@@ -508,6 +510,7 @@ const selectBaseOption = {
 const urlTestBaseOption = {
   ...groupBaseOption,
   type: 'url-test',
+  'expected-status': healthCheckExpectedStatus,
   interval: 600,
   lazy: true,
   tolerance: 50,
@@ -520,6 +523,7 @@ const urlTestBaseOption = {
 const loadBalanceBaseOption = {
   ...groupBaseOption,
   type: 'load-balance',
+  'expected-status': healthCheckExpectedStatus,
   interval: 600,
   lazy: true,
   strategy: 'sticky-sessions',
@@ -1902,8 +1906,6 @@ function main(config) {
   const domesticServiceRules = buildDomesticServiceRoutes(finalRuleProviders);
   // Keep Apple and service-specific IP exits ahead of the generic CN IP fallback; private IPs remain direct first.
   newConfig['rules'] = [
-    // 测速域名优先走代理，避免被国内或其他动态规则覆盖。
-    'DOMAIN,cp.cloudflare.com,默认代理',
     ...priorityRules,
     ...prefixRules,
     ...(ruleOptionsEnable.拦截代理QUIC ? blockForeignQuic : []),
@@ -1934,7 +1936,7 @@ function applyRuntimeConfigOptions(config, options) {
   config.ipv6 = options.IPv6;
   config.dns.ipv6 = options.IPv6;
   config.tun.enable = options.TUN;
-  config.tun.stack = 'mixed';
+  config.tun.stack = 'mips';
   // 补充未经过内置 DNS/Fake-IP 映射的连接域名；只用于分流，不改写实际目标。
   config.sniffer = {
     enable: options.域名嗅探,

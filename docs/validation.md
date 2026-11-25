@@ -30,6 +30,8 @@
 - 配置回归断言国内 DNS policy 与代理节点域名引导使用 `dns.alidns.com`、`doh.pub` DoH，并经 `DIRECT` 建连；普通默认查询使用 Cloudflare `cloudflare-dns.com` 强制 H3 和 Google `dns.google` DoH。原生回归用合成节点和回环 DNS stub 验证节点域名实际发往国内 resolver。`default-nameserver` 保持 IP 字面量并使用阿里/腾讯 DoH IP 与证书域名校验。
 - Apple News、Fitness、Sports、Books、PCC、Siri 和模型下载的有限端点按功能范围回归；上游 Apple 集合未覆盖这些组的边界时，不用宽泛集合代替。
 - 实际 rule provider 保持加载，用回环 CONNECT 检查命中的规则与策略链；DNS 检查将上游替换为本地计数器，不产生公共业务 DNS 查询。
+- 本地 HTTP 代理模拟 200、204、500、302 和超时，验证 Mihomo provider 对配置的 200 测速期望状态的处理，并核对实际发出的 Apple 测速主机、路径与 HEAD 方法，以及统一延迟启用时的重复请求；自动组的期望状态通过内核 API 核对。合成 QUIC v1/v2 Initial 经回环 SOCKS UDP 验证嗅探开启和关闭时的域名路由及原目标 IP，出口限制在回环。此检查不启用 TUN，也不验证完整 QUIC 握手。
+- 可选运行 `MYPROXY_CACHE_BENCH=1 ./tools/npmw run native:check`，在回环解析器上对照 ARC 和 LRU：先重复查询热点域名，再查询多于默认缓存容量的一次性域名，最后复查热点，记录上游查询次数、耗时和进程 RSS。它是合成负载，结果与实际设备流量可能不同，不作为性能门禁。
 - 国内 DNS 回归从实际 `geolocation-cn` 与 Bett 国内服务快照抽取样本，覆盖明确直连域名规则的国内 DNS、`domestic AND NOT domestic_noncn` 命中与排除、完整百度集合、厂商 DNS policy 随国内路由开关启停、白名单 provider 开关、重叠集合、Steam 排除项、名单外查询、A/AAAA 与直连拨号；代理服务 DNS policy 按对应服务组验证。它验证生成策略在隔离环境的选择，不测量真实线路延迟。
 
 ## CI 与用户网络
@@ -37,5 +39,9 @@
 GitHub Actions 在生成发布产物前运行单元测试、生成一致性和可用的 Mihomo 原生检查。本地通过只证明当前工具链、公开快照和合成节点下的配置行为；不能证明真实订阅出口、Apple 账号资格、设备 TUN 覆盖、运营商 DNS 路径或服务可用性。远程 CI 结果以 GitHub Actions 页面为准。
 
 实际部署时应在自己的设备上核对 TUN/网关是否覆盖目标流量，检查 Siri / News / TV 的账号可用性，以及 `Siri Ai/Apple Intelligence`、`AppleProxy`、`Other Apple Service` 的连接与 DNS 选择。DoH 会向接收查询的服务商披露域名；缓存和 Fake-IP 也不能证明没有 DNS 查询。不要把隔离回环检查描述成“零 DNS 泄漏”或真实 Apple 服务测试。
+
+`mips` TUN 和系统 DNS 的实际行为需在目标设备验证 TCP、UDP/QUIC、IPv6、切网、休眠与退出恢复。`dns-mode` 暂未显式设置：按内核当前默认，自动路由下 Windows/Linux 为 `hijack`，macOS 为 `disabled`；其设置系统 DNS 的效果不等同于捕获所有应用的加密 DNS。项目保留已有 ARC DNS 缓存，没有声称它在所有工作负载下优于 LRU。
+
+设备验收应分别在 macOS、Windows 和 Linux 上使用真实客户端：启用配置后检查 TUN 已建立且 TCP、UDP 和 IPv6 按预期分流；在切换网络及休眠恢复后重复检查；退出客户端后确认系统 DNS 和路由恢复。比较 `dns-mode` 时，记录该平台 `native` 与 `hijack` 的实际差异及相关权限，单独检查局域网 DNS 和应用内加密 DNS；通过前不修改项目的平台默认行为。Stash 需在其应用内另行验证导入、节点筛选与网络接管。设备运行日志和真实订阅不得写入仓库跟踪文件。
 
 维护前先阅读 [国内 DNS 白名单维护原则](dns-whitelist.md)、[Apple 路由范围与边界](apple-routing.md) 和 [动态规则来源](rule-sources.md)。

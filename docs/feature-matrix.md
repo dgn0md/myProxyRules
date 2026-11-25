@@ -28,7 +28,9 @@ Apple 组范围与 DNS 特例见 [Apple 路由说明](apple-routing.md)；provid
 
 提供地区、倍率和家宽节点分类，常见服务域名与 IP 分流，以及手动、自动测速、负载均衡、IPv4/IPv6、TUN 和链式代理等选项。地区候选由节点名称识别，不能证明真实出口地区。
 私网 IP 使用 `直连,no-resolve`；Google、Telegram、TikTok、Twitter、Facebook/Meta IP 使用代理出口及 `no-resolve`，关闭服务组或启用极简模式时改用 `默认代理`。Apple、Microsoft、Steam、Netflix、Spotify IP 也使用 `no-resolve` 并保留原有出口组；`cn_ip` 不加该参数，保留末端解析直连兜底。AI 当前使用域名集合，没有独立 IP 集合。
-测速域名 `cp.cloudflare.com` 的路由和加密 DNS policy 使用 `默认代理`；内核测速请求通过被测节点发起。
+测速地址为 `http://www.apple.com/library/test/success.html`；内核测速请求通过被测节点发起，Mihomo 的 provider 健康检查、自动测速组和负载均衡组期望 HTTP 200。它只检查状态码、不校验网页正文，明文 HTTP 响应可能被中间网络替换。普通 `www.apple.com` 访问仍遵循现有 Apple 路由与 DNS policy；探测服务异常也可能造成节点暂时不可用。
+
+Mihomo 默认使用 `mips` TUN 栈和 ARC DNS 缓存。`dns-mode` 沿用内核平台默认：自动路由下 Windows/Linux 默认为 `hijack`，macOS 默认为 `disabled`。`dns-hijack` 仅处理进入内核且匹配的 DNS 流量，并不能保证设备所有 DNS 都被接管。
 
 DNS policy 在极简模式和服务组关闭时仍按各自边界生效；HTTP provider 每 86400 秒直接更新。`geolocation-cn` 独立于国内服务开关；厂商 DNS policy 与国内服务路由统一受该开关控制，不新增域名清单。DNS policy 只决定解析器，不强制改变路由。目标为 `直连` 的明确域名规则使用国内 DoH；代理服务 DNS 请求经对应服务组选择出口。普通业务查询使用 Cloudflare DoH-H3 与 Google DoH；代理节点域名使用阿里/腾讯 DoH，经 `DIRECT` 建连，避免节点可用前依赖境外 DNS；DoH 端点启动解析使用阿里/腾讯 IP DoH。Apple 专项例外仍按国内白名单与服务出口规则处理；不配置通用 `direct-nameserver`，未命中明确域名 policy 的查询继续使用默认 DNS。
 
@@ -44,4 +46,4 @@ DNS policy 在极简模式和服务组关闭时仍按各自边界生效；HTTP p
 
 YAML 中的 `x-myProxyRules` 是构建输入，Mihomo 不执行这些扩展字段。旧设置文件须将 `x-myClashRules` 改名为 `x-myProxyRules`；构建工具遇到旧键会报错，避免静默忽略设置。开发命令和节点处理测试见 [Test/README.md](../Test/README.md)。
 
-静态 provider 在加载时会移除“大陆旗帜 + 台湾文字”的冲突旗帜，再对节点名称运行 Mihomo 正则。展开模式还会处理其他文字与国旗冲突、零宽字符和重名节点，因此两种模式对其他异常名称的地区归类仍可能不同。需要完整节点归类时使用本地展开模式。
+静态 provider 在加载时会移除“大陆旗帜 + 台湾文字”的冲突旗帜；地区筛选可识别已有英文地区缩写字母之间的零宽空格 U+200B，不因此更改节点名称或链式引用。展开模式还会处理其他文字与国旗冲突、其他不可见字符和重名节点，因此两种模式对异常名称的地区归类仍可能不同。需要完整节点归类时使用本地展开模式。

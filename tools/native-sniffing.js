@@ -10,6 +10,7 @@ const { once } = require('node:events');
 const YAML = require('yaml');
 const { build } = require('./build');
 const { fixtures, freePort } = require('./runtime-routing');
+const { probeQuic } = require('./native-quic');
 async function probe({ port, api, host, protocol, expected, payload, ip = '20.205.243.166' }) {
   const socket = net.connect(port, '127.0.0.1');
   socket.on('error', () => {});
@@ -80,10 +81,12 @@ async function verifySniffing({ binary, rulesDir, temp }) {
     // Replace even direct exits: a failed sniff must never dial the real destination.
     config.proxies = config.proxies
       .filter((entry) => entry.type === 'dns')
-      .concat([{ name: 'loopback-sink', type: 'socks5', server: '127.0.0.1', port: local.socksPort }]);
+      .concat([{ name: 'loopback-sink', type: 'socks5', server: '127.0.0.1', port: local.socksPort, udp: true }]);
     delete config['proxy-providers'];
     for (const group of config['proxy-groups']) {
       group.proxies = ['loopback-sink'];
+      // A black-hole exit cannot pass health probes; this fixture tests sniffing, not selection.
+      if (['url-test', 'load-balance'].includes(group.type)) group.type = 'select';
       delete group.use;
       delete group['include-all-providers'];
       delete group['default-selected'];
@@ -150,6 +153,7 @@ async function verifySniffing({ binary, rulesDir, temp }) {
           ]
         : [{ host: 'github.com', protocol: 'TLS', expected: 'Microsoft', payload: 'microsoft_ip' }];
       for (const entry of cases) evidence.push({ enabled, ...(await probe({ port, api, ...entry })) });
+      for (const version of [1, 2]) evidence.push(await probeQuic({ port, api, enabled, version, local }));
     } finally {
       fs.writeFileSync(path.join(dir, 'runtime.log'), logs);
       if (child.exitCode === null) {
