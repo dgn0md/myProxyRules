@@ -6,49 +6,11 @@ const net = require('node:net');
 const dgram = require('node:dgram');
 const assert = require('node:assert/strict');
 const { once } = require('node:events');
-const { spawn, spawnSync } = require('node:child_process');
+const { spawn } = require('node:child_process');
 const YAML = require('yaml');
 const { build } = require('./build');
 const { fixtures, freePort } = require('./runtime-routing');
-
-function readDomainSnapshot(binary, rulesDir, temp, providers, name) {
-  const spec = providers[name];
-  assert.equal(spec?.format, 'mrs', `${name} must remain an MRS domain provider`);
-  assert.equal(spec?.behavior, 'domain', `${name} must remain a domain provider`);
-  const input = path.resolve(rulesDir, `${name}${path.extname(spec.path)}`);
-  const output = path.join(temp, `${name}-dns-samples.txt`);
-  const result = spawnSync(binary, ['convert-ruleset', 'domain', 'mrs', input, output], {
-    encoding: 'utf8',
-    timeout: 10000,
-  });
-  assert.equal(result.status, 0, `${name}: ${result.stdout}\n${result.stderr}`);
-  const rules = fs
-    .readFileSync(output, 'utf8')
-    .split(/\r?\n/)
-    .map((line) => line.trim().toLowerCase())
-    .filter(Boolean);
-  const exact = new Set();
-  const suffix = new Set();
-  for (const rule of rules) {
-    if (/^domain,/i.test(rule)) exact.add(rule.split(',')[1]);
-    else if (/^domain-suffix,/i.test(rule)) suffix.add(rule.split(',')[1]);
-    else if (rule.startsWith('+.')) suffix.add(rule.slice(2));
-    else exact.add(rule);
-  }
-  const domainPattern = /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9-]{2,}$/i;
-  const candidates = [...[...suffix].map((domain, index) => `dns-policy-probe-${index}.${domain}`), ...exact].filter(
-    (host) => domainPattern.test(host),
-  );
-  assert.ok(candidates.length, `${name} snapshot has no usable DNS sample`);
-  return { candidates, exact, suffix, matches: (host) => matchesDomain({ exact, suffix }, host) };
-}
-
-function matchesDomain(snapshot, host) {
-  host = host.toLowerCase();
-  if (snapshot.exact.has(host)) return true;
-  const labels = host.split('.');
-  return labels.some((_, index) => snapshot.suffix.has(labels.slice(index).join('.')));
-}
+const { createSnapshotReader, matchesDomain } = require('./native-snapshot');
 
 function hasLiteralDnsPolicy(config, host) {
   return Object.keys(config.dns['nameserver-policy']).some((key) => {
@@ -61,14 +23,14 @@ function hasLiteralDnsPolicy(config, host) {
   });
 }
 
-function readDomesticDnsSamples(binary, rulesDir, temp, config) {
+function readDomesticDnsSamples(snapshotReader, config) {
   const providers = config['rule-providers'];
   const modules = Object.keys(providers)
     .filter((name) => name.startsWith('domestic_') && name.endsWith('_dns'))
     .map((policyProvider) => {
       const sourceProvider = policyProvider.slice(0, -'_dns'.length);
-      const full = readDomainSnapshot(binary, rulesDir, temp, providers, sourceProvider);
-      const overseas = readDomainSnapshot(binary, rulesDir, temp, providers, `${sourceProvider}_noncn`);
+      const full = snapshotReader.read(sourceProvider);
+      const overseas = snapshotReader.read(`${sourceProvider}_noncn`);
       const included = full.candidates.find((host) => !overseas.matches(host));
       const excludedCandidates = [...new Set([...full.candidates, ...overseas.candidates])].filter(
         (host) => full.matches(host) && overseas.matches(host),
@@ -84,7 +46,7 @@ function readDomesticDnsSamples(binary, rulesDir, temp, config) {
       };
     });
   assert.ok(modules.length, 'no domestic vendor DNS policies found');
-  const baidu = readDomainSnapshot(binary, rulesDir, temp, providers, 'domestic_baidu');
+  const baidu = snapshotReader.read('domestic_baidu');
   return {
     modules,
     baidu,
@@ -250,14 +212,28 @@ async function verifyProxyNodeBootstrapDns({ binary, temp, domestic, foreign, lo
   }
 }
 
-async function verifyDnsWhitelist({ binary, rulesDir, temp }) {
+async function verifyDnsWhitelist({ binary, rulesDir, temp, snapshotReader }) {
   const domestic = await dnsStub();
   const foreign = await dnsStub();
   const local = await fixtures();
-  const configProviders = build().config['rule-providers'];
-  const geolocationCn = readDomainSnapshot(binary, rulesDir, temp, configProviders, 'geolocation-cn');
-  const gamesCn = readDomainSnapshot(binary, rulesDir, temp, configProviders, 'games_cn');
-  const domesticDnsSamples = readDomesticDnsSamples(binary, rulesDir, temp, build().config);
+  const defaultConfig = build().config;
+  const configProviders = defaultConfig['rule-providers'];
+  const reader = snapshotReader || createSnapshotReader({ binary, rulesDir, temp, providers: configProviders });
+  const geolocationCn = reader.read('geolocation-cn');
+  const gamesCn = reader.read('games_cn');
+  const domesticDnsSamples = readDomesticDnsSamples(reader, defaultConfig);
+  const copiedRulesDir = path.join(temp, 'dns-rules');
+  fs.mkdirSync(copiedRulesDir, { recursive: true });
+  const copiedRuleFiles = new Map();
+  const getCopiedRuleFile = (key, spec) => {
+    const filename = key + path.extname(spec.path);
+    if (!copiedRuleFiles.has(filename)) {
+      const dest = path.join(copiedRulesDir, filename);
+      fs.copyFileSync(path.resolve(rulesDir, filename), dest);
+      copiedRuleFiles.set(filename, dest);
+    }
+    return copiedRuleFiles.get(filename);
+  };
   const evidence = [];
   const node = { name: '美国 DNS 测试', type: 'socks5', server: '127.0.0.1', port: local.socksPort };
   const modes = [
@@ -330,10 +306,12 @@ async function verifyDnsWhitelist({ binary, rulesDir, temp }) {
       }
       for (const [key, spec] of Object.entries(config['rule-providers'])) {
         if (spec.type === 'inline') continue;
-        const filename = key + path.extname(spec.path);
-        const file = path.join(temp, filename);
-        fs.copyFileSync(path.resolve(rulesDir, filename), file);
-        config['rule-providers'][key] = { type: 'file', behavior: spec.behavior, format: spec.format, path: file };
+        config['rule-providers'][key] = {
+          type: 'file',
+          behavior: spec.behavior,
+          format: spec.format,
+          path: getCopiedRuleFile(key, spec),
+        };
       }
       // Synthetic direct rules verify mainland DNS selection and the direct dial path.
       const directDns = config.dns['nameserver-policy']['mesu.apple.com'] || [domestic.url, domestic.url];
@@ -354,12 +332,14 @@ async function verifyDnsWhitelist({ binary, rulesDir, temp }) {
       const api = async (route) =>
         (await fetch(`http://127.0.0.1:${port}${route}`, { signal: AbortSignal.timeout(3000) })).json();
       try {
+        const expectedProviders = Object.keys(config['rule-providers']).length;
         let ready = false;
         for (let i = 0; i < 50; i++) {
           assert.equal(child.exitCode, null, logs);
           try {
             const { providers } = await api('/providers/rules');
-            ready = providers && Object.values(providers).every((provider) => provider.ruleCount > 0);
+            const entries = Object.values(providers || {});
+            ready = entries.length >= expectedProviders && entries.every((provider) => provider.ruleCount > 0);
             if (ready) break;
           } catch {}
           await new Promise((resolve) => setTimeout(resolve, 100));
@@ -467,6 +447,7 @@ async function verifyDnsWhitelist({ binary, rulesDir, temp }) {
                   socket.setTimeout(5000, () => reject(new Error(`${name}: direct CONNECT timeout: ${host}`)));
                 }),
               ]);
+              socket.setTimeout(0);
               assert.match(response.toString(), /200 Connection established/i);
               socket.write(`GET / HTTP/1.1\r\nHost: ${host}\r\n\r\n`);
               for (let i = 0; i < 50; i++) {
