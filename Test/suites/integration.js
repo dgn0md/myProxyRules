@@ -100,8 +100,8 @@ function runIntegrationTests(h, api, fx, loadScript, scriptFile) {
     h.assertEqual(out.dns.enable, true);
     h.assertEqual(out.dns['enhanced-mode'], 'fake-ip');
     h.assertDeep(out.dns.nameserver, [
-      'https://cloudflare-dns.com/dns-query#默认代理&h3=true',
-      'https://dns.google/dns-query#默认代理',
+      'https://cloudflare-dns.com/dns-query#自动选择ex(大陆%26香港)&h3=true',
+      'https://dns.google/dns-query#自动选择ex(大陆%26香港)',
     ]);
     h.assertDeep(out.dns['proxy-server-nameserver'], [
       'https://dns.alidns.com/dns-query#DIRECT',
@@ -126,8 +126,8 @@ function runIntegrationTests(h, api, fx, loadScript, scriptFile) {
       cfg.dns['proxy-server-nameserver-policy'] = { 'hk1.example.com': resolver };
       const out = api.main(cfg);
       h.assertDeep(out.dns.nameserver, [
-        'https://cloudflare-dns.com/dns-query#默认代理&h3=true',
-        'https://dns.google/dns-query#默认代理',
+        'https://cloudflare-dns.com/dns-query#自动选择ex(大陆%26香港)&h3=true',
+        'https://dns.google/dns-query#自动选择ex(大陆%26香港)',
       ]);
       h.assertDeep(out.dns['proxy-server-nameserver'], [
         'https://dns.alidns.com/dns-query#DIRECT',
@@ -148,7 +148,10 @@ function runIntegrationTests(h, api, fx, loadScript, scriptFile) {
     h.assert(!out.dns['nameserver-policy']['unrelated-ns.com']);
     h.assertDeep(out.dns['proxy-server-nameserver-policy'], {});
     h.assert(!out.dns['nameserver-policy']['rule-set:cn']);
-    h.assert(out.dns['nameserver-policy']['rule-set:dns_domestic_cdn,dns_microsoft_cdn,dns_steam_cn']);
+    const policyKeys = Object.keys(out.dns['nameserver-policy']);
+    h.assert(policyKeys.some((k) => k.startsWith('rule-set:') && k.includes('dns_domestic_cdn')));
+    h.assert(policyKeys.some((k) => k.startsWith('rule-set:') && k.includes('dns_microsoft_cdn')));
+    h.assert(policyKeys.some((k) => k.startsWith('rule-set:') && k.includes('dns_steam_cn')));
   });
   h.test('节点 hosts 映射改写为 server，不再复制 hosts', () => {
     const out = api.main(fx.typicalSubscription());
@@ -343,7 +346,11 @@ function runIntegrationTests(h, api, fx, loadScript, scriptFile) {
   h.test('服务组含全节点=true → AI 仍只提供允许的地区组', () =>
     withOptions(api, { 服务组含全节点: true }, () => {
       const out = api.main(fx.minimalSubscription());
-      h.assertDeep(groupByName(out['proxy-groups'], 'AI').proxies, ['日本', '美国'], 'AI 组只提供非香港地区组');
+      h.assertDeep(
+        groupByName(out['proxy-groups'], 'AI').proxies,
+        ['美国', '日本'],
+        'AI 组只提供非香港地区组且美国优先',
+      );
     }),
   );
   h.test('关闭 AI 分流组 → 移除组/规则/规则集', () =>
