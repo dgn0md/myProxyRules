@@ -375,7 +375,7 @@ async function verifyDnsWhitelist({ binary, rulesDir, temp, snapshotReader }) {
           : [
               ['i0.hdslb.com', options.国内CDN解析 !== false || matchesDomain(geolocationCn, 'i0.hdslb.com')],
               ['qhimgs7.com', options.国内CDN解析 !== false || matchesDomain(geolocationCn, 'qhimgs7.com')],
-              ['res.cdn.office.net', options.微软下载解析 !== false],
+              ['res.cdn.office.net', options.微软下载解析 !== false || !options.极简分流],
               [
                 'dl.steam.clngaa.com',
                 options.Steam下载解析 !== false ||

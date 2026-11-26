@@ -267,7 +267,12 @@ async function run() {
       assert.equal(proxies.AppleProxy.now, '美国');
       assert.equal(proxies['Siri Ai/Apple Intelligence'].now, '美国');
       assert.equal(proxies['Other Apple Service'].now, '直连');
-      assert.equal(proxies.Microsoft.now, '直连');
+      assert.equal(proxies.Microsoft.now, '默认代理');
+      assert.equal(proxies.FCM.now, '默认代理');
+      assert.equal(proxies.Google.now, '美国');
+      assert.equal(proxies.AI.now, '美国');
+      assert.equal(proxies.TikTok.now, '美国');
+      assert.equal(proxies.Meta.now, '美国');
       const routes = await verifyRouting({ port: proxyPort, sinkPort: local.sinkPort, track: local.track, api });
       const appleTvRoute = await verifyRouting({
         port: proxyPort,
@@ -426,7 +431,7 @@ async function run() {
           const source = domesticModuleCases.find(([host]) => host === result.host)[1];
           const enabled = source && options.国内服务优先直连 !== false;
           const matchedModule =
-            ['AND', 'RULESET'].includes(result.rule.toUpperCase()) && result.payload.includes('domestic_');
+            ['AND', 'RULESET'].includes(result.rule.toUpperCase()) && /(?:^|RuleSet,)domestic_/.test(result.payload);
           assert.equal(!!matchedModule, !!enabled, `${result.host}: ${JSON.stringify({ options, result })}`);
           if (enabled) {
             assert.ok(result.payload.includes(`domestic_${source}`), JSON.stringify(result));
