@@ -44,4 +44,4 @@ GitHub Actions 在生成发布产物前运行单元测试、生成一致性和�
 
 设备验收应分别在 macOS、Windows 和 Linux 上使用真实客户端：启用配置后检查 TUN 已建立且 TCP、UDP 和 IPv6 按预期分流；在切换网络及休眠恢复后重复检查；退出客户端后确认系统 DNS 和路由恢复。比较 `dns-mode` 时，记录该平台 `native` 与 `hijack` 的实际差异及相关权限，单独检查局域网 DNS 和应用内加密 DNS；通过前不修改项目的平台默认行为。Stash 需在其应用内另行验证导入、节点筛选与网络接管。设备运行日志和真实订阅不得写入仓库跟踪文件。
 
-维护前先阅读 [国内 DNS 白名单维护原则](docs/dns-whitelist.md)、[Apple 路由范围与边界](apple-routing.md) 和 [动态规则来源](rule-sources.md)。
+维护前先阅读 [国内 DNS 白名单维护原则](dns-whitelist.md)、[Apple 路由范围与边界](apple-routing.md) 和 [动态规则来源](rule-sources.md)。
