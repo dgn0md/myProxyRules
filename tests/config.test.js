@@ -252,13 +252,13 @@ test('health checks use the Apple endpoint and require HTTP 200 in static and ex
   for (const subscription of [undefined, clean()]) {
     const config = build({ subscription }).config;
     for (const group of config['proxy-groups'].filter((entry) => ['url-test', 'load-balance'].includes(entry.type))) {
-      assert.equal(group.url, 'http://www.apple.com/library/test/success.html', group.name);
+      assert.equal(group.url, 'https://www.apple.com/library/test/success.html', group.name);
       assert.equal(group['expected-status'], 200, group.name);
     }
     if (!subscription) {
       assert.equal(
         config['proxy-providers'].订阅['health-check'].url,
-        'http://www.apple.com/library/test/success.html',
+        'https://www.apple.com/library/test/success.html',
       );
       assert.equal(config['proxy-providers'].订阅['health-check']['expected-status'], 200);
     }
