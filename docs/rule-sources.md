@@ -82,7 +82,7 @@ Mihomo 与 Stash 使用本页所列 MRS、classical 与现有 provider。Surge�
 - `no-resolve` 避免为匹配这些 IP 集合而触发域名解析；仍可匹配连接已有的目标 IP。域名路由和 DNS policy 独立生效。
 - AI 使用 `category-ai-!cn` 域名集合，没有独立 AI IP provider；不将共享分析/支持域名、共享云/CDN 整段 IP 代入 AI 服务分类。
 - 专用 Apple 域名例外排在 Apple CN 与 QUIC 拒绝规则之前。
-- 测速地址 `http://www.apple.com/library/test/success.html` 由内核通过被测节点请求；普通 `www.apple.com` 访问遵循现有 Apple 动态规则和 DNS policy，不新增整域代理例外。
+- 测速地址 `https://www.apple.com/library/test/success.html` 由内核通过被测节点请求；普通 `www.apple.com` 访问遵循现有 Apple 动态规则和 DNS policy，不新增整域代理例外。
 - provider 的 IP 与域名集合来自不同数据类别；DNS 侧按域名匹配的 provider 设置策略，不把 IP 地址集合错误地当作 DNS 域名规则。
 
 后续新增、替换或扩容 provider 时，记录用途、格式和实际成员范围，保留客户端直接每日更新方式；不得将通用 `cdn`、整厂商或公共云集合整体加入国内 DNS。

@@ -20,7 +20,7 @@ myProxyRules 以 Mihomo 为唯一功能源和主支持客户端，提供覆写�
 私网 IP 使用 `直连,no-resolve`；Google、Telegram、TikTok、Twitter、Facebook/Meta IP 使用代理出口及 `no-resolve`，关闭服务组或启用极简模式时改用 `默认代理`。Apple、Microsoft、Steam、Netflix、Spotify IP 也使用 `no-resolve` 并保留原有出口组；`cn_ip` 不加该参数，保留末端解析直连兜底。AI 当前使用域名集合，没有独立 IP 集合。
 `GLOBAL` 首次默认选择 `美国`，`默认代理` 首次默认选择 `自动选择ex(大陆&香港)`；仅在相应候选组存在时生效，已有客户端选择缓存优先。
 阿里、百度、B站、字节、中国移动/电信/联通、华为云、京东、网易、腾讯、小米提供国内服务模块，连接规则和厂商 DNS policy 统一受默认开启的 `国内服务优先直连` 控制。模块动态使用 Bett 厂商集合，有同源 `@!cn` 海外子集时，路由和 DNS 都排除该子集；百度当前没有配套子集，因此完整百度集合使用国内加密 DNS。阿里/淘宝、腾讯云、火山引擎等子品牌由上层厂商集合覆盖，不重复加载；未标注海外的共享域名仍依赖上游分类质量。
-测速使用 `http://www.apple.com/library/test/success.html`；Mihomo 内核通过被测节点发起请求，provider、自动测速和负载均衡组要求返回 HTTP 200。测速只检查状态码，不校验网页正文；HTTP 响应可能被网络中的中间设备替换。普通 `www.apple.com` 访问仍按现有 Apple 规则与 DNS policy 处理；探测服务异常时节点可能暂时被判为不可用。
+测速使用 `https://www.apple.com/library/test/success.html`；Mihomo 内核通过被测节点发起 HTTPS 请求，provider、自动测速和负载均衡组要求返回 HTTP 200。测速只检查状态码，不校验网页正文。普通 `www.apple.com` 访问仍按现有 Apple 规则与 DNS policy 处理；探测服务异常时节点可能暂时被判为不可用。
 
 Mihomo TUN 默认使用 `mips` 栈，DNS 使用 ARC 缓存。系统 DNS 的设置沿用内核的平台默认：开启自动路由时 Windows/Linux 默认 `hijack`，macOS 默认 `disabled`；设备和客户端仍需确认流量进入 TUN。非 Mihomo 客户端的相关行为以其应用为准。
 
