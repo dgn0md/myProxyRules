@@ -4,11 +4,11 @@
  * 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
  * 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
  *
- * 最新 Raw SHA-256：d9d23367bcd4a0988211572d099d05806767e33ba74dc0dac47bb3037d3b6e77
+ * 最新 Raw SHA-256：25fa295e85ee93e103cce7f23f5f5cc85b7333550fbbd35a67cade72af589a13
  * Raw 脚本：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js
  * CDN 脚本：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js
  *
- * 缓存 CDN SHA-256：551fc8f78a0bcbcc80679eb07555fe3e6436d6f6f5692ac5a963578ebea2b664
+ * 缓存 CDN SHA-256：1db41758e49a6f284fb689c32aeb8095f493271d105d8a4b22010c946f8a9e20
  */
 
 // --- 静态配置区域 ---
@@ -448,7 +448,7 @@ const healthCheckExpectedStatus = 200;
 // 策略组公共配置
 const groupBaseOption = {
   timeout: 5000,
-  url: 'http://www.apple.com/library/test/success.html',
+  url: 'https://www.apple.com/library/test/success.html',
   'max-failed-times': 3,
   'empty-fallback': 'REJECT',
 };

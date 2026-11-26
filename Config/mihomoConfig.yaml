@@ -1,7 +1,7 @@
 # myProxyRules Mihomo 全量静态配置
 # 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
 # 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
-# 最新 Raw SHA-256：d93b563a62d97959c7db566904b3f42c6fca8968742a8faecc8ec83e5de6bb2c
+# 最新 Raw SHA-256：efda4a596497e4f7ace3ad533a2f0caad3cf35a0717db732ffafcd7c2965c161
 # Raw 配置：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/mihomoConfig.yaml
 # CDN 配置：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/mihomoConfig.cdn.yaml
 # 仅适用于 Mihomo。关闭客户端 DNS 覆写。第一次使用请填 proxy-providers.订阅.url。
@@ -381,7 +381,7 @@ proxies:
 proxy-groups:
   # 全量服务/地区/倍率/家宽组。静态地区无节点时回退 REJECT；脚本只生成有节点的组。
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -479,7 +479,7 @@ proxy-groups:
       - 其他节点-自动选择
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Global.svg
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -520,7 +520,7 @@ proxy-groups:
       - 负载均衡
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Proxy.svg
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -530,7 +530,7 @@ proxy-groups:
     exclude-type: DIRECT|REJECT|REMATCH
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -545,7 +545,7 @@ proxy-groups:
     exclude-filter: (?i)(🇭🇰|香港|\b(H​*K|H​*K​*G)\b|hong\s*kong|🇨🇳|大陆|内地|\b(C​*N|C​*H​*N|P​*R​*C)\b|\bChina\b|\bMainland\b|(官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
     include-all-providers: true
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: load-balance
@@ -560,7 +560,7 @@ proxy-groups:
     include-all-providers: true
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -604,7 +604,7 @@ proxy-groups:
       - 直连
     default-selected: 直连
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -646,7 +646,7 @@ proxy-groups:
       - 家宽节点
       - 其他节点
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -679,7 +679,7 @@ proxy-groups:
       - 马来西亚
     default-selected: 美国
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -712,7 +712,7 @@ proxy-groups:
       - 马来西亚
     default-selected: 美国
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -754,7 +754,7 @@ proxy-groups:
       - 家宽节点
       - 其他节点
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -797,7 +797,7 @@ proxy-groups:
       - 家宽节点
       - 其他节点
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -840,7 +840,7 @@ proxy-groups:
       - 家宽节点
       - 其他节点
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -882,7 +882,7 @@ proxy-groups:
       - 家宽节点
       - 其他节点
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -925,7 +925,7 @@ proxy-groups:
       - 其他节点
       - 直连
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -958,7 +958,7 @@ proxy-groups:
       - 马来西亚
     default-selected: 美国
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1000,7 +1000,7 @@ proxy-groups:
       - 家宽节点
       - 其他节点
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1033,7 +1033,7 @@ proxy-groups:
       - 马来西亚
     default-selected: 美国
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1075,7 +1075,7 @@ proxy-groups:
       - 家宽节点
       - 其他节点
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1117,7 +1117,7 @@ proxy-groups:
       - 家宽节点
       - 其他节点
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1160,7 +1160,7 @@ proxy-groups:
       - 其他节点
       - 直连
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1203,7 +1203,7 @@ proxy-groups:
       - 其他节点
       - 直连
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1246,7 +1246,7 @@ proxy-groups:
       - 其他节点
       - 直连
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1289,7 +1289,7 @@ proxy-groups:
       - 其他节点
     default-selected: 日本
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1332,7 +1332,7 @@ proxy-groups:
       - 其他节点
     default-selected: 美国
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1375,7 +1375,7 @@ proxy-groups:
       - 其他节点
     default-selected: 香港
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1419,7 +1419,7 @@ proxy-groups:
       - 直连
     default-selected: 美国
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1430,7 +1430,7 @@ proxy-groups:
       - REJECT-DROP
       - PASS
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1462,7 +1462,7 @@ proxy-groups:
       - 泰国
       - 马来西亚
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1505,7 +1505,7 @@ proxy-groups:
       - 其他节点
       - 直连
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1545,7 +1545,7 @@ proxy-groups:
       - 其他节点
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Stack.svg
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1559,7 +1559,7 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/China.svg
     hidden: false
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1574,7 +1574,7 @@ proxy-groups:
     filter: (?i)🇭🇰|香港|\b(H​*K|H​*K​*G)\b|hong\s*kong
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -1590,7 +1590,7 @@ proxy-groups:
     filter: (?i)🇭🇰|香港|\b(H​*K|H​*K​*G)\b|hong\s*kong
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1605,7 +1605,7 @@ proxy-groups:
     filter: (?i)🇯🇵|日本|东京|大阪|京都|\b(J​*P|J​*P​*N)\b|japan
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -1621,7 +1621,7 @@ proxy-groups:
     filter: (?i)🇯🇵|日本|东京|大阪|京都|\b(J​*P|J​*P​*N)\b|japan
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1636,7 +1636,7 @@ proxy-groups:
     filter: (?i)🇺🇸|美国|纽约|洛杉矶|旧金山|芝加哥|休斯顿|迈阿密|西雅图|波士顿|华盛顿|拉斯维加斯|圣何塞|\b(U​*S|U​*S​*A)\b|america|united\s*states
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -1652,7 +1652,7 @@ proxy-groups:
     filter: (?i)🇺🇸|美国|纽约|洛杉矶|旧金山|芝加哥|休斯顿|迈阿密|西雅图|波士顿|华盛顿|拉斯维加斯|圣何塞|\b(U​*S|U​*S​*A)\b|america|united\s*states
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1667,7 +1667,7 @@ proxy-groups:
     filter: (?i)🇸🇬|新加坡|狮城|\b(S​*G|S​*G​*P)\b|singapore
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -1683,7 +1683,7 @@ proxy-groups:
     filter: (?i)🇸🇬|新加坡|狮城|\b(S​*G|S​*G​*P)\b|singapore
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1698,7 +1698,7 @@ proxy-groups:
     filter: (?i)🇹🇼|台湾|台北|高雄|\b(T​*W|T​*W​*N)\b|taiwan
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -1714,7 +1714,7 @@ proxy-groups:
     filter: (?i)🇹🇼|台湾|台北|高雄|\b(T​*W|T​*W​*N)\b|taiwan
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1729,7 +1729,7 @@ proxy-groups:
     filter: (?i)🇰🇷|韩国|首尔|釜山|\b(K​*R|K​*O​*R)\b|south\s*korea|korea
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -1745,7 +1745,7 @@ proxy-groups:
     filter: (?i)🇰🇷|韩国|首尔|釜山|\b(K​*R|K​*O​*R)\b|south\s*korea|korea
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1760,7 +1760,7 @@ proxy-groups:
     filter: (?i)🇦🇺|澳大利亚|澳洲|悉尼|墨尔本|珀斯|\b(A​*U|A​*U​*S)\b|australia
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -1776,7 +1776,7 @@ proxy-groups:
     filter: (?i)🇦🇺|澳大利亚|澳洲|悉尼|墨尔本|珀斯|\b(A​*U|A​*U​*S)\b|australia
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1791,7 +1791,7 @@ proxy-groups:
     filter: (?i)🇮🇩|印度尼西亚|印尼|雅加达|\b(I​*D|I​*D​*N)\b|indonesia
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -1807,7 +1807,7 @@ proxy-groups:
     filter: (?i)🇮🇩|印度尼西亚|印尼|雅加达|\b(I​*D|I​*D​*N)\b|indonesia
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1822,7 +1822,7 @@ proxy-groups:
     filter: (?i)🇮🇳|印度($|[^尼])|孟买|新德里|\b(I​*N|I​*N​*D)\b|india
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -1838,7 +1838,7 @@ proxy-groups:
     filter: (?i)🇮🇳|印度($|[^尼])|孟买|新德里|\b(I​*N|I​*N​*D)\b|india
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1853,7 +1853,7 @@ proxy-groups:
     filter: (?i)🇨🇦|加拿大|多伦多|温哥华|蒙特利尔|\b(C​*A|C​*A​*N)\b|canada
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -1869,7 +1869,7 @@ proxy-groups:
     filter: (?i)🇨🇦|加拿大|多伦多|温哥华|蒙特利尔|\b(C​*A|C​*A​*N)\b|canada
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1884,7 +1884,7 @@ proxy-groups:
     filter: (?i)🇩🇪|德国|法兰克福|柏林|\b(D​*E|D​*E​*U)\b|germany
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -1900,7 +1900,7 @@ proxy-groups:
     filter: (?i)🇩🇪|德国|法兰克福|柏林|\b(D​*E|D​*E​*U)\b|germany
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1915,7 +1915,7 @@ proxy-groups:
     filter: (?i)🇬🇧|英国|伦敦|曼彻斯特|\b(U​*K|G​*B|G​*B​*R)\b|united\s*kingdom|britain|england
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -1931,7 +1931,7 @@ proxy-groups:
     filter: (?i)🇬🇧|英国|伦敦|曼彻斯特|\b(U​*K|G​*B|G​*B​*R)\b|united\s*kingdom|britain|england
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1946,7 +1946,7 @@ proxy-groups:
     filter: (?i)🇫🇷|法国|巴黎|\b(F​*R|F​*R​*A)\b|france
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -1962,7 +1962,7 @@ proxy-groups:
     filter: (?i)🇫🇷|法国|巴黎|\b(F​*R|F​*R​*A)\b|france
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -1977,7 +1977,7 @@ proxy-groups:
     filter: (?i)🇳🇱|荷兰|阿姆斯特丹|\b(N​*L|N​*L​*D)\b|netherlands|holland
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -1993,7 +1993,7 @@ proxy-groups:
     filter: (?i)🇳🇱|荷兰|阿姆斯特丹|\b(N​*L|N​*L​*D)\b|netherlands|holland
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -2008,7 +2008,7 @@ proxy-groups:
     filter: (?i)🇪🇸|西班牙|马德里|\b(E​*S|E​*S​*P)\b|spain
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -2024,7 +2024,7 @@ proxy-groups:
     filter: (?i)🇪🇸|西班牙|马德里|\b(E​*S|E​*S​*P)\b|spain
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -2039,7 +2039,7 @@ proxy-groups:
     filter: (?i)🇷🇺|俄罗斯|莫斯科|\b(R​*U|R​*U​*S)\b|russia
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -2055,7 +2055,7 @@ proxy-groups:
     filter: (?i)🇷🇺|俄罗斯|莫斯科|\b(R​*U|R​*U​*S)\b|russia
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -2070,7 +2070,7 @@ proxy-groups:
     filter: (?i)🇺🇦|乌克兰|基辅|\b(U​*A|U​*K​*R)\b|ukraine
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -2086,7 +2086,7 @@ proxy-groups:
     filter: (?i)🇺🇦|乌克兰|基辅|\b(U​*A|U​*K​*R)\b|ukraine
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -2101,7 +2101,7 @@ proxy-groups:
     filter: (?i)🇹🇷|土耳其|伊斯坦布尔|\b(T​*R|T​*U​*R)\b|turkey|türkiye
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -2117,7 +2117,7 @@ proxy-groups:
     filter: (?i)🇹🇷|土耳其|伊斯坦布尔|\b(T​*R|T​*U​*R)\b|turkey|türkiye
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -2132,7 +2132,7 @@ proxy-groups:
     filter: (?i)🇳🇴|挪威|奥斯陆|\b(N​*O|N​*O​*R)\b|norway
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -2148,7 +2148,7 @@ proxy-groups:
     filter: (?i)🇳🇴|挪威|奥斯陆|\b(N​*O|N​*O​*R)\b|norway
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -2163,7 +2163,7 @@ proxy-groups:
     filter: (?i)🇨🇭|瑞士|苏黎世|\b(C​*H|C​*H​*E)\b|switzerland|swiss
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -2179,7 +2179,7 @@ proxy-groups:
     filter: (?i)🇨🇭|瑞士|苏黎世|\b(C​*H|C​*H​*E)\b|switzerland|swiss
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -2194,7 +2194,7 @@ proxy-groups:
     filter: (?i)🇸🇪|瑞典|斯德哥尔摩|\b(S​*E|S​*W​*E)\b|sweden
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -2210,7 +2210,7 @@ proxy-groups:
     filter: (?i)🇸🇪|瑞典|斯德哥尔摩|\b(S​*E|S​*W​*E)\b|sweden
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -2225,7 +2225,7 @@ proxy-groups:
     filter: (?i)🇮🇪|爱尔兰|都柏林|\b(I​*E|I​*R​*L)\b|ireland
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -2241,7 +2241,7 @@ proxy-groups:
     filter: (?i)🇮🇪|爱尔兰|都柏林|\b(I​*E|I​*R​*L)\b|ireland
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -2256,7 +2256,7 @@ proxy-groups:
     filter: (?i)🇵🇭|菲律宾|马尼拉|\b(P​*H|P​*H​*L)\b|philippines
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -2272,7 +2272,7 @@ proxy-groups:
     filter: (?i)🇵🇭|菲律宾|马尼拉|\b(P​*H|P​*H​*L)\b|philippines
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -2287,7 +2287,7 @@ proxy-groups:
     filter: (?i)🇻🇳|越南|河内|胡志明|\b(V​*N|V​*N​*M)\b|vietnam
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -2303,7 +2303,7 @@ proxy-groups:
     filter: (?i)🇻🇳|越南|河内|胡志明|\b(V​*N|V​*N​*M)\b|vietnam
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -2318,7 +2318,7 @@ proxy-groups:
     filter: (?i)🇹🇭|泰国|曼谷|\b(T​*H|T​*H​*A)\b|thailand
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -2334,7 +2334,7 @@ proxy-groups:
     filter: (?i)🇹🇭|泰国|曼谷|\b(T​*H|T​*H​*A)\b|thailand
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -2349,7 +2349,7 @@ proxy-groups:
     filter: (?i)🇲🇾|马来西亚|吉隆坡|\b(M​*Y|M​*Y​*S)\b|malaysia
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -2365,7 +2365,7 @@ proxy-groups:
     filter: (?i)🇲🇾|马来西亚|吉隆坡|\b(M​*Y|M​*Y​*S)\b|malaysia
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -2380,7 +2380,7 @@ proxy-groups:
       *(倍(率)?|[*×✕✖⨯⨉xX]))($|[^A-Za-z0-9.])|低倍|免费|\bfree\b
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?)|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -2397,7 +2397,7 @@ proxy-groups:
       *(倍(率)?|[*×✕✖⨯⨉xX]))($|[^A-Za-z0-9.])|低倍|免费|\bfree\b
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?)|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -2413,7 +2413,7 @@ proxy-groups:
       *(倍(率)?|[*×✕✖⨯⨉xX]))($|[^A-Za-z0-9.])
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?)|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -2431,7 +2431,7 @@ proxy-groups:
       *(倍(率)?|[*×✕✖⨯⨉xX]))($|[^A-Za-z0-9.])
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?)|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -2445,7 +2445,7 @@ proxy-groups:
     filter: (?i)家宽|住宅|原生(\s*IP)?|家庭宽带|家庭网络|\bISP\b|\bRES\b|residential|home\s*broadband|native\s*IP
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?)|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -2461,7 +2461,7 @@ proxy-groups:
     filter: (?i)家宽|住宅|原生(\s*IP)?|家庭宽带|家庭网络|\bISP\b|\bRES\b|residential|home\s*broadband|native\s*IP
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?)|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
@@ -2474,7 +2474,7 @@ proxy-groups:
     exclude-type: DIRECT|REJECT|REMATCH
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?)|🇭🇰|香港|\b(H​*K|H​*K​*G)\b|hong\s*kong|🇯🇵|日本|东京|大阪|京都|\b(J​*P|J​*P​*N)\b|japan|🇺🇸|美国|纽约|洛杉矶|旧金山|芝加哥|休斯顿|迈阿密|西雅图|波士顿|华盛顿|拉斯维加斯|圣何塞|\b(U​*S|U​*S​*A)\b|america|united\s*states|🇸🇬|新加坡|狮城|\b(S​*G|S​*G​*P)\b|singapore|🇹🇼|台湾|台北|高雄|\b(T​*W|T​*W​*N)\b|taiwan|🇰🇷|韩国|首尔|釜山|\b(K​*R|K​*O​*R)\b|south\s*korea|korea|🇦🇺|澳大利亚|澳洲|悉尼|墨尔本|珀斯|\b(A​*U|A​*U​*S)\b|australia|🇮🇩|印度尼西亚|印尼|雅加达|\b(I​*D|I​*D​*N)\b|indonesia|🇮🇳|印度($|[^尼])|孟买|新德里|\b(I​*N|I​*N​*D)\b|india|🇨🇦|加拿大|多伦多|温哥华|蒙特利尔|\b(C​*A|C​*A​*N)\b|canada|🇩🇪|德国|法兰克福|柏林|\b(D​*E|D​*E​*U)\b|germany|🇬🇧|英国|伦敦|曼彻斯特|\b(U​*K|G​*B|G​*B​*R)\b|united\s*kingdom|britain|england|🇫🇷|法国|巴黎|\b(F​*R|F​*R​*A)\b|france|🇳🇱|荷兰|阿姆斯特丹|\b(N​*L|N​*L​*D)\b|netherlands|holland|🇪🇸|西班牙|马德里|\b(E​*S|E​*S​*P)\b|spain|🇷🇺|俄罗斯|莫斯科|\b(R​*U|R​*U​*S)\b|russia|🇺🇦|乌克兰|基辅|\b(U​*A|U​*K​*R)\b|ukraine|🇹🇷|土耳其|伊斯坦布尔|\b(T​*R|T​*U​*R)\b|turkey|türkiye|🇳🇴|挪威|奥斯陆|\b(N​*O|N​*O​*R)\b|norway|🇨🇭|瑞士|苏黎世|\b(C​*H|C​*H​*E)\b|switzerland|swiss|🇸🇪|瑞典|斯德哥尔摩|\b(S​*E|S​*W​*E)\b|sweden|🇮🇪|爱尔兰|都柏林|\b(I​*E|I​*R​*L)\b|ireland|🇵🇭|菲律宾|马尼拉|\b(P​*H|P​*H​*L)\b|philippines|🇻🇳|越南|河内|胡志明|\b(V​*N|V​*N​*M)\b|vietnam|🇹🇭|泰国|曼谷|\b(T​*H|T​*H​*A)\b|thailand|🇲🇾|马来西亚|吉隆坡|\b(M​*Y|M​*Y​*S)\b|malaysia|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
   - timeout: 5000
-    url: http://www.apple.com/library/test/success.html
+    url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
     type: url-test
@@ -3250,7 +3250,7 @@ proxy-providers:
     exclude-type: DIRECT|REJECT|REMATCH
     health-check:
       enable: true
-      url: http://www.apple.com/library/test/success.html
+      url: https://www.apple.com/library/test/success.html
       expected-status: 200
       interval: 600
       lazy: true
