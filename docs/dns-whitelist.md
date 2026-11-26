@@ -28,7 +28,7 @@
 | `微软下载解析`  | `dns_microsoft_cdn` | Sukka `microsoft_cdn`，Microsoft 下载与静态资源；不扩大为整个 Microsoft、Azure 或登录/账号服务。                                                                                     |
 | `Steam下载解析` | `dns_steam_cn`      | MetaCubeX `steam@cn` 动态成品，保留国内下载、更新与中国站条目；`steamserver.net`、`steamusercontent.com` 根域及子域明确使用国外 DNS。不能将成品描述为未经合并的纯 v2fly `@cn` 集合。 |
 
-具体下载地址、格式和上游来源见 [规则来源说明](rule-sources.md)。这些 provider 只决定 DNS，不增加连接直连规则。不得为其下载域名或图标 CDN 补充直连规则。
+具体下载地址、格式和上游来源见 [规则来源说明](rule-sources.md)。以上三个 provider 开启时同时生成直连路由与国内加密 DNS policy，并在对应代理规则（`Microsoft`、`Steam`、`geolocation-!cn`）中通过 `AND NOT` 显式排除对应集合（`Steam` 同时前置保留 `steamserver.net` 与 `steamusercontent.com` 走 `Steam` 组），使直连省流与出口/DNS 地区保持一致，且 `dns_domestic_cdn` 位于明确海外服务组之后，避免误伤海外代理服务。
 
 现有 `geolocation-cn` provider 独立使用国内加密 DNS。国内服务模块开启时，11 组配对集合按 `domestic AND NOT domestic_noncn`、百度按完整集合使用国内加密 DNS；不新增上游规则集或成员清单。厂商 policy 在极简模式下保留，在 `国内服务优先直连` 关闭时移除。
 

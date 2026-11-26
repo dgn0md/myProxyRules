@@ -32,9 +32,11 @@
 - 可路由的精确域名、后缀域名及动态 domain/classical 规则集，目标为 `直连` 时使用国内加密 DNS，目标为服务组时 DNS 请求经对应服务组选择出口；仅因 IP 兜底规则直连或未命中明确域名 policy 的查询仍用默认国外 DNS。`private` 保留本地 hosts/system 或严格模式下的 RCODE 安全 policy。Apple 例外：
   - `Other Apple Service` 连接默认直连；通用 `rule-set:apple`、`gateway.icloud.com` 和 `setup.icloud.com` 的 DNS policy 使用 `Siri Ai/Apple Intelligence` 当前选择。没有合格的 Siri 地区候选且普通 Apple 默认直连时，这些域名改用国内加密直连 DNS，避免直连连接被 NXDOMAIN 阻断。
   - AppleProxy 动态集合、Apple 产品入口与 `apple_ip` 进入 `AppleProxy`；`apple-dns.net` 和 `apple-dns.com` 的 DNS policy 使用该组。
-- `private` 和拒绝出口可用专用安全 policy。明确直连域名 policy、`geolocation-cn` 成员、国内服务集合、国内 DNS 白名单及 Apple 国内例外使用阿里/腾讯 DoH；服务组目标的 DNS 请求跟随对应组选择。普通默认业务查询使用 Cloudflare 强制 DoH-H3 与 Google DoH；代理节点域名使用阿里/腾讯 DoH 并经 `DIRECT` 建连，避免代理启动前依赖境外解析器。Mihomo 的 `default-nameserver` 启动解析必须使用 IP 字面量，因此配置阿里/腾讯 IP DoH，并仅用于解析加密 DNS 端点域名。IP-CIDR provider 本身没有域名 DNS。
+- `private` 和拒绝出口可用专用安全 policy。明确直连域名 policy、`geolocation-cn` 成员、国内服务集合、三大直连 CDN 集合、`Microsoft`/`FCM` 选直连时的本地解析及 Apple 国内例外使用阿里/腾讯 DoH；其他服务组目标的 DNS 请求跟随对应组选择。普通默认业务查询在非极简模式且开启 `排除大陆香港自动选` 时使用 `#自动选择ex(大陆%26香港)`（否则 `#默认代理`），解析器为 Cloudflare 强制 DoH-H3 与 Google DoH；代理节点域名使用阿里/腾讯 DoH 并经 `DIRECT` 建连，避免代理启动前依赖境外解析器。Mihomo 的 `default-nameserver` 启动解析必须使用 IP 字面量，因此配置阿里/腾讯 IP DoH，并仅用于解析加密 DNS 端点域名。开启 `接管DNS53` 时同时以 `DST-PORT,853,REJECT` 拦截外部 DoT/DoQ 并对 `use-application-dns.net` 返回 `rcode://name_error`；`sniffer.override-destination` 默认开启，`dns.cache-algorithm` 设为 `lru`、`cache-max-size: 1` 且关闭全局 TCP Keep-Alive。IP-CIDR provider 本身没有域名 DNS。
 - 阿里、百度、B站、字节、中国移动/电信/联通、华为云、京东、网易、腾讯、小米国内服务模块使用 Bett 厂商集合；有同源 `@!cn` 子集时，路由与国内 DNS policy 都按 `domestic AND NOT domestic_noncn` 匹配，百度没有配套子集，路由和 DNS policy 都使用完整百度集合。连接规则与厂商 DNS policy 统一受默认开启的 `国内服务优先直连` 控制；专用服务规则先于模块，模块先于通用 CN 域名、国外域名与 IP 兜底。海外标注不完整仍可能影响分类。
-- IP 规则顺序保留 `apple_ip`、`private_ip`、服务 IP、`cn_ip` 直连兜底的优先级，避免服务 IP 被通用 CN 集合先匹配。
+- IP 规则顺序保留 `apple_ip`、`private_ip`、服务 IP、`cn_ip`（均带 `no-resolve`）直连兜底的优先级，避免服务 IP 被通用 CN 集合先匹配，同时防止 Fake-IP 下未知海外域名被 `cn_ip` 触发本地双重解析。
+- 公共 WebRTC STUN（`stun.l.google.com` 及 UDP 3478/19302）优先于 `Google` 等服务组路由到 `漏网之鱼`（极简模式为 `默认代理`），避免与默认网页出口分裂。
+- 全面取消 `负载均衡` 策略组与 `微软默认直连` 独立开关；`Microsoft` 与 `FCM` 默认首项为 `默认代理`（`microsoft_cn` 直连规则默认开启），`Google`、`AI`、`TikTok`、`Meta` 等受限服务组默认首项为 `美国`。
 - Apple 精确规则须先于广告、Apple CN 和可选 QUIC 拒绝规则。不得用整个 Apple、Cloudflare 或 `17/8` 网段代替精细端点分流。
 - 策略组名称原样保留：`Siri Ai/Apple Intelligence`、`AppleProxy`、`Other Apple Service`。旧 `Apple Product地区` 开关作为 `AppleProxy` 的兼容别名读取。
 - 保留默认语义：`Other Apple Service` 默认直连；`AppleProxy` 初始美国且可选直连；Siri 组优先选择美国，没有合格候选时拒绝连接。
@@ -42,7 +44,7 @@
 ## 国内 DNS 白名单原则
 
 - 连接路由和 DNS 解析器分别决定；显式域名规则或动态 domain/classical 规则集匹配且目标为 `直连` 时，按同一域名谓词使用国内加密 DNS。仅因 `cn_ip` 等 IP 兜底规则直连、未命中明确域名 policy 的查询不自动切换到国内 DNS。通用 `cn`/`douyin` 集合不单独授权国内解析。`geolocation-cn` 独立授权其动态成员；国内服务模块开启时，11 组配对集合按 `domestic AND NOT domestic_noncn`、百度按完整集合授权国内加密 DNS，均随 `国内服务优先直连` 开关启停，不新增域名规则清单。不配置通用 `direct-nameserver`，不因解析失败而回退国内 DNS。
-- `国内CDN解析`、`微软下载解析`、`Steam下载解析` 默认开启并可独立关闭，不受服务组、极简模式或国内路由开关隐式控制。名单重叠与专项例外分别判断，不能把关闭单个集合描述为禁止域名的一切国内解析。
+- `国内CDN解析`、`微软下载解析`、`Steam下载解析` 默认开启并可独立关闭，不受服务组、极简模式或国内路由开关隐式控制；开启时同步生成直连路由与国内加密 DNS policy，并在对应代理规则（`Microsoft`、`Steam`、`geolocation-!cn`）中使用 `AND NOT` 显式排除对应直连集合，确保直连省流与出口/DNS 一致。名单重叠与专项例外分别判断，不能把关闭单个集合描述为禁止域名的一切国内解析。
 - 客户端 HTTP provider 每 86400 秒直接更新上游；不改为 CI 筛选、合并或发布仓库白名单。配置构建与运行时规则更新分别维护。
 - 显式主机/后缀 DNS policy 先于动态集合；白名单与更具体服务 policy 先于国内服务 policy，再先于广域 `geolocation-cn` policy。代理服务的 DNS policy 经对应服务组选择出口；明确直连的域名规则使用国内 DoH。保留 Steam 服务器/用户内容域的国外解析和 Apple 专项例外。新源须审查实际成员，不能直接采用通用 CDN、整厂商或公共云大集合。
 - 修改白名单/解析器/优先级时同步 [统一原则](docs/dns-whitelist.md)、功能文档和配置/原生回归；保留 DNS 专用 provider 的引用，禁止以通用国内 DNS 兜底修复可用性。缓存、Fake-IP、DoH 与 `no-resolve` 均不能作为“零泄漏”证明。

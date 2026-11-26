@@ -66,8 +66,8 @@ Mihomo 与 Stash 使用本页所列 MRS、classical 与现有 provider。Surge�
 
 - 只保留被路由规则或 DNS policy 实际引用的 provider，避免删除仅供 DNS 使用的集合。
 - 通用 `cn` 域名集合不用于国内 DNS 策略或 Fake-IP 过滤，仅在可选 QUIC 豁免规则引用时保留；现有 `geolocation-cn` 独立使用国内 DNS，国内服务开关开启时，11 组国内服务 `AND/NOT` policy 与完整百度集合使用国内 DNS；`cn_ip` 继续末端直连兜底。
-- DNS 白名单只参与 `nameserver-policy`，不增加连接直连规则。三个开关独立于普通服务组、极简模式和国内路由开关，关闭后不加载相应 provider；重叠集合及专项例外仍分别生效。
-- 白名单 policy 排在通用服务集合之前，让 CDN 子集不被 Microsoft/Steam 全量集合覆盖；Steam 的服务器/用户内容后缀使用显式国外解析 policy。显式主机/后缀 policy 排在所有 rule-set policy 之前，使 Apple/Siri 与 Steam 排除项在内核中实际优先。
+- 三个直连 CDN 开关（`国内CDN解析`、`微软下载解析`、`Steam下载解析`）同时控制对应集合的直连路由、代理组 `AND NOT` 排除语句与 `nameserver-policy`。三个开关独立于普通服务组、极简模式和国内路由开关，关闭后不加载相应 provider；重叠集合及专项例外仍分别生效。
+- `dns_microsoft_cdn` 与 `dns_steam_cn` 位于前置直连区，且 `Microsoft` / `Steam` 代理规则用 `AND NOT` 排除对应集合；`Steam` 同时前置保留 `steamserver.net` 与 `steamusercontent.com` 走 `Steam` 组及国外解析。`dns_domestic_cdn` 排在明确海外代理服务组之后、国内厂商与 `geolocation-!cn` 之前，并从 `geolocation-!cn` 中排除。显式主机/后缀 policy 排在所有 rule-set policy 之前，使 Apple/Siri、Steam 排除项与 `use-application-dns.net` 在内核中实际优先。
 - 移除通用 `direct-nameserver` 及其独立缓存/解析路径；明确目标为 `直连` 的域名规则和动态 domain/classical 规则集使用国内加密 DNS，未命中域名 policy、仅通过 IP 兜底直连的查询仍用默认国外 DNS。普通整厂商集合不自动授权 DNS；国内服务开关开启时，11 组配对集合按与路由相同的 `AND/NOT` 谓词授权，百度按完整集合授权；`geolocation-cn` 仍单独生效。
 - 国内解析例外还包括固定 `apple_cn`、启用模型直连时的四个 Apple CDN 精确域名，以及无合格 Siri 候选时普通 Apple 默认直连的既有解析回退。普通业务查询使用 Cloudflare 强制 DoH-H3 与 Google DoH；代理节点域名使用阿里/腾讯 DoH 并经 `DIRECT` 建连，避免代理启动前依赖境外解析器。`default-nameserver` 启动解析为 Mihomo IP 字面量要求使用阿里/腾讯 IP DoH。
 - 缓存和 Fake-IP 减少或延后部分查询，不保证消除真实解析；名单外的国内网站/CDN 可能因国外解析得到不同节点，需要在实际网络测量首次连接和下载表现。
@@ -78,7 +78,7 @@ Mihomo 与 Stash 使用本页所列 MRS、classical 与现有 provider。Surge�
 - 2026-11-19 的规则快照审查未发现 `fsend.cn`、`ctaiot.com`、`international-gfe.download.nvidia.com` 分别适合使用的 `geolocation-cn` / `nvidia@cn` 子集规则，也未发现 `mb3admin.com`、`nubebelle.com` 位于 `category-emby`。保留这些少量现有例外；不以过宽的国家、厂商或整厂商集合替换。
 - 私网 IP 使用 `RULE-SET,private_ip,直连,no-resolve`。Google、Telegram、TikTok、Twitter、Facebook/Meta IP 使用对应代理服务组并加 `no-resolve`；服务组关闭或极简模式下保留这些 IP provider，出口改为 `默认代理`，位于通用 CN IP 兜底之前。
 - Apple、Microsoft、Steam、Netflix、Spotify IP 规则均加 `no-resolve`，保留各自服务组及其可选出口；此参数不改变代理/直连选择。
-- 末端 `RULE-SET,cn_ip,直连` 保留解析能力，不加 `no-resolve`，为未命中前置域名规则的连接提供国内 IP 直连兜底。后续解析不会回头重新匹配已经跳过的服务 IP 规则。
+- 末端 `RULE-SET,cn_ip,直连,no-resolve` 添加 `no-resolve`，只对纯 IP 与 `fake-ip-filter` 真实 IP 连接提供国内 IP 直连兜底，避免 Fake-IP 下未知海外域名触发本地双重 DNS 解析。
 - `no-resolve` 避免为匹配这些 IP 集合而触发域名解析；仍可匹配连接已有的目标 IP。域名路由和 DNS policy 独立生效。
 - AI 使用 `category-ai-!cn` 域名集合，没有独立 AI IP provider；不将共享分析/支持域名、共享云/CDN 整段 IP 代入 AI 服务分类。
 - 专用 Apple 域名例外排在 Apple CN 与 QUIC 拒绝规则之前。
