@@ -1,16 +1,44 @@
 'use strict';
-// Exercise the generated provider health-check policy against a local HTTP proxy.
+// Exercise the generated provider health-check policy against a local HTTPS-capable HTTP proxy.
 const fs = require('node:fs');
 const path = require('node:path');
 const http = require('node:http');
+const tls = require('node:tls');
 const assert = require('node:assert/strict');
-const { spawn } = require('node:child_process');
+const { execFileSync, spawn } = require('node:child_process');
 const { once } = require('node:events');
 const YAML = require('yaml');
 const { build } = require('./build');
 const { freePort } = require('./runtime-routing');
 
 async function verifyHealth({ binary, temp }) {
+  const dir = path.join(temp, 'health');
+  fs.mkdirSync(dir);
+  const keyPath = path.join(dir, 'apple.key');
+  const certPath = path.join(dir, 'apple.crt');
+  execFileSync(
+    'openssl',
+    [
+      'req',
+      '-x509',
+      '-newkey',
+      'rsa:2048',
+      '-nodes',
+      '-keyout',
+      keyPath,
+      '-out',
+      certPath,
+      '-days',
+      '1',
+      '-subj',
+      '/CN=www.apple.com',
+      '-addext',
+      'subjectAltName=DNS:www.apple.com',
+    ],
+    { stdio: 'pipe' },
+  );
+  const key = fs.readFileSync(keyPath);
+  const cert = fs.readFileSync(certPath);
   let status = 200;
   const requests = [];
   const sockets = new Set();
@@ -22,8 +50,12 @@ async function verifyHealth({ binary, temp }) {
   });
   proxy.on('connect', (req, socket) => {
     socket.write('HTTP/1.1 200 Connection Established\r\n\r\n');
+    const tlsSocket = new tls.TLSSocket(socket, { isServer: true, key, cert });
+    sockets.add(tlsSocket);
+    tlsSocket.on('close', () => sockets.delete(tlsSocket));
+    tlsSocket.on('error', () => {});
     let buffer = '';
-    socket.on('data', (data) => {
+    tlsSocket.on('data', (data) => {
       buffer += data.toString('latin1');
       let end;
       while ((end = buffer.indexOf('\r\n\r\n')) !== -1) {
@@ -32,7 +64,7 @@ async function verifyHealth({ binary, temp }) {
         requests.push({ tunnel: req.url, request });
         if (status === 0) continue;
         const location = status === 302 ? 'Location: /redirected\r\n' : '';
-        socket.write(`HTTP/1.1 ${status} Test\r\n${location}Content-Length: 0\r\nConnection: keep-alive\r\n\r\n`);
+        tlsSocket.write(`HTTP/1.1 ${status} Test\r\n${location}Content-Length: 0\r\nConnection: keep-alive\r\n\r\n`);
       }
     });
   });
@@ -43,8 +75,6 @@ async function verifyHealth({ binary, temp }) {
   proxy.listen(0, '127.0.0.1');
   await once(proxy, 'listening');
   const controller = await freePort();
-  const dir = path.join(temp, 'health');
-  fs.mkdirSync(dir);
   const provider = path.join(dir, 'provider.yaml');
   fs.writeFileSync(
     provider,
@@ -85,6 +115,7 @@ async function verifyHealth({ binary, temp }) {
     'mixed-port': 0,
     'unified-delay': generated['unified-delay'],
     'external-controller': `127.0.0.1:${controller}`,
+    tls: { 'custom-certifactes': [cert.toString('utf8')] },
     'proxy-providers': {
       fixture: { type: 'file', path: provider, 'health-check': health },
       names: { type: 'file', path: namesFile, 'health-check': { enable: false } },
@@ -111,7 +142,10 @@ async function verifyHealth({ binary, temp }) {
   };
   const file = path.join(dir, 'config.yaml');
   fs.writeFileSync(file, YAML.stringify(config));
-  const child = spawn(binary, ['-d', dir, '-f', file], { stdio: ['ignore', 'pipe', 'pipe'] });
+  const child = spawn(binary, ['-d', dir, '-f', file], {
+    stdio: ['ignore', 'pipe', 'pipe'],
+    env: { ...process.env, SSL_CERT_FILE: certPath },
+  });
   let logs = '';
   child.stdout.on('data', (chunk) => (logs += chunk));
   child.stderr.on('data', (chunk) => (logs += chunk));
@@ -170,7 +204,7 @@ async function verifyHealth({ binary, temp }) {
     assert.ok(
       requests.some(
         (request) =>
-          request.tunnel === 'www.apple.com:80' &&
+          request.tunnel === 'www.apple.com:443' &&
           /^HEAD \/library\/test\/success\.html HTTP\/1\.[01]\r\n/i.test(request.request),
       ),
       `health check did not use the configured Apple host and HEAD path: ${JSON.stringify(requests)}`,

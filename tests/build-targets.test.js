@@ -17,7 +17,7 @@ const appleCnUrl =
 
 test('generated clients use the Apple health-check URL', () => {
   const config = build().config;
-  const url = 'http://www.apple.com/library/test/success.html';
+  const url = 'https://www.apple.com/library/test/success.html';
   for (const target of ['stash', 'surge', 'shadowrocket', 'quantumultx']) {
     const { text } = renderTarget(target, config);
     assert.ok(text.includes(url), `${target} does not use the Apple health-check URL`);
