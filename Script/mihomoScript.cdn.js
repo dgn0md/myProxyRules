@@ -4,11 +4,11 @@
  * 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
  * 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
  *
- * 最新 Raw SHA-256：25fa295e85ee93e103cce7f23f5f5cc85b7333550fbbd35a67cade72af589a13
+ * 最新 Raw SHA-256：d5bfe059580f9d7b9448c4bdb20173788d31aaf6436ef9b2e35b1d2bc2cbc8a6
  * Raw 脚本：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js
  * CDN 脚本：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js
  *
- * 缓存 CDN SHA-256：1db41758e49a6f284fb689c32aeb8095f493271d105d8a4b22010c946f8a9e20
+ * 缓存 CDN SHA-256：9787e87a68ba1a0c333a44b2d6b6f91615a5a7c363e72c22b3e0ad12882a3cc7
  */
 
 // --- 静态配置区域 ---
@@ -30,7 +30,6 @@ const ruleOptionsEnable = {
   // 基础策略组
   手动选择: true, // 是否启用手动选择策略组
   排除大陆香港自动选: true, // 是否启用排除大陆和香港节点的自动选择策略组
-  负载均衡: true, // 是否启用负载均衡策略组
 
   // 以下为分流策略配置
   FCM: true, // GoogleFCM服务
@@ -62,13 +61,12 @@ const ruleOptionsEnable = {
   Apple媒体代理: false, // iTunes/App Store/Arcade 共用购买与媒体接口；会增加 Music/商店代理流量
   Apple下载直连: true, // 模型/系统资源下载保持国内 CDN；关闭后交给 Apple 其他服务组
   严格DNS校验: true, // 校验脚本生成的加密 DNS；不从机场配置继承 DNS
-  接管DNS53: true, // 接管流量中的 TCP/UDP 53 交给内置 DNS（需 TUN）
-  国内CDN解析: true, // 国内 CDN 小集合使用国内加密 DNS；不决定连接出口
-  微软下载解析: true, // Microsoft 下载 CDN 独立使用国内加密 DNS
-  Steam下载解析: true, // Steam 国内节点动态集合使用国内 DNS，排除宽泛的服务器/用户内容后缀
+  接管DNS53: true, // 接管流量中的 TCP/UDP 53 并拦截外部 853 DoT/DoQ（需 TUN）
+  国内CDN解析: true, // 国内 CDN 小集合直连并使用国内加密 DNS，位于明确海外服务组之后
+  微软下载解析: true, // Microsoft 下载 CDN 直连并使用国内加密 DNS，同时从 Microsoft 代理规则排除
+  Steam下载解析: true, // Steam 国内下载动态集合直连并使用国内加密 DNS，保留服务器/用户内容后缀走 Steam 组
   国内服务优先直连: true, // 保留国内服务/CDN 例外；不将整个 cn 域名库强制直连
   Apple其他默认直连: true, // Other Apple Service 默认直连；AI/Siri 和产品地区组独立优先
-  微软默认直连: true, // 国内可用服务优先直连，需要时可在组内切换
   TUN: true, // 接管 DNS 所必需；关闭仅适合上级路由器已经接管 DNS 的环境
   域名嗅探: true, // 从 HTTP/TLS/QUIC 补充缺失域名，避免纯 IP 入站误走服务 IP 规则
   IPv6: true, // DNS AAAA 与全局 IPv6 同步；关闭后不返回 AAAA
@@ -184,12 +182,13 @@ const iconBaseUrl = 'https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Ico
 const ruleSetBaseUrl = 'https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/';
 
 // 定义地区策略组。regex 只使用 Mihomo Go regexp 支持的语法；
-// nameRegex 用于名称文字与国旗冲突时选择正确国旗。
-function defineRegion(name, flag, nameRegex, icon = `${iconBaseUrl}common/World_Map.svg`) {
+// nameRegex 用于名称文字与国旗冲突时选择正确国旗；exactCodeRegex 用于区分大小写的短国家码（避免 in/id/no 等英文词误匹配）。
+function defineRegion(name, flag, nameRegex, icon = `${iconBaseUrl}common/World_Map.svg`, exactCodeRegex = null) {
   return {
     name,
     flag,
     nameRegex,
+    exactCodeRegex,
     regex: new RegExp(`${flag}|${nameRegex.source}`, 'i'),
     icon,
   };
@@ -216,10 +215,11 @@ const regionDefinitions = [
   defineRegion(
     '印度尼西亚',
     '🇮🇩',
-    /印度尼西亚|印尼|雅加达|\b(ID|IDN)\b|indonesia/i,
+    /印度尼西亚|印尼|雅加达|\b(IDN)\b|indonesia/i,
     `${iconBaseUrl}flag/Indonesia.svg`,
+    /\b(ID)\b/,
   ),
-  defineRegion('印度', '🇮🇳', /印度($|[^尼])|孟买|新德里|\b(IN|IND)\b|india/i, `${iconBaseUrl}flag/India.svg`),
+  defineRegion('印度', '🇮🇳', /印度($|[^尼])|孟买|新德里|\b(IND)\b|india/i, `${iconBaseUrl}flag/India.svg`, /\b(IN)\b/),
   defineRegion('加拿大', '🇨🇦', /加拿大|多伦多|温哥华|蒙特利尔|\b(CA|CAN)\b|canada/i, `${iconBaseUrl}flag/Canada.svg`),
   defineRegion('德国', '🇩🇪', /德国|法兰克福|柏林|\b(DE|DEU)\b|germany/i, `${iconBaseUrl}flag/Germany.svg`),
   defineRegion(
@@ -234,7 +234,7 @@ const regionDefinitions = [
   defineRegion('俄罗斯', '🇷🇺', /俄罗斯|莫斯科|\b(RU|RUS)\b|russia/i, `${iconBaseUrl}flag/Russia.svg`),
   defineRegion('乌克兰', '🇺🇦', /乌克兰|基辅|\b(UA|UKR)\b|ukraine/i, `${iconBaseUrl}flag/Ukraine.svg`),
   defineRegion('土耳其', '🇹🇷', /土耳其|伊斯坦布尔|\b(TR|TUR)\b|turkey|türkiye/i, `${iconBaseUrl}flag/Turkey.svg`),
-  defineRegion('挪威', '🇳🇴', /挪威|奥斯陆|\b(NO|NOR)\b|norway/i, `${iconBaseUrl}flag/Norway.svg`),
+  defineRegion('挪威', '🇳🇴', /挪威|奥斯陆|\b(NOR)\b|norway/i, `${iconBaseUrl}flag/Norway.svg`, /\b(NO)\b/),
   defineRegion('瑞士', '🇨🇭', /瑞士|苏黎世|\b(CH|CHE)\b|switzerland|swiss/i, `${iconBaseUrl}flag/Switzerland.svg`),
   defineRegion('瑞典', '🇸🇪', /瑞典|斯德哥尔摩|\b(SE|SWE)\b|sweden/i, `${iconBaseUrl}flag/Sweden.svg`),
   defineRegion('爱尔兰', '🇮🇪', /爱尔兰|都柏林|\b(IE|IRL)\b|ireland/i, `${iconBaseUrl}flag/Ireland.svg`),
@@ -472,19 +472,6 @@ const urlTestBaseOption = {
   hidden: true,
 };
 
-// load-balance策略组通用配置
-const loadBalanceBaseOption = {
-  ...groupBaseOption,
-  type: 'load-balance',
-  'expected-status': healthCheckExpectedStatus,
-  interval: 600,
-  lazy: true,
-  strategy: 'sticky-sessions',
-  'exclude-type': 'DIRECT',
-  icon: `${iconBaseUrl}common/Round_Robin.svg`,
-  hidden: true,
-};
-
 // 定义基础策略组
 const baseGroups = [
   {
@@ -502,12 +489,6 @@ const baseGroups = [
     excludeFilter: autoSelectExMainlandHongKongNodeNameRegex.source,
     icon: `${iconBaseUrl}common/Auto.svg`,
   },
-  {
-    name: '负载均衡',
-    baseOption: loadBalanceBaseOption,
-    includeAll: true,
-    icon: `${iconBaseUrl}common/Round_Robin.svg`,
-  },
 ];
 
 // 定义分流策略组配置
@@ -517,7 +498,6 @@ const serviceConfigs = [
     name: 'FCM',
     baseOption: selectBaseOption,
     direct: true,
-    defaultSelected: '直连',
     providers: { googlefcm: geositeProvider('googlefcm') },
     icon: `${iconBaseUrl}common/FCM.svg`,
     rules: ['RULE-SET,googlefcm,FCM'],
@@ -868,7 +848,9 @@ function getMatchedRegions(proxyName, cache = regionMatchCache, precomputedMatch
 
   const matchableName = precomputedMatchableName ?? toMatchableName(proxyName);
   const regions = [];
-  for (const region of regionDefinitions) if (region.nameRegex.test(matchableName)) regions.push(region);
+  for (const region of regionDefinitions) {
+    if (region.nameRegex.test(matchableName) || region.exactCodeRegex?.test(matchableName)) regions.push(region);
+  }
 
   if (!regions.length && flagRegex.test(matchableName)) {
     for (const region of regionDefinitions) if (matchableName.includes(region.flag)) regions.push(region);
@@ -1020,8 +1002,7 @@ function createRegionGroup(name, icon, proxies) {
         ...selectBaseOption,
         name,
         icon,
-        proxies: [...proxies, urlTestName],
-        ...(isCountryRegion && { 'default-selected': urlTestName }),
+        proxies: isCountryRegion ? [urlTestName, ...proxies] : [...proxies, urlTestName],
         hidden: hideManualSelectGroupEnabled,
       },
       {
@@ -1312,14 +1293,15 @@ function buildFunctionalGroups(filteredProxies, generatedRegionGroups, customize
             ];
 
     const selected = groupProxies.includes(svc.defaultSelected) ? svc.defaultSelected : undefined;
+    const orderedProxies =
+      selected !== undefined ? [selected, ...groupProxies.filter((entry) => entry !== selected)] : groupProxies;
 
     functionalGroups.push({
       ...svc.baseOption,
       name: svc.name,
       ...(svc.icon && { icon: svc.icon }),
-      proxies: groupProxies,
+      proxies: orderedProxies,
       ...(svc.excludeFilter && { 'exclude-filter': `(?i)(${svc.excludeFilter})` }),
-      ...(selected !== undefined && { 'default-selected': selected }),
     });
   }
 
@@ -1380,7 +1362,8 @@ const appleOtherDnsEgressGroupName = appleAiGroupName;
 const defaultDNS = [...bootstrapDNS];
 const proxyServerDNS = [...chinaDNS];
 function dnsForGroup(groupName) {
-  return foreignDNS.map((dns) => dns.replace('#默认代理', `#${groupName}`));
+  const encodedGroupName = groupName.replace(/&/g, '%26');
+  return foreignDNS.map((dns) => dns.replace('#默认代理', `#${encodedGroupName}`));
 }
 
 /**
@@ -1587,29 +1570,30 @@ function buildDnsAndHostsConfig(config, filteredProxies) {
 
   const mappedProxies = shouldRewriteByHosts ? applyHostsToProxies(filteredProxies, config.hosts) : filteredProxies;
 
+  const defaultNameserverGroup =
+    !minimalModeEnabled && ruleOptionsEnable[autoSelectExMainlandHongKongOptionName]
+      ? autoSelectExMainlandHongKongGroupName
+      : '默认代理';
+
   const dns = {
     enable: true,
     ipv6: true,
     'use-hosts': true,
-    'cache-algorithm': 'arc',
+    'cache-algorithm': 'lru',
+    'cache-max-size': 1,
     'use-system-hosts': true,
     'enhanced-mode': 'fake-ip',
     'fake-ip-range': '198.18.0.1/15',
     'fake-ip-range6': '2001:2::1/48',
-    'fake-ip-filter': [
-      'rule-set:private',
-      'rule-set:fakeip_filter',
-      ...(minimalModeEnabled ? [] : ruleOptionsEnable['FCM'] ? ['rule-set:googlefcm'] : []),
-      ...appleRealIpEndpoints,
-    ],
+    'fake-ip-filter': ['rule-set:private', 'rule-set:fakeip_filter', ...appleRealIpEndpoints],
     'default-nameserver': [...defaultDNS],
     'proxy-server-nameserver': [...proxyServerDNS],
     'proxy-server-nameserver-policy': {},
-    nameserver: [...foreignDNS],
+    nameserver: dnsForGroup(defaultNameserverGroup),
     'nameserver-policy': {
       'rule-set:private': 'system',
     },
-    // 显式直连域名规则使用国内加密 DNS；未命中显式 policy 的普通查询仍使用默认国外 DNS。
+    // 显式直连域名规则使用国内加密 DNS；未命中显式 policy 的普通查询走默认国外 DNS。
   };
 
   const hosts = {
@@ -1675,7 +1659,7 @@ function main(config) {
   newConfig['bind-address'] = '*';
   newConfig['unified-delay'] = true;
   newConfig['tcp-concurrent'] = true;
-  newConfig['keep-alive-interval'] = 60;
+  newConfig['disable-keep-alive'] = true;
   newConfig['find-process-mode'] = 'strict';
 
   newConfig['profile'] = {
@@ -1727,7 +1711,7 @@ function main(config) {
     ...appleIpRules,
     'RULE-SET,private_ip,直连,no-resolve',
     ...otherFunctionalIpRules,
-    'RULE-SET,cn_ip,直连',
+    'RULE-SET,cn_ip,直连,no-resolve',
     `MATCH,${ruleOptionsEnable.极简分流 ? '默认代理' : '漏网之鱼'}`,
   ];
 
@@ -1748,12 +1732,12 @@ function applyRuntimeConfigOptions(config, options) {
   config.dns.ipv6 = options.IPv6;
   config.tun.enable = options.TUN;
   config.tun.stack = 'mips';
-  // 补充未经过内置 DNS/Fake-IP 映射的连接域名；只用于分流，不改写实际目标。
+  // 补充未经过内置 DNS/Fake-IP 映射的连接域名，并将纯 IP 目标改写为嗅探域名交由出口重新解析。
   config.sniffer = {
     enable: options.域名嗅探,
     'force-dns-mapping': true,
     'parse-pure-ip': true,
-    'override-destination': false,
+    'override-destination': true,
     sniff: {
       HTTP: { ports: [80, '8080-8880'] },
       TLS: { ports: [443, 8443] },
@@ -1877,10 +1861,7 @@ function applyAppleRouting(config, options) {
     }
     for (const domain of appleOtherExactEndpoints) specialRules.push(`DOMAIN,${domain},${appleOtherGroupName}`);
   }
-  for (const [name, enabled] of [
-    [appleOtherGroupName, options.Apple其他默认直连],
-    ['Microsoft', options.微软默认直连],
-  ]) {
+  for (const [name, enabled] of [[appleOtherGroupName, options.Apple其他默认直连]]) {
     const group = groups.find((g) => g.name === name);
     if (group && enabled) {
       group.proxies = ['直连', ...group.proxies.filter((p) => p !== '直连')];
@@ -1937,6 +1918,11 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
     ],
   };
 
+  // 加载启用的直连 CDN 规则集（路由直连与国内 DNS 一体化）。
+  for (const [option, [name, provider]] of Object.entries(dnsWhitelist)) {
+    if (options[option]) config['rule-providers'][name] = provider;
+  }
+
   // 直连目标使用国内 DNS；代理服务的 DNS 请求经对应路由组建立连接。
   // Other Apple Service 的 DNS 例外明确使用 Siri 的选择器。
   const rejectTargets = new Set(['REJECT', 'REJECT-DROP', 'PASS']);
@@ -1957,19 +1943,63 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
   const usedNames = new Set([...config.proxies, ...groups].map((entry) => entry.name));
   while (usedNames.has(dnsOutbound)) dnsOutbound = `my-${dnsOutbound}`;
   if (options.接管DNS53) config.proxies.push({ name: dnsOutbound, type: 'dns' });
-  const safetyRules = options.接管DNS53 ? [`DST-PORT,53,${dnsOutbound}`] : [];
+  const safetyRules = options.接管DNS53 ? [`DST-PORT,53,${dnsOutbound}`, 'DST-PORT,853,REJECT'] : [];
+  const steamRouteGroup = groupByName.has('Steam') ? 'Steam' : '默认代理';
+  const stunTarget = options.极简分流 ? '默认代理' : '漏网之鱼';
+  const stunRules = [
+    `DOMAIN-SUFFIX,stun.l.google.com,${stunTarget}`,
+    `AND,((NETWORK,UDP),(DST-PORT,3478)),${stunTarget}`,
+    `AND,((NETWORK,UDP),(DST-PORT,19302)),${stunTarget}`,
+  ];
+  const directPrefixCdnRules = [];
+  if (options.微软下载解析) directPrefixCdnRules.push('RULE-SET,dns_microsoft_cdn,直连');
+  if (options.Steam下载解析) {
+    directPrefixCdnRules.push(
+      `DOMAIN-SUFFIX,steamserver.net,${steamRouteGroup}`,
+      `DOMAIN-SUFFIX,steamusercontent.com,${steamRouteGroup}`,
+      'RULE-SET,dns_steam_cn,直连',
+    );
+  }
+  const directDomesticCdnRules = options.国内CDN解析 ? ['RULE-SET,dns_domestic_cdn,直连'] : [];
+
   const specialRuleSet = new Set(specialRules);
   const specialIpRuleSet = new Set(specialIpRules);
+  const allPrefixRuleSet = new Set(prefixRules);
   const domesticPrefixRuleSet = new Set(prefixRules.slice(1));
   const remainingRules = [];
   for (const rule of config.rules) {
     if (specialRuleSet.has(rule) || specialIpRuleSet.has(rule)) continue;
     if (!options.国内服务优先直连 && (domesticPrefixRuleSet.has(rule) || rule === geolocationCnRule)) continue;
+    if (options.微软下载解析 && rule === 'RULE-SET,microsoft,Microsoft') {
+      remainingRules.push('AND,((RULE-SET,microsoft),(NOT,((RULE-SET,dns_microsoft_cdn)))),Microsoft');
+      continue;
+    }
+    if (options.Steam下载解析 && rule === 'RULE-SET,steam,Steam') {
+      remainingRules.push('AND,((RULE-SET,steam),(NOT,((RULE-SET,dns_steam_cn)))),Steam');
+      continue;
+    }
+    if (options.国内CDN解析 && rule === 'RULE-SET,geolocation-!cn,默认代理') {
+      remainingRules.push('AND,((RULE-SET,geolocation-!cn),(NOT,((RULE-SET,dns_domestic_cdn)))),默认代理');
+      continue;
+    }
     remainingRules.push(rule);
+  }
+  let prefixInsertIndex = 0;
+  for (let i = 0; i < remainingRules.length; i++) {
+    if (allPrefixRuleSet.has(remainingRules[i])) prefixInsertIndex = i + 1;
+  }
+  remainingRules.splice(prefixInsertIndex, 0, ...directPrefixCdnRules, ...stunRules);
+  if (directDomesticCdnRules.length) {
+    const domesticInsertIndex = remainingRules.findIndex(
+      (rule) =>
+        rule.includes('RULE-SET,domestic_') || rule === geolocationCnRule || rule.includes('RULE-SET,geolocation-!cn'),
+    );
+    const targetIndex = domesticInsertIndex >= 0 ? domesticInsertIndex : remainingRules.length;
+    remainingRules.splice(targetIndex, 0, ...directDomesticCdnRules);
   }
   if (specialIpRules.length) {
     const privateIpIndex = remainingRules.indexOf('RULE-SET,private_ip,直连,no-resolve');
-    const cnIpIndex = remainingRules.indexOf('RULE-SET,cn_ip,直连');
+    const cnIpIndex = remainingRules.indexOf('RULE-SET,cn_ip,直连,no-resolve');
     const insertIndex = privateIpIndex >= 0 ? privateIpIndex : cnIpIndex >= 0 ? cnIpIndex : remainingRules.length;
     remainingRules.splice(insertIndex, 0, ...specialIpRules);
   }
@@ -1978,7 +2008,9 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
   const domainRuleSetEgress = new Map();
   const literalDomainEgress = new Map();
   for (const rule of config.rules) {
-    const ruleSetMatch = /^RULE-SET,([^,]+),([^,]+)(?:,|$)/.exec(rule);
+    const ruleSetMatch =
+      /^RULE-SET,([^,]+),([^,]+)(?:,|$)/.exec(rule) ||
+      /^AND,\(\(RULE-SET,([^,)]+)\),\(NOT,\(\(RULE-SET,[^,)]+\)\)\)\),([^,]+)(?:,|$)/.exec(rule);
     if (ruleSetMatch) {
       const [, providerName, target] = ruleSetMatch;
       const provider = config['rule-providers'][providerName];
@@ -2020,18 +2052,27 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
     literalEntries.set(policyKey, dnsForRoute(target, dnsEgressGroupName, dnsEgressGroup));
   }
   // Steam @cn 成品含宽泛的服务器/用户内容域；这些域名始终保持国外解析。
-  const steamDnsGroup = groupByName.has('Steam') ? 'Steam' : '默认代理';
   for (const suffix of ['+.steamserver.net', '+.steamusercontent.com']) {
-    literalEntries.set(suffix, dnsForGroup(steamDnsGroup));
+    literalEntries.set(suffix, dnsForGroup(steamRouteGroup));
   }
+  // 禁用 Firefox 等浏览器的内置 DoH 旁路（返回 NXDOMAIN 迫使其回退到系统/TUN DNS）。
+  literalEntries.set('use-application-dns.net', 'rcode://name_error');
   orderedDnsPolicyEntries.push(...literalEntries.entries());
 
-  // Mihomo 按 policy 顺序匹配：显式主机/后缀 → private / apple_tv / DNS 白名单 / 服务集合 → 国内厂商集合 → 广域 geolocation 集合。
+  // Mihomo 按 policy 顺序匹配：显式主机/后缀 → private / apple_tv / apple_proxy / 广告 / 前置直连与下载 CDN / 明确海外服务集合 → 国内 CDN / 国内厂商集合 → 广域 geolocation 集合。
   if (Object.hasOwn(existingDnsPolicy, 'rule-set:private')) {
     orderedDnsPolicyEntries.push(['rule-set:private', existingDnsPolicy['rule-set:private']]);
   }
   const resolveProviderDns = (providerName, target) => {
-    if (providerName === 'apple_cn' || providerName === 'geolocation-cn') return [...chinaDNS];
+    // Microsoft 与 FCM 默认走代理（Fake-IP 透传远端解析），手动切换为直连时使用大陆 DoH。
+    if (
+      providerName === 'apple_cn' ||
+      providerName === 'geolocation-cn' ||
+      providerName === 'microsoft' ||
+      providerName === 'googlefcm'
+    ) {
+      return [...chinaDNS];
+    }
     const dnsEgressGroupName = target === appleOtherGroupName ? appleOtherDnsEgressGroupName : target;
     return dnsForRoute(target, dnsEgressGroupName, groupByName.get(dnsEgressGroupName));
   };
@@ -2040,19 +2081,18 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
     addedRuleSetKeys.add(key);
     orderedDnsPolicyEntries.push([key, value]);
   };
-  if (domainRuleSetEgress.has('apple_tv')) {
-    pushRuleSetPolicy('rule-set:apple_tv', resolveProviderDns('apple_tv', domainRuleSetEgress.get('apple_tv')));
-  }
-  // DNS 白名单与连接路由分开：只加载启用的集合，仍由客户端每日直接更新。
-  for (const [option, [name, provider]] of Object.entries(dnsWhitelist)) {
-    if (!options[option]) continue;
-    config['rule-providers'][name] = provider;
-    pushRuleSetPolicy(`rule-set:${name}`, [...chinaDNS]);
+  for (const priorityProvider of ['apple_tv', 'apple_proxy', 'category-ads']) {
+    if (domainRuleSetEgress.has(priorityProvider)) {
+      pushRuleSetPolicy(
+        `rule-set:${priorityProvider}`,
+        resolveProviderDns(priorityProvider, domainRuleSetEgress.get(priorityProvider)),
+      );
+    }
   }
   for (const [providerName, target] of domainRuleSetEgress) {
     if (
-      providerName === 'private' ||
-      providerName === 'apple_tv' ||
+      addedRuleSetKeys.has(`rule-set:${providerName}`) ||
+      providerName === 'dns_domestic_cdn' ||
       providerName.startsWith('domestic_') ||
       providerName.startsWith('geolocation-')
     ) {
@@ -2062,6 +2102,9 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
   }
   for (const [key, value] of extraRuleSetEntries) {
     if (!addedRuleSetKeys.has(key)) pushRuleSetPolicy(key, value);
+  }
+  if (options.国内CDN解析 && config['rule-providers'].dns_domestic_cdn) {
+    pushRuleSetPolicy('rule-set:dns_domestic_cdn', [...chinaDNS]);
   }
   // Domestic vendor DNS policies follow the domestic-service route switch: paired sets use the
   // same AND NOT predicate as routing, while Baidu has no upstream @!cn subset and uses its full set.
@@ -2109,7 +2152,15 @@ function validateStrictDnsSettings(config, options) {
         if (typeof server !== 'string') throw new Error(`严格DNS校验：${field} 必须使用加密 DNS`);
         if (/^rcode:\/\/(success|name_error|refused)$/i.test(server)) continue;
         const parts = server.split('#');
-        const [outbound, ...parameters] = parts[1]?.split('&') || [];
+        const [rawOutbound, ...parameters] = parts[1]?.split('&') || [];
+        let outbound = rawOutbound;
+        if (rawOutbound) {
+          try {
+            outbound = decodeURIComponent(rawOutbound);
+          } catch {
+            throw new Error(`严格DNS校验：脚本生成的 ${field} 含不受支持或明文 DNS；严格模式不会降级。`);
+          }
+        }
         if (
           parts.length > 2 ||
           !/^(https|tls|quic):\/\/[^\s#@]+$/i.test(parts[0]) ||

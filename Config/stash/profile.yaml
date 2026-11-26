@@ -1,12 +1,13 @@
 # myProxyRules Stash profile
 # Raw profile: https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/stash/profile.yaml
 # CDN profile: https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/stash/profile.cdn.yaml
-# Raw SHA-256: eb6904d2bde62b4cd9284934dea16784e8dbf3cb9d18e9add1d85653a27f0764
+# Raw SHA-256: e4ecef22b59a35a6f69c2478ff84ac5d47367488dd3be59117b2cb6abe96d49d
 dns:
   enable: true
   ipv6: true
   use-hosts: true
-  cache-algorithm: arc
+  cache-algorithm: lru
+  cache-max-size: 1
   use-system-hosts: false
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/15
@@ -14,7 +15,6 @@ dns:
   fake-ip-filter:
     - rule-set:private
     - rule-set:fakeip_filter
-    - rule-set:googlefcm
     - +.guzzoni.apple.com
     - +.siri.apple.com
     - dejavu.apple.com
@@ -41,8 +41,8 @@ dns:
     - https://doh.pub/dns-query#DIRECT
   proxy-server-nameserver-policy: {}
   nameserver:
-    - https://cloudflare-dns.com/dns-query#默认代理&h3=true
-    - https://dns.google/dns-query#默认代理
+    - https://cloudflare-dns.com/dns-query#自动选择ex(大陆%26香港)&h3=true
+    - https://dns.google/dns-query#自动选择ex(大陆%26香港)
   nameserver-policy:
     +.issuer.apple.com:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
@@ -143,35 +143,30 @@ dns:
     +.ctaiot.com:
       - https://dns.alidns.com/dns-query#DIRECT
       - https://doh.pub/dns-query#DIRECT
-    +.mb3admin.com:
-      - https://cloudflare-dns.com/dns-query#Emby&h3=true
-      - https://dns.google/dns-query#Emby
-    +.nubebelle.com:
-      - https://cloudflare-dns.com/dns-query#Emby&h3=true
-      - https://dns.google/dns-query#Emby
     +.steamserver.net:
       - https://cloudflare-dns.com/dns-query#Steam&h3=true
       - https://dns.google/dns-query#Steam
     +.steamusercontent.com:
       - https://cloudflare-dns.com/dns-query#Steam&h3=true
       - https://dns.google/dns-query#Steam
+    +.stun.l.google.com:
+      - https://cloudflare-dns.com/dns-query#漏网之鱼&h3=true
+      - https://dns.google/dns-query#漏网之鱼
+    +.mb3admin.com:
+      - https://cloudflare-dns.com/dns-query#Emby&h3=true
+      - https://dns.google/dns-query#Emby
+    +.nubebelle.com:
+      - https://cloudflare-dns.com/dns-query#Emby&h3=true
+      - https://dns.google/dns-query#Emby
+    use-application-dns.net: rcode://name_error
     rule-set:private: rcode://success
-    rule-set:apple_tv:
-      - https://cloudflare-dns.com/dns-query#AppleProxy&h3=true
-      - https://dns.google/dns-query#AppleProxy
-    rule-set:dns_domestic_cdn,dns_microsoft_cdn,dns_steam_cn:
-      - https://dns.alidns.com/dns-query#DIRECT
-      - https://doh.pub/dns-query#DIRECT
-    rule-set:apple_proxy:
+    rule-set:apple_tv,apple_proxy:
       - https://cloudflare-dns.com/dns-query#AppleProxy&h3=true
       - https://dns.google/dns-query#AppleProxy
     rule-set:category-ads: rcode://name_error
-    rule-set:games_cn,synology,nvidia_cn,apple_cn,microsoft_cn:
+    rule-set:games_cn,synology,nvidia_cn,apple_cn,microsoft_cn,dns_microsoft_cdn,dns_steam_cn,googlefcm:
       - https://dns.alidns.com/dns-query#DIRECT
       - https://doh.pub/dns-query#DIRECT
-    rule-set:googlefcm:
-      - https://cloudflare-dns.com/dns-query#FCM&h3=true
-      - https://dns.google/dns-query#FCM
     rule-set:youtube:
       - https://cloudflare-dns.com/dns-query#YouTube&h3=true
       - https://dns.google/dns-query#YouTube
@@ -185,8 +180,8 @@ dns:
       - https://cloudflare-dns.com/dns-query#GitHub&h3=true
       - https://dns.google/dns-query#GitHub
     rule-set:microsoft:
-      - https://cloudflare-dns.com/dns-query#Microsoft&h3=true
-      - https://dns.google/dns-query#Microsoft
+      - https://dns.alidns.com/dns-query#DIRECT
+      - https://doh.pub/dns-query#DIRECT
     rule-set:apple:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
@@ -232,7 +227,7 @@ dns:
     rule-set:ehentai:
       - https://cloudflare-dns.com/dns-query#EHentai&h3=true
       - https://dns.google/dns-query#EHentai
-    rule-set:domestic_alibaba_dns,domestic_baidu,domestic_bilibili_dns,domestic_bytedance_dns,domestic_chinamobile_dns,domestic_chinatelecom_dns,domestic_chinaunicom_dns,domestic_huaweicloud_dns,domestic_jd_dns,domestic_netease_dns,domestic_tencent_dns,domestic_xiaomi_dns,geolocation-cn:
+    rule-set:dns_domestic_cdn,domestic_alibaba_dns,domestic_baidu,domestic_bilibili_dns,domestic_bytedance_dns,domestic_chinamobile_dns,domestic_chinatelecom_dns,domestic_chinaunicom_dns,domestic_huaweicloud_dns,domestic_jd_dns,domestic_netease_dns,domestic_tencent_dns,domestic_xiaomi_dns,geolocation-cn:
       - https://dns.alidns.com/dns-query#DIRECT
       - https://doh.pub/dns-query#DIRECT
     rule-set:geolocation-!cn:
@@ -271,7 +266,7 @@ log-level: info
 bind-address: 127.0.0.1
 unified-delay: true
 tcp-concurrent: true
-keep-alive-interval: 60
+disable-keep-alive: true
 find-process-mode: strict
 profile:
   store-selected: true
@@ -321,7 +316,6 @@ proxy-groups:
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - FCM
       - YouTube
       - Google
@@ -447,7 +441,6 @@ proxy-groups:
       - 家宽节点
       - 其他节点
       - 手动选择
-      - 负载均衡
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Proxy.svg
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
@@ -478,21 +471,6 @@ proxy-groups:
     url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
     empty-fallback: REJECT
-    type: load-balance
-    expected-status: 200
-    interval: 600
-    lazy: true
-    strategy: sticky-sessions
-    exclude-type: DIRECT|REJECT|REMATCH
-    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Round_Robin.svg
-    hidden: true
-    name: 负载均衡
-    include-all-providers: true
-    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
-  - timeout: 5000
-    url: https://www.apple.com/library/test/success.html
-    max-failed-times: 3
-    empty-fallback: REJECT
     type: select
     name: FCM
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/FCM.svg
@@ -500,7 +478,6 @@ proxy-groups:
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
       - 日本
       - 美国
@@ -532,7 +509,6 @@ proxy-groups:
       - 家宽节点
       - 其他节点
       - 直连
-    default-selected: 直连
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
@@ -544,7 +520,6 @@ proxy-groups:
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
       - 日本
       - 美国
@@ -583,8 +558,8 @@ proxy-groups:
     name: Google
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Google.svg
     proxies:
-      - 日本
       - 美国
+      - 日本
       - 新加坡
       - 台湾
       - 韩国
@@ -607,7 +582,6 @@ proxy-groups:
       - 越南
       - 泰国
       - 马来西亚
-    default-selected: 美国
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
@@ -616,8 +590,8 @@ proxy-groups:
     name: AI
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/ChatGPT.svg
     proxies:
-      - 日本
       - 美国
+      - 日本
       - 新加坡
       - 台湾
       - 韩国
@@ -640,7 +614,6 @@ proxy-groups:
       - 越南
       - 泰国
       - 马来西亚
-    default-selected: 美国
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
@@ -652,7 +625,6 @@ proxy-groups:
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
       - 日本
       - 美国
@@ -691,11 +663,9 @@ proxy-groups:
     name: Microsoft
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Microsoft.svg
     proxies:
-      - 直连
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
       - 日本
       - 美国
@@ -726,6 +696,7 @@ proxy-groups:
       - 高倍率节点
       - 家宽节点
       - 其他节点
+      - 直连
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
@@ -738,7 +709,6 @@ proxy-groups:
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
       - 日本
       - 美国
@@ -780,7 +750,6 @@ proxy-groups:
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
       - 日本
       - 美国
@@ -822,7 +791,6 @@ proxy-groups:
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
       - 日本
       - 美国
@@ -862,8 +830,8 @@ proxy-groups:
     name: TikTok
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/TikTok.svg
     proxies:
-      - 日本
       - 美国
+      - 日本
       - 新加坡
       - 台湾
       - 韩国
@@ -886,7 +854,6 @@ proxy-groups:
       - 越南
       - 泰国
       - 马来西亚
-    default-selected: 美国
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
@@ -898,7 +865,6 @@ proxy-groups:
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
       - 日本
       - 美国
@@ -937,8 +903,8 @@ proxy-groups:
     name: Meta
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Meta.svg
     proxies:
-      - 日本
       - 美国
+      - 日本
       - 新加坡
       - 台湾
       - 韩国
@@ -961,7 +927,6 @@ proxy-groups:
       - 越南
       - 泰国
       - 马来西亚
-    default-selected: 美国
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
@@ -973,7 +938,6 @@ proxy-groups:
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
       - 日本
       - 美国
@@ -1015,7 +979,6 @@ proxy-groups:
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
       - 日本
       - 美国
@@ -1057,7 +1020,6 @@ proxy-groups:
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
       - 日本
       - 美国
@@ -1100,7 +1062,6 @@ proxy-groups:
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
       - 日本
       - 美国
@@ -1143,7 +1104,6 @@ proxy-groups:
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
       - 日本
       - 美国
@@ -1183,12 +1143,11 @@ proxy-groups:
     name: Crypto
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Bitcoin.svg
     proxies:
+      - 日本
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
-      - 日本
       - 美国
       - 新加坡
       - 台湾
@@ -1217,7 +1176,6 @@ proxy-groups:
       - 高倍率节点
       - 家宽节点
       - 其他节点
-    default-selected: 日本
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
@@ -1226,13 +1184,12 @@ proxy-groups:
     name: PayPal
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/PayPal.svg
     proxies:
+      - 美国
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
       - 日本
-      - 美国
       - 新加坡
       - 台湾
       - 韩国
@@ -1260,7 +1217,6 @@ proxy-groups:
       - 高倍率节点
       - 家宽节点
       - 其他节点
-    default-selected: 美国
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
@@ -1269,11 +1225,10 @@ proxy-groups:
     name: Patreon
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Patreon.svg
     proxies:
+      - 香港
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
-      - 香港
       - 日本
       - 美国
       - 新加坡
@@ -1303,7 +1258,6 @@ proxy-groups:
       - 高倍率节点
       - 家宽节点
       - 其他节点
-    default-selected: 香港
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
@@ -1312,13 +1266,12 @@ proxy-groups:
     name: EHentai
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/EHentai.svg
     proxies:
+      - 美国
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
       - 日本
-      - 美国
       - 新加坡
       - 台湾
       - 韩国
@@ -1347,7 +1300,6 @@ proxy-groups:
       - 家宽节点
       - 其他节点
       - 直连
-    default-selected: 美国
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
@@ -1403,7 +1355,6 @@ proxy-groups:
       - 默认代理
       - 手动选择
       - 自动选择ex(大陆&香港)
-      - 负载均衡
       - 香港
       - 日本
       - 新加坡
@@ -1497,7 +1448,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Hong_Kong.svg
     proxies:
       - 香港-自动选择
-    default-selected: 香港-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -1528,7 +1478,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Japan.svg
     proxies:
       - 日本-自动选择
-    default-selected: 日本-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -1559,7 +1508,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/United_States.svg
     proxies:
       - 美国-自动选择
-    default-selected: 美国-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -1590,7 +1538,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Singapore.svg
     proxies:
       - 新加坡-自动选择
-    default-selected: 新加坡-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -1621,7 +1568,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/China_Taiwan.svg
     proxies:
       - 台湾-自动选择
-    default-selected: 台湾-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -1652,7 +1598,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/South_Korea.svg
     proxies:
       - 韩国-自动选择
-    default-selected: 韩国-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -1683,7 +1628,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Australia.svg
     proxies:
       - 澳大利亚-自动选择
-    default-selected: 澳大利亚-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -1714,11 +1658,10 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Indonesia.svg
     proxies:
       - 印度尼西亚-自动选择
-    default-selected: 印度尼西亚-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
-    filter: (?i)🇮🇩|印度尼西亚|印尼|雅加达|\b(I​*D|I​*D​*N)\b|indonesia
+    filter: (?i)🇮🇩|印度尼西亚|印尼|雅加达|\b(I​*D​*N)\b|indonesia|(?-i:\b(I​*D)\b)
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
@@ -1734,7 +1677,7 @@ proxy-groups:
     hidden: true
     name: 印度尼西亚-自动选择
     include-all-providers: true
-    filter: (?i)🇮🇩|印度尼西亚|印尼|雅加达|\b(I​*D|I​*D​*N)\b|indonesia
+    filter: (?i)🇮🇩|印度尼西亚|印尼|雅加达|\b(I​*D​*N)\b|indonesia|(?-i:\b(I​*D)\b)
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
@@ -1745,11 +1688,10 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/India.svg
     proxies:
       - 印度-自动选择
-    default-selected: 印度-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
-    filter: (?i)🇮🇳|印度($|[^尼])|孟买|新德里|\b(I​*N|I​*N​*D)\b|india
+    filter: (?i)🇮🇳|印度($|[^尼])|孟买|新德里|\b(I​*N​*D)\b|india|(?-i:\b(I​*N)\b)
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
@@ -1765,7 +1707,7 @@ proxy-groups:
     hidden: true
     name: 印度-自动选择
     include-all-providers: true
-    filter: (?i)🇮🇳|印度($|[^尼])|孟买|新德里|\b(I​*N|I​*N​*D)\b|india
+    filter: (?i)🇮🇳|印度($|[^尼])|孟买|新德里|\b(I​*N​*D)\b|india|(?-i:\b(I​*N)\b)
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
@@ -1776,7 +1718,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Canada.svg
     proxies:
       - 加拿大-自动选择
-    default-selected: 加拿大-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -1807,7 +1748,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Germany.svg
     proxies:
       - 德国-自动选择
-    default-selected: 德国-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -1838,7 +1778,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/United_Kingdom.svg
     proxies:
       - 英国-自动选择
-    default-selected: 英国-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -1869,7 +1808,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/France.svg
     proxies:
       - 法国-自动选择
-    default-selected: 法国-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -1900,7 +1838,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Netherlands.svg
     proxies:
       - 荷兰-自动选择
-    default-selected: 荷兰-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -1931,7 +1868,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Spain.svg
     proxies:
       - 西班牙-自动选择
-    default-selected: 西班牙-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -1962,7 +1898,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Russia.svg
     proxies:
       - 俄罗斯-自动选择
-    default-selected: 俄罗斯-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -1993,7 +1928,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Ukraine.svg
     proxies:
       - 乌克兰-自动选择
-    default-selected: 乌克兰-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -2024,7 +1958,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Turkey.svg
     proxies:
       - 土耳其-自动选择
-    default-selected: 土耳其-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -2055,11 +1988,10 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Norway.svg
     proxies:
       - 挪威-自动选择
-    default-selected: 挪威-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
-    filter: (?i)🇳🇴|挪威|奥斯陆|\b(N​*O|N​*O​*R)\b|norway
+    filter: (?i)🇳🇴|挪威|奥斯陆|\b(N​*O​*R)\b|norway|(?-i:\b(N​*O)\b)
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
@@ -2075,7 +2007,7 @@ proxy-groups:
     hidden: true
     name: 挪威-自动选择
     include-all-providers: true
-    filter: (?i)🇳🇴|挪威|奥斯陆|\b(N​*O|N​*O​*R)\b|norway
+    filter: (?i)🇳🇴|挪威|奥斯陆|\b(N​*O​*R)\b|norway|(?-i:\b(N​*O)\b)
     exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?))
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
@@ -2086,7 +2018,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Switzerland.svg
     proxies:
       - 瑞士-自动选择
-    default-selected: 瑞士-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -2117,7 +2048,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Sweden.svg
     proxies:
       - 瑞典-自动选择
-    default-selected: 瑞典-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -2148,7 +2078,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Ireland.svg
     proxies:
       - 爱尔兰-自动选择
-    default-selected: 爱尔兰-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -2179,7 +2108,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Philippines.svg
     proxies:
       - 菲律宾-自动选择
-    default-selected: 菲律宾-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -2210,7 +2138,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Vietnam.svg
     proxies:
       - 越南-自动选择
-    default-selected: 越南-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -2241,7 +2168,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Thailand.svg
     proxies:
       - 泰国-自动选择
-    default-selected: 泰国-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -2272,7 +2198,6 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/flag/Malaysia.svg
     proxies:
       - 马来西亚-自动选择
-    default-selected: 马来西亚-自动选择
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
@@ -2402,7 +2327,7 @@ proxy-groups:
     hidden: false
     include-all-providers: true
     exclude-type: DIRECT|REJECT|REMATCH
-    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?)|🇭🇰|香港|\b(H​*K|H​*K​*G)\b|hong\s*kong|🇯🇵|日本|东京|大阪|京都|\b(J​*P|J​*P​*N)\b|japan|🇺🇸|美国|纽约|洛杉矶|旧金山|芝加哥|休斯顿|迈阿密|西雅图|波士顿|华盛顿|拉斯维加斯|圣何塞|\b(U​*S|U​*S​*A)\b|america|united\s*states|🇸🇬|新加坡|狮城|\b(S​*G|S​*G​*P)\b|singapore|🇹🇼|台湾|台北|高雄|\b(T​*W|T​*W​*N)\b|taiwan|🇰🇷|韩国|首尔|釜山|\b(K​*R|K​*O​*R)\b|south\s*korea|korea|🇦🇺|澳大利亚|澳洲|悉尼|墨尔本|珀斯|\b(A​*U|A​*U​*S)\b|australia|🇮🇩|印度尼西亚|印尼|雅加达|\b(I​*D|I​*D​*N)\b|indonesia|🇮🇳|印度($|[^尼])|孟买|新德里|\b(I​*N|I​*N​*D)\b|india|🇨🇦|加拿大|多伦多|温哥华|蒙特利尔|\b(C​*A|C​*A​*N)\b|canada|🇩🇪|德国|法兰克福|柏林|\b(D​*E|D​*E​*U)\b|germany|🇬🇧|英国|伦敦|曼彻斯特|\b(U​*K|G​*B|G​*B​*R)\b|united\s*kingdom|britain|england|🇫🇷|法国|巴黎|\b(F​*R|F​*R​*A)\b|france|🇳🇱|荷兰|阿姆斯特丹|\b(N​*L|N​*L​*D)\b|netherlands|holland|🇪🇸|西班牙|马德里|\b(E​*S|E​*S​*P)\b|spain|🇷🇺|俄罗斯|莫斯科|\b(R​*U|R​*U​*S)\b|russia|🇺🇦|乌克兰|基辅|\b(U​*A|U​*K​*R)\b|ukraine|🇹🇷|土耳其|伊斯坦布尔|\b(T​*R|T​*U​*R)\b|turkey|türkiye|🇳🇴|挪威|奥斯陆|\b(N​*O|N​*O​*R)\b|norway|🇨🇭|瑞士|苏黎世|\b(C​*H|C​*H​*E)\b|switzerland|swiss|🇸🇪|瑞典|斯德哥尔摩|\b(S​*E|S​*W​*E)\b|sweden|🇮🇪|爱尔兰|都柏林|\b(I​*E|I​*R​*L)\b|ireland|🇵🇭|菲律宾|马尼拉|\b(P​*H|P​*H​*L)\b|philippines|🇻🇳|越南|河内|胡志明|\b(V​*N|V​*N​*M)\b|vietnam|🇹🇭|泰国|曼谷|\b(T​*H|T​*H​*A)\b|thailand|🇲🇾|马来西亚|吉隆坡|\b(M​*Y|M​*Y​*S)\b|malaysia|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?)|🇭🇰|香港|\b(H​*K|H​*K​*G)\b|hong\s*kong|🇯🇵|日本|东京|大阪|京都|\b(J​*P|J​*P​*N)\b|japan|🇺🇸|美国|纽约|洛杉矶|旧金山|芝加哥|休斯顿|迈阿密|西雅图|波士顿|华盛顿|拉斯维加斯|圣何塞|\b(U​*S|U​*S​*A)\b|america|united\s*states|🇸🇬|新加坡|狮城|\b(S​*G|S​*G​*P)\b|singapore|🇹🇼|台湾|台北|高雄|\b(T​*W|T​*W​*N)\b|taiwan|🇰🇷|韩国|首尔|釜山|\b(K​*R|K​*O​*R)\b|south\s*korea|korea|🇦🇺|澳大利亚|澳洲|悉尼|墨尔本|珀斯|\b(A​*U|A​*U​*S)\b|australia|🇮🇩|印度尼西亚|印尼|雅加达|\b(I​*D​*N)\b|indonesia|(?-i:\b(I​*D)\b)|🇮🇳|印度($|[^尼])|孟买|新德里|\b(I​*N​*D)\b|india|(?-i:\b(I​*N)\b)|🇨🇦|加拿大|多伦多|温哥华|蒙特利尔|\b(C​*A|C​*A​*N)\b|canada|🇩🇪|德国|法兰克福|柏林|\b(D​*E|D​*E​*U)\b|germany|🇬🇧|英国|伦敦|曼彻斯特|\b(U​*K|G​*B|G​*B​*R)\b|united\s*kingdom|britain|england|🇫🇷|法国|巴黎|\b(F​*R|F​*R​*A)\b|france|🇳🇱|荷兰|阿姆斯特丹|\b(N​*L|N​*L​*D)\b|netherlands|holland|🇪🇸|西班牙|马德里|\b(E​*S|E​*S​*P)\b|spain|🇷🇺|俄罗斯|莫斯科|\b(R​*U|R​*U​*S)\b|russia|🇺🇦|乌克兰|基辅|\b(U​*A|U​*K​*R)\b|ukraine|🇹🇷|土耳其|伊斯坦布尔|\b(T​*R|T​*U​*R)\b|turkey|türkiye|🇳🇴|挪威|奥斯陆|\b(N​*O​*R)\b|norway|(?-i:\b(N​*O)\b)|🇨🇭|瑞士|苏黎世|\b(C​*H|C​*H​*E)\b|switzerland|swiss|🇸🇪|瑞典|斯德哥尔摩|\b(S​*E|S​*W​*E)\b|sweden|🇮🇪|爱尔兰|都柏林|\b(I​*E|I​*R​*L)\b|ireland|🇵🇭|菲律宾|马尼拉|\b(P​*H|P​*H​*L)\b|philippines|🇻🇳|越南|河内|胡志明|\b(V​*N|V​*N​*M)\b|vietnam|🇹🇭|泰国|曼谷|\b(T​*H|T​*H​*A)\b|thailand|🇲🇾|马来西亚|吉隆坡|\b(M​*Y|M​*Y​*S)\b|malaysia|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
   - timeout: 5000
     url: https://www.apple.com/library/test/success.html
     max-failed-times: 3
@@ -2417,7 +2342,7 @@ proxy-groups:
     hidden: true
     name: 其他节点-自动选择
     include-all-providers: true
-    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?)|🇭🇰|香港|\b(H​*K|H​*K​*G)\b|hong\s*kong|🇯🇵|日本|东京|大阪|京都|\b(J​*P|J​*P​*N)\b|japan|🇺🇸|美国|纽约|洛杉矶|旧金山|芝加哥|休斯顿|迈阿密|西雅图|波士顿|华盛顿|拉斯维加斯|圣何塞|\b(U​*S|U​*S​*A)\b|america|united\s*states|🇸🇬|新加坡|狮城|\b(S​*G|S​*G​*P)\b|singapore|🇹🇼|台湾|台北|高雄|\b(T​*W|T​*W​*N)\b|taiwan|🇰🇷|韩国|首尔|釜山|\b(K​*R|K​*O​*R)\b|south\s*korea|korea|🇦🇺|澳大利亚|澳洲|悉尼|墨尔本|珀斯|\b(A​*U|A​*U​*S)\b|australia|🇮🇩|印度尼西亚|印尼|雅加达|\b(I​*D|I​*D​*N)\b|indonesia|🇮🇳|印度($|[^尼])|孟买|新德里|\b(I​*N|I​*N​*D)\b|india|🇨🇦|加拿大|多伦多|温哥华|蒙特利尔|\b(C​*A|C​*A​*N)\b|canada|🇩🇪|德国|法兰克福|柏林|\b(D​*E|D​*E​*U)\b|germany|🇬🇧|英国|伦敦|曼彻斯特|\b(U​*K|G​*B|G​*B​*R)\b|united\s*kingdom|britain|england|🇫🇷|法国|巴黎|\b(F​*R|F​*R​*A)\b|france|🇳🇱|荷兰|阿姆斯特丹|\b(N​*L|N​*L​*D)\b|netherlands|holland|🇪🇸|西班牙|马德里|\b(E​*S|E​*S​*P)\b|spain|🇷🇺|俄罗斯|莫斯科|\b(R​*U|R​*U​*S)\b|russia|🇺🇦|乌克兰|基辅|\b(U​*A|U​*K​*R)\b|ukraine|🇹🇷|土耳其|伊斯坦布尔|\b(T​*R|T​*U​*R)\b|turkey|türkiye|🇳🇴|挪威|奥斯陆|\b(N​*O|N​*O​*R)\b|norway|🇨🇭|瑞士|苏黎世|\b(C​*H|C​*H​*E)\b|switzerland|swiss|🇸🇪|瑞典|斯德哥尔摩|\b(S​*E|S​*W​*E)\b|sweden|🇮🇪|爱尔兰|都柏林|\b(I​*E|I​*R​*L)\b|ireland|🇵🇭|菲律宾|马尼拉|\b(P​*H|P​*H​*L)\b|philippines|🇻🇳|越南|河内|胡志明|\b(V​*N|V​*N​*M)\b|vietnam|🇹🇭|泰国|曼谷|\b(T​*H|T​*H​*A)\b|thailand|🇲🇾|马来西亚|吉隆坡|\b(M​*Y|M​*Y​*S)\b|malaysia|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
+    exclude-filter: (?i)((官网|官方网站|官网地址|网址|网站|订阅地址|面板|panel|公告|宣传|延迟\s*≠\s*速度|无脑选|https?:\/\/\S+|www\.\S+|(^|[^A-Za-z0-9_-])([A-Za-z0-9-]+\.)+[A-Za-z][A-Za-z]+(\/\S*)?)|🇭🇰|香港|\b(H​*K|H​*K​*G)\b|hong\s*kong|🇯🇵|日本|东京|大阪|京都|\b(J​*P|J​*P​*N)\b|japan|🇺🇸|美国|纽约|洛杉矶|旧金山|芝加哥|休斯顿|迈阿密|西雅图|波士顿|华盛顿|拉斯维加斯|圣何塞|\b(U​*S|U​*S​*A)\b|america|united\s*states|🇸🇬|新加坡|狮城|\b(S​*G|S​*G​*P)\b|singapore|🇹🇼|台湾|台北|高雄|\b(T​*W|T​*W​*N)\b|taiwan|🇰🇷|韩国|首尔|釜山|\b(K​*R|K​*O​*R)\b|south\s*korea|korea|🇦🇺|澳大利亚|澳洲|悉尼|墨尔本|珀斯|\b(A​*U|A​*U​*S)\b|australia|🇮🇩|印度尼西亚|印尼|雅加达|\b(I​*D​*N)\b|indonesia|(?-i:\b(I​*D)\b)|🇮🇳|印度($|[^尼])|孟买|新德里|\b(I​*N​*D)\b|india|(?-i:\b(I​*N)\b)|🇨🇦|加拿大|多伦多|温哥华|蒙特利尔|\b(C​*A|C​*A​*N)\b|canada|🇩🇪|德国|法兰克福|柏林|\b(D​*E|D​*E​*U)\b|germany|🇬🇧|英国|伦敦|曼彻斯特|\b(U​*K|G​*B|G​*B​*R)\b|united\s*kingdom|britain|england|🇫🇷|法国|巴黎|\b(F​*R|F​*R​*A)\b|france|🇳🇱|荷兰|阿姆斯特丹|\b(N​*L|N​*L​*D)\b|netherlands|holland|🇪🇸|西班牙|马德里|\b(E​*S|E​*S​*P)\b|spain|🇷🇺|俄罗斯|莫斯科|\b(R​*U|R​*U​*S)\b|russia|🇺🇦|乌克兰|基辅|\b(U​*A|U​*K​*R)\b|ukraine|🇹🇷|土耳其|伊斯坦布尔|\b(T​*R|T​*U​*R)\b|turkey|türkiye|🇳🇴|挪威|奥斯陆|\b(N​*O​*R)\b|norway|(?-i:\b(N​*O)\b)|🇨🇭|瑞士|苏黎世|\b(C​*H|C​*H​*E)\b|switzerland|swiss|🇸🇪|瑞典|斯德哥尔摩|\b(S​*E|S​*W​*E)\b|sweden|🇮🇪|爱尔兰|都柏林|\b(I​*E|I​*R​*L)\b|ireland|🇵🇭|菲律宾|马尼拉|\b(P​*H|P​*H​*L)\b|philippines|🇻🇳|越南|河内|胡志明|\b(V​*N|V​*N​*M)\b|vietnam|🇹🇭|泰国|曼谷|\b(T​*H|T​*H​*A)\b|thailand|🇲🇾|马来西亚|吉隆坡|\b(M​*Y|M​*Y​*S)\b|malaysia|群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b)
 rule-providers:
   private:
     type: http
@@ -3056,6 +2981,7 @@ rule-providers:
     path: ./ruleset/dns_steam_cn.mrs
 rules:
   - DST-PORT,53,内置DNS
+  - DST-PORT,853,REJECT
   - DOMAIN-SUFFIX,issuer.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,ropes.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,mask-api.icloud.com,Siri Ai/Apple Intelligence
@@ -3098,15 +3024,22 @@ rules:
   - DOMAIN,fsend.cn,直连
   - DOMAIN,international-gfe.download.nvidia.com,直连
   - DOMAIN-SUFFIX,ctaiot.com,直连
+  - RULE-SET,dns_microsoft_cdn,直连
+  - DOMAIN-SUFFIX,steamserver.net,Steam
+  - DOMAIN-SUFFIX,steamusercontent.com,Steam
+  - RULE-SET,dns_steam_cn,直连
+  - DOMAIN-SUFFIX,stun.l.google.com,漏网之鱼
+  - AND,((NETWORK,UDP),(DST-PORT,3478)),漏网之鱼
+  - AND,((NETWORK,UDP),(DST-PORT,19302)),漏网之鱼
   - RULE-SET,googlefcm,FCM
   - RULE-SET,youtube,YouTube
   - RULE-SET,google,Google
   - RULE-SET,ai,AI
   - RULE-SET,github,GitHub
-  - RULE-SET,microsoft,Microsoft
+  - AND,((RULE-SET,microsoft),(NOT,((RULE-SET,dns_microsoft_cdn)))),Microsoft
   - RULE-SET,apple,Other Apple Service
   - RULE-SET,telegram,Telegram
-  - RULE-SET,steam,Steam
+  - AND,((RULE-SET,steam),(NOT,((RULE-SET,dns_steam_cn)))),Steam
   - RULE-SET,tiktok,TikTok
   - RULE-SET,twitter,Twitter
   - RULE-SET,meta,Meta
@@ -3122,6 +3055,7 @@ rules:
   - RULE-SET,paypal,PayPal
   - RULE-SET,patreon,Patreon
   - RULE-SET,ehentai,EHentai
+  - RULE-SET,dns_domestic_cdn,直连
   - AND,((RULE-SET,domestic_alibaba),(NOT,((RULE-SET,domestic_alibaba_noncn)))),直连
   - RULE-SET,domestic_baidu,直连
   - AND,((RULE-SET,domestic_bilibili),(NOT,((RULE-SET,domestic_bilibili_noncn)))),直连
@@ -3135,7 +3069,7 @@ rules:
   - AND,((RULE-SET,domestic_tencent),(NOT,((RULE-SET,domestic_tencent_noncn)))),直连
   - AND,((RULE-SET,domestic_xiaomi),(NOT,((RULE-SET,domestic_xiaomi_noncn)))),直连
   - RULE-SET,geolocation-cn,直连
-  - RULE-SET,geolocation-!cn,默认代理
+  - AND,((RULE-SET,geolocation-!cn),(NOT,((RULE-SET,dns_domestic_cdn)))),默认代理
   - RULE-SET,apple_ip,AppleProxy,no-resolve
   - RULE-SET,private_ip,直连,no-resolve
   - RULE-SET,google_ip,Google,no-resolve
@@ -3147,13 +3081,13 @@ rules:
   - RULE-SET,facebook_ip,Meta,no-resolve
   - RULE-SET,netflix_ip,Netflix,no-resolve
   - RULE-SET,spotify_ip,Spotify,no-resolve
-  - RULE-SET,cn_ip,直连
+  - RULE-SET,cn_ip,直连,no-resolve
   - MATCH,漏网之鱼
 sniffer:
   enable: true
   force-dns-mapping: true
   parse-pure-ip: true
-  override-destination: false
+  override-destination: true
   sniff:
     HTTP:
       ports:
