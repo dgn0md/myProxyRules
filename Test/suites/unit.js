@@ -73,6 +73,14 @@ function runUnitTests(h, api) {
     h.assert(!matched('美国 01').includes('家宽节点'));
     h.assert(!matched('🇸🇬 新加坡 06').includes('家宽节点'));
   });
+  h.test('短国家码区分大小写，不误伤英文单词 in / id / no', () => {
+    h.assertDeep(matched('US No.1'), ['美国']);
+    h.assertDeep(matched('Server in US'), ['美国']);
+    h.assertDeep(matched('JP id 02'), ['日本']);
+    h.assertDeep(matched('NO 01'), ['挪威']);
+    h.assertDeep(matched('IN 01'), ['印度']);
+    h.assertDeep(matched('ID 01'), ['印度尼西亚']);
+  });
 
   h.section('单元测试 · toMatchableName（仅供匹配的不可见字符剥离）');
   h.test('剥离零宽/不可见字符', () => h.assertEqual(api.toMatchableName('H\u200BK\u200B \u200B0\u200B1'), 'HK 01'));

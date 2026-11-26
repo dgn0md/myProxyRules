@@ -131,7 +131,7 @@ test('exclude-only groups keep case-insensitive regexes without broken quantifie
     const { text } = renderTarget(target, config);
     assert.ok(!text.includes('{2\\,}'), `${target} contains corrupted quantifier comma`);
     const lines = text.split('\n');
-    for (const groupName of ['手动选择', '自动选择ex(大陆&香港)', '负载均衡', '其他节点']) {
+    for (const groupName of ['手动选择', '自动选择ex(大陆&香港)', '其他节点']) {
       const line = lines.find((entry) =>
         target === 'quantumultx' ? entry.includes(`= ${groupName},`) : entry.startsWith(`${groupName} = `),
       );

@@ -106,7 +106,8 @@ async function probeQuic({ port, api, enabled, version, local }) {
       await new Promise((resolve) => setTimeout(resolve, 50));
     }
     assert.ok(connection, `missing QUIC v${version} connection`);
-    assert.equal(connection.metadata.destinationIP, '20.205.243.166');
+    if (enabled) assert.equal(connection.metadata.host, 'github.com');
+    else assert.equal(connection.metadata.destinationIP, '20.205.243.166');
     assert.ok(connection.chains.includes(enabled ? 'GitHub' : 'Microsoft'), JSON.stringify(connection));
     assert.equal(connection.rulePayload, enabled ? 'github' : 'microsoft_ip');
     if (enabled) assert.equal(connection.metadata.sniffHost, 'github.com');

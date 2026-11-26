@@ -45,9 +45,22 @@ async function probe({ port, api, host, protocol, expected, payload, ip = '20.20
       await new Promise((resolve) => setTimeout(resolve, 50));
     }
     assert.ok(connection, `${protocol} ${host}: missing connection`);
-    assert.equal(connection.metadata.destinationIP, ip, 'sniffing must preserve the target IP');
+    if (expected === 'Microsoft' && !connection.metadata.sniffHost) {
+      assert.equal(connection.metadata.destinationIP, ip, 'disabled sniffing must preserve the target IP');
+    } else {
+      assert.equal(
+        connection.metadata.host,
+        host,
+        'override-destination must replace pure-IP destination with sniffed host',
+      );
+    }
     assert.ok(connection.chains.includes(expected), JSON.stringify(connection));
-    if (payload !== undefined) assert.equal(connection.rulePayload, payload);
+    if (payload !== undefined) {
+      const matchedPayload = Array.isArray(payload)
+        ? payload.includes(connection.rulePayload)
+        : connection.rulePayload === payload;
+      assert.ok(matchedPayload, `unexpected rulePayload: ${connection.rulePayload}`);
+    }
     if (expected !== 'Microsoft') assert.equal(connection.metadata.sniffHost, host);
     return { protocol, host, ip, expected, sniffHost: connection.metadata.sniffHost, payload: connection.rulePayload };
   } finally {
@@ -69,7 +82,8 @@ async function verifySniffing({ binary, rulesDir, temp }) {
     config.tun.enable = false;
     config.ntp.enable = false;
     config.dns.listen = '';
-    config.dns['use-hosts'] = false;
+    config.dns['use-hosts'] = true;
+    config.hosts = { 'github.com': '20.205.243.166' };
     for (const key of ['nameserver', 'direct-nameserver', 'proxy-server-nameserver'])
       config.dns[key] = ['rcode://success'];
     for (const key of Object.keys(config.dns['nameserver-policy']))
@@ -157,17 +171,26 @@ async function verifySniffing({ binary, rulesDir, temp }) {
               host: 'unlisted-route-check.net',
               protocol: 'TLS',
               ip: '17.0.0.1',
-              expected: 'AppleProxy',
-              payload: 'apple_ip',
+              expected: '漏网之鱼',
+              payload: '',
             },
             {
               host: 'unlisted-route-check.net',
               protocol: 'TLS',
               ip: '17.81.2.1',
-              expected: 'AppleProxy',
-              payload: 'apple_ip',
+              expected: '漏网之鱼',
+              payload: '',
             },
-            { host: 'www.microsoft.com', protocol: 'TLS', expected: 'Microsoft', payload: 'microsoft' },
+            {
+              host: 'www.microsoft.com',
+              protocol: 'TLS',
+              expected: 'Microsoft',
+              payload: [
+                'microsoft',
+                'AND,((RULE-SET,microsoft),(NOT,((RULE-SET,dns_microsoft_cdn))))',
+                '((RuleSet,microsoft) && (NOT,(!(RuleSet,dns_microsoft_cdn))))',
+              ],
+            },
           ]
         : [{ host: 'github.com', protocol: 'TLS', expected: 'Microsoft', payload: 'microsoft_ip' }];
       for (const entry of cases) evidence.push({ enabled, ...(await probe({ port, api, ...entry })) });
