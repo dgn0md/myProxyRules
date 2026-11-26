@@ -326,6 +326,19 @@ function appendRule(target, line, config, supported, omitted, mappedRemoteProvid
     return;
   }
   if (parsed.type === 'AND' || parsed.type === 'OR' || parsed.type === 'NOT') {
+    const excludedCdnMatch =
+      parsed.type === 'AND' &&
+      /^AND,\(\(RULE-SET,([^,)]+)\),\(NOT,\(\(RULE-SET,(dns_[^,)]+)\)\)\)\),([^,]+)$/.exec(line.trim());
+    if (excludedCdnMatch) {
+      const [, providerName, excludedProvider, policy] = excludedCdnMatch;
+      const source = resolveRuleSource(target, providerName, config);
+      if (source) {
+        mappedRemoteProviders.push(providerName);
+        supported.push(remoteRule(target, source, mapPolicy(target, policy), false));
+        omitted.push(excludedProvider + ' exclusion is omitted because this client has no equivalent rule-set.');
+        return;
+      }
+    }
     omitted.push(parsed.type + ' rule is not expanded by this adapter.');
     return;
   }

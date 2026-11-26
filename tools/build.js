@@ -54,7 +54,6 @@ function configure(api, settings) {
     Steam下载DNS: 'Steam下载解析',
     严格加密DNS: '严格DNS校验',
     拦截外部明文DNS: '接管DNS53',
-    微软服务默认直连: '微软默认直连',
     代理IPV4优先: '节点IPv4优先',
     代理IPV6优先: '节点IPv6优先',
     极简国内外分流模式: '极简分流',
@@ -78,11 +77,11 @@ function configure(api, settings) {
     AppleBooks: 'AppleProxy',
     Apple地区检测: 'Apple智能分流',
   };
-  const removedAppleOptions = new Set(['AppleRelay']);
+  const removedOptions = new Set(['AppleRelay', '负载均衡', '微软默认直连', '微软服务默认直连']);
   const migratedOptions = new Map();
   for (const [key, value] of Object.entries(options)) {
     if (typeof value !== 'boolean') throw new Error(`${key} 必须填写 true 或 false`);
-    if (removedAppleOptions.has(key)) continue;
+    if (removedOptions.has(key)) continue;
     const target = optionAliases[key];
     if (target) {
       if (!Object.prototype.hasOwnProperty.call(options, target))
@@ -119,10 +118,12 @@ function template(api, settings) {
   // Match U+200B between letters of existing region abbreviations without renaming
   // provider nodes or changing their dialer-proxy references.
   const includeZeroWidthAbbreviations = (source) =>
-    source.replace(/\\b\(([A-Z]+(?:\|[A-Z]+)+)\)\\b/g, (_match, aliases) => {
+    source.replace(/\\b\(([A-Z]+(?:\|[A-Z]+)*)\)\\b/g, (_match, aliases) => {
       const variants = aliases.split('|').map((alias) => [...alias].join('\u200b*'));
       return `\\b(${variants.join('|')})\\b`;
     });
+  const regionFilterSource = (def) =>
+    def.exactCodeRegex ? `${def.regex.source}|(?-i:${def.exactCodeRegex.source})` : def.regex.source;
   const filterNonRegion = api.ruleOptionsEnable.过滤公告信息项;
   const announcements = filterNonRegion ? [api.announcementFilter.source] : [];
   const softInfo = filterNonRegion ? [api.excludeFilter.source] : [];
@@ -137,11 +138,11 @@ function template(api, settings) {
     group['exclude-type'] = 'DIRECT|REJECT|REMATCH';
     const baseName = group.name.replace(/-自动选择$/, '');
     const def = definitions.find((r) => r.name === baseName);
-    if (def) group.filter = `(?i)${includeZeroWidthAbbreviations(def.regex.source)}`;
+    if (def) group.filter = `(?i)${includeZeroWidthAbbreviations(regionFilterSource(def))}`;
     const configuredExclude = group['exclude-filter']?.replace(/^\(\?i\)\(([\s\S]*)\)$/, '$1').replace(/^\(\?i\)/, '');
     const excludes = [...(configuredExclude ? [configuredExclude] : []), ...announcements, ...excludedRates];
     if (baseName === '其他节点') {
-      excludes.push(...api.regionDefinitions.map((r) => r.regex.source));
+      excludes.push(...api.regionDefinitions.map(regionFilterSource));
       excludes.push(...softInfo);
     } else if (baseName === '低倍率节点' || baseName === '高倍率节点' || baseName === '家宽节点') {
       excludes.push(...softInfo);
