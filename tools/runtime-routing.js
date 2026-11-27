@@ -124,8 +124,7 @@ const CASES = [
   ['ssl.ls.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['gspe35-applecdn-cutover.ls-apple.com.akadns.net', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['ls-apple.com.akadns.net', APPLE_AI_GROUP, 'apple_siri_regex'],
-  ['gspe79-cn-ssl.ls.apple.com', '直连', 'apple_ls_cn_regex'],
-  ['gspe79-cn-ssl.ls-apple.com.akadns.net', '直连', 'apple_ls_cn_regex'],
+  ['gspe79-cn-ssl.ls.apple.com', '直连', 'apple_cn_regex'],
   // icloud-content.com 后缀及伪后缀边界（同时供 verifyICloudContentDnsPolicy 复用）
   ['icloud-content.com', APPLE_AI_GROUP],
   ['edge-013.hkhkg2.icloud-content.com', APPLE_AI_GROUP],
