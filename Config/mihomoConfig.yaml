@@ -1,7 +1,7 @@
 # myProxyRules Mihomo 全量静态配置
 # 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
 # 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
-# 最新 Raw SHA-256：56fa07c4fb22eda2af23350fd8d5e44a863a767f4a23ff9bdb3960ab9fd4f06f
+# 最新 Raw SHA-256：4608354442881fed72e972defc99c05aa30325341d96e8fd38ec4b97d691d869
 # Raw 配置：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/mihomoConfig.yaml
 # CDN 配置：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/mihomoConfig.cdn.yaml
 # 仅适用于 Mihomo。关闭客户端 DNS 覆写。第一次使用请填 proxy-providers.订阅.url。
@@ -84,6 +84,7 @@ dns:
     - +.ropes.apple.com
     - +.app.apple.com
     - cp4.cloudflare.com
+    - bag.itunes.apple.com
     - rule-set:apple_siri_regex
   default-nameserver:
     - https://223.5.5.5/dns-query#DIRECT&name-cert-verify=dns.alidns.com
@@ -118,6 +119,9 @@ dns:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     +.smoot.apple.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    bag.itunes.apple.com:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     +.apple-dns.com:
@@ -170,6 +174,9 @@ dns:
       - https://dns.google/dns-query#Emby
     use-application-dns.net: rcode://name_error
     rule-set:private: rcode://success
+    rule-set:apple_cn_regex:
+      - https://dns.alidns.com/dns-query#DIRECT
+      - https://doh.pub/dns-query#DIRECT
     rule-set:apple_siri_regex:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
@@ -3079,6 +3086,12 @@ rule-providers:
     behavior: classical
     payload:
       - AND,((RULE-SET,domestic_xiaohongshu),(NOT,((RULE-SET,domestic_xiaohongshu_noncn))))
+  apple_cn_regex:
+    type: inline
+    format: text
+    behavior: classical
+    payload:
+      - AND,((DOMAIN-REGEX,(^|\.)(apple\.com|icloud\.com|icloud-content\.com|cdn-apple\.com|aaplimg\.com|apple-dns\.(com|net)|ls-apple\.com\.akadns\.net)(\.cn)?$),(DOMAIN-REGEX,(^|[.-])cn([.-]|$)))
   apple_siri_regex:
     type: inline
     format: text
@@ -3088,7 +3101,7 @@ rule-providers:
       - DOMAIN-REGEX,(^|\.)apple-relay\.(apple\.com|cloudflare\.com|fastly-edge\.com|akamaized\.net)$
       - DOMAIN-REGEX,(^|\.)guzzoni\.apple\.com$|^guzzoni-apple-com\.v\.aaplimg\.com$
       - DOMAIN-REGEX,(^|[.-])siri(-[a-z0-9]+)*\.apple\.com$
-      - DOMAIN-REGEX,ssl\.ls\.apple\.com$
+      - AND,((DOMAIN-REGEX,ssl\.ls\.apple\.com$|(^|\.)ls-apple\.com\.akadns\.net$),(NOT,((DOMAIN-REGEX,(^|[.-])cn([.-]|$)))))
   apple_tv:
     type: http
     format: mrs
@@ -3115,6 +3128,7 @@ rules:
   # 顺序：DNS 接管 → Apple 精确域名例外 → 广告/国内服务 → 服务域名 → 海外域名 → Apple IP → 私网 IP → 其他服务 IP → CN IP → 兜底。
   - DST-PORT,53,内置DNS
   - DST-PORT,853,REJECT
+  - RULE-SET,apple_cn_regex,直连
   - DOMAIN-SUFFIX,issuer.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,ropes.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,app.apple.com,Siri Ai/Apple Intelligence
@@ -3123,6 +3137,7 @@ rules:
   - DOMAIN,dejavu.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,sequoia.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,smoot.apple.com,Siri Ai/Apple Intelligence
+  - DOMAIN,bag.itunes.apple.com,Siri Ai/Apple Intelligence
   - RULE-SET,apple_siri_regex,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,apple-dns.com,AppleProxy
   - DOMAIN,news-client-search.apple.com,AppleProxy
