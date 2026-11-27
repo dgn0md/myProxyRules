@@ -4,7 +4,7 @@
  * 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
  * 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
  *
- * 最新 Raw SHA-256：c2b95de2c0c00c47619655dea6a48bde940f37aeb263006097d94f4eaa0ab023
+ * 最新 Raw SHA-256：6c9285fd43a4979047f6f7079f03a9d1a2fe38cde26f3ab8285af5e276402161
  * Raw 脚本：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js
  * CDN 脚本：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js
  */
@@ -305,12 +305,14 @@ const regionRestrictedServiceNames = new Set(['Google', 'AI', 'TikTok', 'Meta', 
 // Mihomo `+.` 后缀同时匹配根域主机，避免重复列举精确域名。
 const appleRealIpEndpoints = [
   '+.guzzoni.apple.com',
+  'guzzoni-apple-com.v.aaplimg.com',
   '+.siri.apple.com',
   'dejavu.apple.com',
   'sequoia.apple.com',
   '+.smoot.apple.com',
   'api-siri-prod.apple.com',
   'gspe1-ssl.ls.apple.com',
+  'gspe35-ssl.ls.apple.com',
   '+.issuer.apple.com',
   '+.ropes.apple.com',
   'mask-api.icloud.com',
@@ -757,8 +759,9 @@ const appleEndpointDefinitions = [
       'cp4.cloudflare.com',
       // 国际内容域整体覆盖，中国站内容域保留原规则；gateway 单独归入 Other Apple Service。
       '+.icloud-content.com',
-      // +.guzzoni.apple.com 同时覆盖根域主机。
+      // +.guzzoni.apple.com 同时覆盖根域主机；补充其 CNAME 目标主机。
       '+.guzzoni.apple.com',
+      'guzzoni-apple-com.v.aaplimg.com',
       '+.siri.apple.com',
       'dejavu.apple.com',
       'sequoia.apple.com',
@@ -767,6 +770,7 @@ const appleEndpointDefinitions = [
       'api-siri-prod.apple.com',
       // Apple 地区检测端点按用户指定与 Siri/Apple Intelligence 共用此组出口。
       'gspe1-ssl.ls.apple.com',
+      'gspe35-ssl.ls.apple.com',
     ],
   },
   {
