@@ -46,11 +46,9 @@ function readDomesticDnsSamples(snapshotReader, config) {
       };
     });
   assert.ok(modules.length, 'no domestic vendor DNS policies found');
-  const baidu = snapshotReader.read('domestic_baidu');
   return {
     modules,
-    baidu,
-    matches: (host) => modules.some((module) => module.matches(host)) || baidu.matches(host),
+    matches: (host) => modules.some((module) => module.matches(host)),
   };
 }
 
@@ -220,7 +218,7 @@ async function verifyDnsWhitelist({ binary, rulesDir, temp, snapshotReader }) {
   const configProviders = defaultConfig['rule-providers'];
   const reader = snapshotReader || createSnapshotReader({ binary, rulesDir, temp, providers: configProviders });
   const geolocationCn = reader.read('geolocation-cn');
-  const gamesCn = reader.read('games_cn');
+  const gameDownloadCn = reader.read('game_platforms_download_cn');
   const domesticDnsSamples = readDomesticDnsSamples(reader, defaultConfig);
   const copiedRulesDir = path.join(temp, 'dns-rules');
   fs.mkdirSync(copiedRulesDir, { recursive: true });
@@ -240,17 +238,13 @@ async function verifyDnsWhitelist({ binary, rulesDir, temp, snapshotReader }) {
     { name: 'provider', options: {} },
     { name: 'expanded', options: {}, expanded: true },
     { name: 'minimal', options: { 极简分流: true } },
-    { name: 'domestic-off', options: { 国内CDN解析: false } },
-    { name: 'microsoft-off', options: { 微软下载解析: false } },
-    { name: 'steam-off', options: { Steam下载解析: false } },
-    { name: 'all-off', options: { 国内CDN解析: false, 微软下载解析: false, Steam下载解析: false } },
+    { name: 'overseas-games-off', options: { 海外游戏: false } },
     { name: 'domestic-route-off', options: { 国内服务优先直连: false } },
     {
       name: 'domestic-vendor-alibaba-policy',
       options: {},
       domesticPolicyProvider: 'domestic_alibaba_dns',
     },
-    { name: 'domestic-vendor-baidu-policy', options: {}, domesticPolicyProvider: 'domestic_baidu' },
   ];
   try {
     evidence.push(await verifyProxyNodeBootstrapDns({ binary, temp, domestic, foreign, local }));
@@ -363,9 +357,7 @@ async function verifyDnsWhitelist({ binary, rulesDir, temp, snapshotReader }) {
           evidence.push({ mode: name, host: geolocationCnSample, type: 'A-snapshot-sample', upstream: 'domestic' });
         }
         const vendorCases = [];
-        if (domesticPolicyProvider === 'domestic_baidu') {
-          vendorCases.push([domesticDnsSamples.baidu.candidates[0], true]);
-        } else if (domesticPolicyProvider) {
+        if (domesticPolicyProvider) {
           const module = domesticDnsSamples.modules.find((entry) => entry.policyProvider === domesticPolicyProvider);
           assert.ok(module, `${domesticPolicyProvider}: missing DNS match samples`);
           vendorCases.push([module.included, true], [module.excludedCandidates[0], false]);
@@ -373,19 +365,21 @@ async function verifyDnsWhitelist({ binary, rulesDir, temp, snapshotReader }) {
         const cases = domesticPolicyProvider
           ? vendorCases
           : [
-              ['i0.hdslb.com', options.国内CDN解析 !== false || matchesDomain(geolocationCn, 'i0.hdslb.com')],
-              ['qhimgs7.com', options.国内CDN解析 !== false || matchesDomain(geolocationCn, 'qhimgs7.com')],
-              ['res.cdn.office.net', options.微软下载解析 !== false || !options.极简分流],
+              ['i0.hdslb.com', true],
+              ['qhimgs7.com', true],
+              ['res.cdn.office.net', true],
               [
                 'dl.steam.clngaa.com',
-                options.Steam下载解析 !== false ||
-                  matchesDomain(gamesCn, 'dl.steam.clngaa.com') ||
+                (!options.极简分流 &&
+                  options.海外游戏 !== false &&
+                  matchesDomain(gameDownloadCn, 'dl.steam.clngaa.com')) ||
                   matchesDomain(geolocationCn, 'dl.steam.clngaa.com'),
               ],
               [
                 'alibaba.cdn.steampipe.steamcontent.com',
-                options.Steam下载解析 !== false ||
-                  matchesDomain(gamesCn, 'alibaba.cdn.steampipe.steamcontent.com') ||
+                (!options.极简分流 &&
+                  options.海外游戏 !== false &&
+                  matchesDomain(gameDownloadCn, 'alibaba.cdn.steampipe.steamcontent.com')) ||
                   matchesDomain(geolocationCn, 'alibaba.cdn.steampipe.steamcontent.com'),
               ],
               ['ugc.steamusercontent.com', false],

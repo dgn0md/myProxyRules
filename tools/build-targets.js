@@ -44,7 +44,6 @@ const CLIENT_RULE_CATEGORIES = {
   microsoft: 'Microsoft',
   apple: 'Apple',
   telegram: 'Telegram',
-  steam: 'Steam',
   tiktok: 'TikTok',
   twitter: 'Twitter',
   meta: 'Facebook',
@@ -56,7 +55,7 @@ const CLIENT_RULE_CATEGORIES = {
   paypal: 'PayPal',
   patreon: 'Patreon',
   ehentai: 'EHentai',
-  'category-ads': 'Advertising',
+  'category-ads-all': 'Advertising',
   apple_proxy: 'AppleProxy',
 };
 
@@ -309,7 +308,7 @@ function appendRule(target, line, config, supported, omitted, mappedRemoteProvid
       providerName === 'private' ||
       providerName === 'dns_domestic_cdn' ||
       providerName === 'dns_microsoft_cdn' ||
-      providerName === 'dns_steam_cn'
+      providerName === 'game_platforms_download_cn'
     ) {
       omitted.push(providerName + ' has no verified equivalent in this client rule format.');
       return;
