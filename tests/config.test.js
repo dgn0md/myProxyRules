@@ -335,12 +335,13 @@ test('mainland/Hong Kong auto-select group excludes those labels and keeps Taiwa
     'Microsoft',
     otherAppleGroup,
     'Telegram',
-    'Steam',
+    '海外游戏',
     'Twitter',
     'Line',
     'Netflix',
     'Emby',
     'PikPak',
+    'BT/PT',
     'Spotify',
     'Crypto',
     'PayPal',
@@ -414,7 +415,6 @@ test('GLOBAL and default proxy prefer the requested available groups in both mod
 test('domestic vendor DNS policies follow the route toggle and match domestic sets', () => {
   const modules = [
     ['alibaba', true],
-    ['baidu', false],
     ['bilibili', true],
     ['bytedance', true],
     ['chinamobile', true],
@@ -423,8 +423,10 @@ test('domestic vendor DNS policies follow the route toggle and match domestic se
     ['huaweicloud', true],
     ['jd', true],
     ['netease', true],
+    ['sina', true],
     ['tencent', true],
     ['xiaomi', true],
+    ['xiaohongshu', true],
   ];
   const domesticResolvers = domesticDnsResolvers;
   for (const subscription of [undefined, clean()]) {
@@ -449,7 +451,7 @@ test('domestic vendor DNS policies follow the route toggle and match domestic se
         }).config;
         for (const field of ['nameserver', 'default-nameserver', 'proxy-server-nameserver', 'fake-ip-filter'])
           assert.deepEqual(config.dns[field], baseline.dns[field]);
-        for (const provider of ['dns_domestic_cdn', 'dns_microsoft_cdn', 'dns_steam_cn'])
+        for (const provider of ['dns_domestic_cdn', 'dns_microsoft_cdn'])
           assert.deepEqual(policyForRuleSet(config, provider), policyForRuleSet(baseline, provider));
         for (const [source, excludeOverseas] of modules) {
           const name = `domestic_${source}`;
@@ -641,7 +643,8 @@ test('Apple AI/Siri and product endpoints precede Apple CN, advertising and QUIC
   const appleProxyDynamic = rules.indexOf(`RULE-SET,apple_proxy,${appleProxyGroup}`);
   assert.ok(apple >= 0);
   assert.ok(appleProxyDynamic >= 0);
-  for (const ref of ['RULE-SET,apple_cn,直连', 'RULE-SET,category-ads,AdBlock']) assert.ok(apple < rules.indexOf(ref));
+  for (const ref of ['RULE-SET,apple_cn,直连', 'RULE-SET,category-ads-all,AdBlock', 'RULE-SET,httpdns,AdBlock'])
+    assert.ok(apple < rules.indexOf(ref));
   assert.ok(apple < rules.findIndex((r) => r.startsWith('AND,')));
   assert.ok(rules.indexOf(`DOMAIN-SUFFIX,smoot.apple.com,${siriAiGroup}`) < rules.indexOf('RULE-SET,apple_cn,直连'));
   assert.ok(!rules.includes(`DOMAIN-SUFFIX,apple.com,${siriAiGroup}`));
@@ -693,7 +696,8 @@ test('Apple DNS domain suffixes route to AppleProxy with matching DNS', () => {
         for (const laterRule of [
           `RULE-SET,apple_cn,直连`,
           `RULE-SET,apple,${otherAppleGroup}`,
-          'RULE-SET,category-ads,AdBlock',
+          'RULE-SET,category-ads-all,AdBlock',
+          'RULE-SET,httpdns,AdBlock',
         ]) {
           const laterIndex = config.rules.indexOf(laterRule);
           if (laterIndex >= 0) assert.ok(index < laterIndex, `${rule} must precede ${laterRule}`);
@@ -709,7 +713,8 @@ test('Apple DNS domain suffixes route to AppleProxy with matching DNS', () => {
       for (const laterRule of [
         `RULE-SET,apple_cn,直连`,
         `RULE-SET,apple,${otherAppleGroup}`,
-        'RULE-SET,category-ads,AdBlock',
+        'RULE-SET,category-ads-all,AdBlock',
+        'RULE-SET,httpdns,AdBlock',
       ]) {
         const laterIndex = config.rules.indexOf(laterRule);
         if (laterIndex >= 0) assert.ok(dynamicIndex < laterIndex, `${dynamicRule} must precede ${laterRule}`);
@@ -722,11 +727,12 @@ test('Apple DNS domain suffixes route to AppleProxy with matching DNS', () => {
     }
   }
 });
-const proxyIpProviders = new Set(['google_ip', 'telegram_ip', 'tiktok_ip', 'twitter_ip', 'facebook_ip']);
+const proxyIpProviders = new Set(['google_ip', 'openai_ip', 'telegram_ip', 'tiktok_ip', 'twitter_ip', 'facebook_ip']);
 
 test('required proxy IP routes survive disabled service groups and minimal mode without resolving domains', () => {
   const services = {
     google_ip: 'Google',
+    openai_ip: 'AI',
     telegram_ip: 'Telegram',
     tiktok_ip: 'TikTok',
     twitter_ip: 'Twitter',
@@ -766,9 +772,9 @@ test('dynamic IP rules keep service egress aligned with their domain DNS policy'
     cn_ip: '直连',
     private_ip: '直连',
     google_ip: 'Google',
+    openai_ip: 'AI',
     microsoft_ip: 'Microsoft',
     telegram_ip: 'Telegram',
-    steam_ip: 'Steam',
     tiktok_ip: 'TikTok',
     twitter_ip: 'Twitter',
     facebook_ip: 'Meta',
@@ -778,9 +784,9 @@ test('dynamic IP rules keep service egress aligned with their domain DNS policy'
   const domainPartners = {
     apple_ip: 'apple_tv',
     google_ip: 'google',
+    openai_ip: 'ai',
     microsoft_ip: 'microsoft',
     telegram_ip: 'telegram',
-    steam_ip: 'steam',
     tiktok_ip: 'tiktok',
     twitter_ip: 'twitter',
     facebook_ip: 'meta',
@@ -935,7 +941,7 @@ test('international iCloud content suffix shares priority routing and DNS while 
         const index = config.rules.indexOf(rule);
         assert.ok(index >= 0, `missing AI exception: ${rule}`);
         for (const [i, other] of config.rules.entries()) {
-          if (/^RULE-SET,(apple_cn|apple|category-ads),|^AND,/.test(other))
+          if (/^RULE-SET,(apple_cn|apple|category-ads-all|httpdns),|^AND,/.test(other))
             assert.ok(index < i, `${policy} must precede ${other}`);
         }
         assert.deepEqual(
@@ -1060,7 +1066,6 @@ test('Apple/CDN/PCDN/IPv6/TUN/LAN switches change their advertised behavior', ()
         IPv6: false,
         TUN: false,
         局域网访问: true,
-        接管DNS53: false,
       },
     },
   }).config;
@@ -1073,7 +1078,8 @@ test('Apple/CDN/PCDN/IPv6/TUN/LAN switches change their advertised behavior', ()
   assert.equal(config.tun.enable, false);
   assert.equal(config['allow-lan'], true);
   assert.equal(config['bind-address'], '*');
-  assert.ok(!config.rules.some((r) => r.startsWith('DST-PORT,53,')));
+  assert.ok(config.rules.some((r) => r.startsWith('DST-PORT,53,')));
+  assert.ok(config.rules.includes('DST-PORT,853,REJECT'));
 });
 test('invalid true/false values and unknown options are rejected', () => {
   for (const value of ['ture', 'false', 1, null])
@@ -1351,11 +1357,8 @@ test('renamed option keys migrate to their short names and explicit short names 
     Apple海外媒体: 'Apple媒体代理',
     Apple模型下载直连: 'Apple下载直连',
     Apple服务默认直连: 'Apple其他默认直连',
-    国内CDNDNS: '国内CDN解析',
-    微软下载DNS: '微软下载解析',
-    Steam下载DNS: 'Steam下载解析',
+    Steam: '海外游戏',
     严格加密DNS: '严格DNS校验',
-    拦截外部明文DNS: '接管DNS53',
     代理IPV4优先: '节点IPv4优先',
     代理IPV6优先: '节点IPv6优先',
     极简国内外分流模式: '极简分流',
@@ -1493,59 +1496,42 @@ test('AI, Google, TikTok, Meta and Siri AI expose only eligible country groups a
   }
 });
 
-test('domestic DNS policy covers explicit direct routes, geolocation-cn and independent dynamic whitelists', () => {
+test('domestic DNS policy covers explicit direct routes, geolocation-cn and default dynamic whitelists', () => {
   const domesticResolvers = domesticDnsResolvers;
-  const whitelist = {
-    国内CDN解析: 'dns_domestic_cdn',
-    微软下载解析: 'dns_microsoft_cdn',
-    Steam下载解析: 'dns_steam_cn',
-  };
+  const defaultWhitelists = ['dns_domestic_cdn', 'dns_microsoft_cdn'];
   for (const subscription of [undefined, clean()]) {
     for (const minimal of [false, true]) {
-      for (let mask = 0; mask < 8; mask++) {
-        const options = Object.fromEntries(Object.keys(whitelist).map((key, i) => [key, Boolean(mask & (1 << i))]));
-        const config = build({
-          subscription,
-          settings: {
-            options: { ...options, 极简分流: minimal, Microsoft: false, Steam: false, 国内服务优先直连: false },
-          },
-        }).config;
-        graph(config);
-        assert.equal(config.dns['direct-nameserver'], undefined);
-        assert.equal(config.dns['direct-nameserver-follow-policy'], undefined);
-        for (const provider of ['cn', 'douyin', 'games_cn', 'microsoft_cn', 'apple_cn'])
-          assert.equal(policyForRuleSet(config, provider), undefined, `${provider} must not retain a stale policy`);
-        assert.deepEqual(policyForRuleSet(config, 'geolocation-cn'), domesticResolvers);
-        assert.ok(!config.dns['fake-ip-filter'].includes('rule-set:cn'));
-        for (const [option, name] of Object.entries(whitelist)) {
-          const provider = config['rule-providers'][name];
-          assert.equal(Boolean(provider), options[option]);
-          if (!provider) {
-            assert.equal(policyForRuleSet(config, name), undefined);
-            continue;
-          }
-          assert.equal(provider.type, 'http');
-          assert.equal(provider.interval, 86400);
-          assert.ok(config.rules.includes(`RULE-SET,${name},直连`), `enabled ${name} should add a direct route`);
-          assert.deepEqual(policyForRuleSet(config, name), domesticResolvers);
-        }
-        for (const suffix of ['+.steamserver.net', '+.steamusercontent.com'])
-          assert.deepEqual(config.dns['nameserver-policy'][suffix], [
-            'https://cloudflare-dns.com/dns-query#默认代理&h3=true',
-            'https://dns.google/dns-query#默认代理',
-          ]);
+      const config = build({
+        subscription,
+        settings: {
+          options: { 极简分流: minimal, Microsoft: false, 海外游戏: false, 国内服务优先直连: false },
+        },
+      }).config;
+      graph(config);
+      assert.equal(config.dns['direct-nameserver'], undefined);
+      assert.equal(config.dns['direct-nameserver-follow-policy'], undefined);
+      for (const provider of ['cn', 'douyin', 'microsoft_cn', 'apple_cn', 'game_platforms_download_cn'])
+        assert.equal(policyForRuleSet(config, provider), undefined, `${provider} must not retain a stale policy`);
+      assert.deepEqual(policyForRuleSet(config, 'geolocation-cn'), domesticResolvers);
+      assert.ok(!config.dns['fake-ip-filter'].includes('rule-set:cn'));
+      for (const name of defaultWhitelists) {
+        const provider = config['rule-providers'][name];
+        assert.ok(provider, `missing default whitelist provider ${name}`);
+        assert.equal(provider.type, 'http');
+        assert.equal(provider.interval, 86400);
+        assert.ok(config.rules.includes(`RULE-SET,${name},直连`), `default ${name} should add a direct route`);
+        assert.deepEqual(policyForRuleSet(config, name), domesticResolvers);
       }
     }
   }
   const config = build().config;
   const keys = Object.keys(config.dns['nameserver-policy']);
   const msCdnKey = policyKeyForRuleSet(config, 'dns_microsoft_cdn');
-  const steamCdnKey = policyKeyForRuleSet(config, 'dns_steam_cn');
+  const gameDownloadCnKey = policyKeyForRuleSet(config, 'game_platforms_download_cn');
   const domesticCdnKey = policyKeyForRuleSet(config, 'dns_domestic_cdn');
-  assert.ok(keys.indexOf('+.steamusercontent.com') < keys.indexOf(steamCdnKey));
   assert.ok(keys.indexOf('+.guzzoni.apple.com') < keys.indexOf(msCdnKey));
   assert.ok(keys.indexOf(msCdnKey) < keys.indexOf(policyKeyForRuleSet(config, 'microsoft')));
-  assert.ok(keys.indexOf(steamCdnKey) < keys.indexOf(policyKeyForRuleSet(config, 'steam')));
+  assert.ok(keys.indexOf(gameDownloadCnKey) < keys.indexOf(policyKeyForRuleSet(config, 'overseas_games')));
   assert.ok(keys.indexOf(policyKeyForRuleSet(config, 'google')) < keys.indexOf(domesticCdnKey));
   assert.ok(keys.indexOf(policyKeyForRuleSet(config, 'ai')) < keys.indexOf(domesticCdnKey));
   assert.ok(keys.indexOf(domesticCdnKey) < keys.indexOf(policyKeyForRuleSet(config, 'geolocation-!cn')));
@@ -1554,11 +1540,12 @@ test('domestic DNS policy covers explicit direct routes, geolocation-cn and inde
       keys.indexOf(policyKeyForRuleSet(config, 'geolocation-cn')),
   );
   assert.ok(
-    keys.indexOf(policyKeyForRuleSet(config, 'steam')) < keys.indexOf(policyKeyForRuleSet(config, 'geolocation-cn')),
+    keys.indexOf(policyKeyForRuleSet(config, 'overseas_games')) <
+      keys.indexOf(policyKeyForRuleSet(config, 'geolocation-cn')),
   );
   for (const key of [
     msCdnKey,
-    steamCdnKey,
+    gameDownloadCnKey,
     domesticCdnKey,
     policyKeyForRuleSet(config, 'geolocation-cn'),
     'rule-set:apple_cn',
@@ -1840,9 +1827,32 @@ test('anti-DNS-leak hardening blocks DoT/DoQ 853, Firefox DoH canary, aligns STU
     );
     assert.ok(config.rules.includes('RULE-SET,dns_microsoft_cdn,直连'));
     assert.ok(config.rules.includes('AND,((RULE-SET,microsoft),(NOT,((RULE-SET,dns_microsoft_cdn)))),Microsoft'));
-    assert.ok(config.rules.includes('RULE-SET,dns_steam_cn,直连'));
-    assert.ok(config.rules.includes('AND,((RULE-SET,steam),(NOT,((RULE-SET,dns_steam_cn)))),Steam'));
+    assert.ok(config.rules.includes('RULE-SET,game_platforms_download_cn,直连'));
+    assert.ok(
+      config.rules.includes('AND,((RULE-SET,overseas_games),(NOT,((RULE-SET,game_platforms_download_cn)))),海外游戏'),
+    );
+    assert.ok(config.rules.includes('RULE-SET,tracker,BT/PT'));
+    assert.ok(config.rules.includes('RULE-SET,category-ads-all,AdBlock'));
+    assert.ok(config.rules.includes('RULE-SET,httpdns,AdBlock'));
+    assert.equal(policyForRuleSet(config, 'httpdns'), 'rcode://name_error');
+    assert.ok(config.rules.includes('RULE-SET,openai_ip,AI,no-resolve'));
     assert.ok(config.rules.includes('RULE-SET,dns_domestic_cdn,直连'));
+    assert.ok(config.rules.includes('DOMAIN-SUFFIX,cn,直连'));
+    assert.ok(config.rules.indexOf('RULE-SET,geolocation-cn,直连') < config.rules.indexOf('DOMAIN-SUFFIX,cn,直连'));
+    assert.ok(
+      config.rules.indexOf('DOMAIN-SUFFIX,cn,直连') <
+        config.rules.indexOf('AND,((RULE-SET,geolocation-!cn),(NOT,((RULE-SET,dns_domestic_cdn)))),默认代理'),
+    );
+    assert.deepEqual(config.dns['nameserver-policy']['+.cn'], domesticDnsResolvers);
+    const policyKeys = Object.keys(config.dns['nameserver-policy']);
+    assert.ok(
+      policyKeys.indexOf(policyKeyForRuleSet(config, 'geolocation-cn')) < policyKeys.indexOf('+.cn'),
+      '+.cn DNS policy must stay after geolocation-cn and specific service policies',
+    );
+    assert.ok(
+      policyKeys.indexOf('+.cn') < policyKeys.indexOf(policyKeyForRuleSet(config, 'geolocation-!cn')),
+      '+.cn DNS policy must precede geolocation-!cn',
+    );
     assert.ok(config.rules.includes('AND,((RULE-SET,geolocation-!cn),(NOT,((RULE-SET,dns_domestic_cdn)))),默认代理'));
     assert.ok(config.rules.includes('RULE-SET,cn_ip,直连,no-resolve'));
     assert.deepEqual(policyForRuleSet(config, 'microsoft'), domesticDnsResolvers);
