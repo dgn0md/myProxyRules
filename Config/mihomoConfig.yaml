@@ -1,7 +1,7 @@
 # myProxyRules Mihomo 全量静态配置
 # 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
 # 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
-# 最新 Raw SHA-256：bd672ae262075bc02268694f73c68beb7c5320682290126028775276df32626b
+# 最新 Raw SHA-256：56fa07c4fb22eda2af23350fd8d5e44a863a767f4a23ff9bdb3960ab9fd4f06f
 # Raw 配置：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/mihomoConfig.yaml
 # CDN 配置：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/mihomoConfig.cdn.yaml
 # 仅适用于 Mihomo。关闭客户端 DNS 覆写。第一次使用请填 proxy-providers.订阅.url。
@@ -77,26 +77,14 @@ dns:
   fake-ip-filter:
     - rule-set:private
     - rule-set:fakeip_filter
-    - +.guzzoni.apple.com
-    - guzzoni-apple-com.v.aaplimg.com
-    - +.siri.apple.com
     - dejavu.apple.com
     - sequoia.apple.com
     - +.smoot.apple.com
-    - api-siri-prod.apple.com
-    - gspe1-ssl.ls.apple.com
-    - gspe35-ssl.ls.apple.com
     - +.issuer.apple.com
     - +.ropes.apple.com
-    - mask-api.icloud.com
-    - mask.icloud.com
-    - mask-h2.icloud.com
     - +.app.apple.com
-    - +.apple-relay.apple.com
-    - +.apple-relay.cloudflare.com
-    - +.apple-relay.fastly-edge.com
-    - +.apple-relay.akamaized.net
     - cp4.cloudflare.com
+    - rule-set:apple_siri_regex
   default-nameserver:
     - https://223.5.5.5/dns-query#DIRECT&name-cert-verify=dns.alidns.com
     - https://1.12.12.12/dns-query#DIRECT&name-cert-verify=doh.pub
@@ -114,43 +102,13 @@ dns:
     +.ropes.apple.com:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
-    mask-api.icloud.com:
-      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
-      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
-    mask.icloud.com:
-      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
-      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
-    mask-h2.icloud.com:
-      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
-      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     +.app.apple.com:
-      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
-      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
-    +.apple-relay.apple.com:
-      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
-      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
-    +.apple-relay.cloudflare.com:
-      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
-      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
-    +.apple-relay.fastly-edge.com:
-      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
-      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
-    +.apple-relay.akamaized.net:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     cp4.cloudflare.com:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     +.icloud-content.com:
-      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
-      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
-    +.guzzoni.apple.com:
-      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
-      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
-    guzzoni-apple-com.v.aaplimg.com:
-      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
-      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
-    +.siri.apple.com:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     dejavu.apple.com:
@@ -160,15 +118,6 @@ dns:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     +.smoot.apple.com:
-      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
-      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
-    api-siri-prod.apple.com:
-      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
-      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
-    gspe1-ssl.ls.apple.com:
-      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
-      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
-    gspe35-ssl.ls.apple.com:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     +.apple-dns.com:
@@ -221,6 +170,9 @@ dns:
       - https://dns.google/dns-query#Emby
     use-application-dns.net: rcode://name_error
     rule-set:private: rcode://success
+    rule-set:apple_siri_regex:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     rule-set:apple_tv,apple_proxy:
       - https://cloudflare-dns.com/dns-query#AppleProxy&h3=true
       - https://dns.google/dns-query#AppleProxy
@@ -3127,6 +3079,16 @@ rule-providers:
     behavior: classical
     payload:
       - AND,((RULE-SET,domestic_xiaohongshu),(NOT,((RULE-SET,domestic_xiaohongshu_noncn))))
+  apple_siri_regex:
+    type: inline
+    format: text
+    behavior: classical
+    payload:
+      - DOMAIN-REGEX,^mask(-[a-z0-9]+)?\.icloud\.com$
+      - DOMAIN-REGEX,(^|\.)apple-relay\.(apple\.com|cloudflare\.com|fastly-edge\.com|akamaized\.net)$
+      - DOMAIN-REGEX,(^|\.)guzzoni\.apple\.com$|^guzzoni-apple-com\.v\.aaplimg\.com$
+      - DOMAIN-REGEX,(^|[.-])siri(-[a-z0-9]+)*\.apple\.com$
+      - DOMAIN-REGEX,ssl\.ls\.apple\.com$
   apple_tv:
     type: http
     format: mrs
@@ -3155,25 +3117,13 @@ rules:
   - DST-PORT,853,REJECT
   - DOMAIN-SUFFIX,issuer.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,ropes.apple.com,Siri Ai/Apple Intelligence
-  - DOMAIN,mask-api.icloud.com,Siri Ai/Apple Intelligence
-  - DOMAIN,mask.icloud.com,Siri Ai/Apple Intelligence
-  - DOMAIN,mask-h2.icloud.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,app.apple.com,Siri Ai/Apple Intelligence
-  - DOMAIN-SUFFIX,apple-relay.apple.com,Siri Ai/Apple Intelligence
-  - DOMAIN-SUFFIX,apple-relay.cloudflare.com,Siri Ai/Apple Intelligence
-  - DOMAIN-SUFFIX,apple-relay.fastly-edge.com,Siri Ai/Apple Intelligence
-  - DOMAIN-SUFFIX,apple-relay.akamaized.net,Siri Ai/Apple Intelligence
   - DOMAIN,cp4.cloudflare.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,icloud-content.com,Siri Ai/Apple Intelligence
-  - DOMAIN-SUFFIX,guzzoni.apple.com,Siri Ai/Apple Intelligence
-  - DOMAIN,guzzoni-apple-com.v.aaplimg.com,Siri Ai/Apple Intelligence
-  - DOMAIN-SUFFIX,siri.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,dejavu.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,sequoia.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,smoot.apple.com,Siri Ai/Apple Intelligence
-  - DOMAIN,api-siri-prod.apple.com,Siri Ai/Apple Intelligence
-  - DOMAIN,gspe1-ssl.ls.apple.com,Siri Ai/Apple Intelligence
-  - DOMAIN,gspe35-ssl.ls.apple.com,Siri Ai/Apple Intelligence
+  - RULE-SET,apple_siri_regex,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,apple-dns.com,AppleProxy
   - DOMAIN,news-client-search.apple.com,AppleProxy
   - DOMAIN-SUFFIX,fitness.apple.com,AppleProxy
