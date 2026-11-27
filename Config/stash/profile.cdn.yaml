@@ -1,8 +1,8 @@
 # myProxyRules Stash profile
 # Raw profile: https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/stash/profile.yaml
 # CDN profile: https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/stash/profile.cdn.yaml
-# Raw SHA-256: 11fd173045acf4654a66f0bd7f43228d65bae6223bd2e59a3a65f98bd693af93
-# CDN SHA-256: aaac1c5c21e60b5afa78551ff2efa65ed83c680d2980c48a87c2de4249da44d3
+# Raw SHA-256: 5ea87c276b6fd7e60ad93e38eda117c8fa49fa702d1dd8a595f12d446f358e10
+# CDN SHA-256: 9e208594cdff88e69c10c2fbcbacb3991eb9627d18c31d0d4eeca99c32406d16
 dns:
   enable: true
   ipv6: true
@@ -17,12 +17,14 @@ dns:
     - rule-set:private
     - rule-set:fakeip_filter
     - +.guzzoni.apple.com
+    - guzzoni-apple-com.v.aaplimg.com
     - +.siri.apple.com
     - dejavu.apple.com
     - sequoia.apple.com
     - +.smoot.apple.com
     - api-siri-prod.apple.com
     - gspe1-ssl.ls.apple.com
+    - gspe35-ssl.ls.apple.com
     - +.issuer.apple.com
     - +.ropes.apple.com
     - mask-api.icloud.com
@@ -84,6 +86,9 @@ dns:
     +.guzzoni.apple.com:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    guzzoni-apple-com.v.aaplimg.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     +.siri.apple.com:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
@@ -100,6 +105,9 @@ dns:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     gspe1-ssl.ls.apple.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    gspe35-ssl.ls.apple.com:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     +.apple-dns.com:
@@ -3092,12 +3100,14 @@ rules:
   - DOMAIN,cp4.cloudflare.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,icloud-content.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,guzzoni.apple.com,Siri Ai/Apple Intelligence
+  - DOMAIN,guzzoni-apple-com.v.aaplimg.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,siri.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,dejavu.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,sequoia.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,smoot.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,api-siri-prod.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,gspe1-ssl.ls.apple.com,Siri Ai/Apple Intelligence
+  - DOMAIN,gspe35-ssl.ls.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,apple-dns.com,AppleProxy
   - DOMAIN,news-client-search.apple.com,AppleProxy
   - DOMAIN-SUFFIX,fitness.apple.com,AppleProxy

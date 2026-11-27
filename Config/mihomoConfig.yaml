@@ -1,7 +1,7 @@
 # myProxyRules Mihomo 全量静态配置
 # 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
 # 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
-# 最新 Raw SHA-256：e8188ef2695ec94416ce18173355e471dad339fa22d058fe18585fb357777438
+# 最新 Raw SHA-256：bd672ae262075bc02268694f73c68beb7c5320682290126028775276df32626b
 # Raw 配置：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/mihomoConfig.yaml
 # CDN 配置：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/mihomoConfig.cdn.yaml
 # 仅适用于 Mihomo。关闭客户端 DNS 覆写。第一次使用请填 proxy-providers.订阅.url。
@@ -78,12 +78,14 @@ dns:
     - rule-set:private
     - rule-set:fakeip_filter
     - +.guzzoni.apple.com
+    - guzzoni-apple-com.v.aaplimg.com
     - +.siri.apple.com
     - dejavu.apple.com
     - sequoia.apple.com
     - +.smoot.apple.com
     - api-siri-prod.apple.com
     - gspe1-ssl.ls.apple.com
+    - gspe35-ssl.ls.apple.com
     - +.issuer.apple.com
     - +.ropes.apple.com
     - mask-api.icloud.com
@@ -145,6 +147,9 @@ dns:
     +.guzzoni.apple.com:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    guzzoni-apple-com.v.aaplimg.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     +.siri.apple.com:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
@@ -161,6 +166,9 @@ dns:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     gspe1-ssl.ls.apple.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    gspe35-ssl.ls.apple.com:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     +.apple-dns.com:
@@ -3158,12 +3166,14 @@ rules:
   - DOMAIN,cp4.cloudflare.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,icloud-content.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,guzzoni.apple.com,Siri Ai/Apple Intelligence
+  - DOMAIN,guzzoni-apple-com.v.aaplimg.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,siri.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,dejavu.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,sequoia.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,smoot.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,api-siri-prod.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,gspe1-ssl.ls.apple.com,Siri Ai/Apple Intelligence
+  - DOMAIN,gspe35-ssl.ls.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,apple-dns.com,AppleProxy
   - DOMAIN,news-client-search.apple.com,AppleProxy
   - DOMAIN-SUFFIX,fitness.apple.com,AppleProxy
