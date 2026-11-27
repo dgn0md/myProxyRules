@@ -1819,11 +1819,19 @@ test('anti-DNS-leak hardening blocks DoT/DoQ 853, Firefox DoH canary, aligns STU
     assert.equal(config.dns['nameserver-policy']['use-application-dns.net'], 'rcode://name_error');
     assert.ok(config.rules.includes('DST-PORT,853,REJECT'));
     assert.ok(config.rules.indexOf('DST-PORT,853,REJECT') < config.rules.indexOf('RULE-SET,google,Google'));
-    assert.ok(config.rules.includes('DOMAIN-SUFFIX,stun.l.google.com,漏网之鱼'));
-    assert.ok(config.rules.includes('AND,((NETWORK,UDP),(DST-PORT,3478)),漏网之鱼'));
-    assert.ok(config.rules.includes('AND,((NETWORK,UDP),(DST-PORT,19302)),漏网之鱼'));
+    assert.ok(!config.rules.some((rule) => rule.includes('stun.l.google.com')));
+    assert.ok(!config.rules.some((rule) => rule.includes('DST-PORT,3478') || rule.includes('DST-PORT,19302')));
+    assert.ok(!Object.hasOwn(config.dns['nameserver-policy'], '+.stun.l.google.com'));
+    assert.ok(config['rule-providers']['category-stun']);
+    assert.ok(config.rules.includes('RULE-SET,category-stun,默认代理'));
     assert.ok(
-      config.rules.indexOf('DOMAIN-SUFFIX,stun.l.google.com,漏网之鱼') < config.rules.indexOf('RULE-SET,google,Google'),
+      config.rules.indexOf('DOMAIN-SUFFIX,cn,直连') < config.rules.indexOf('RULE-SET,category-stun,默认代理'),
+      'category-stun must stay after domestic domains so mainland STUN stays direct',
+    );
+    assert.ok(
+      config.rules.indexOf('RULE-SET,category-stun,默认代理') <
+        config.rules.indexOf('AND,((RULE-SET,geolocation-!cn),(NOT,((RULE-SET,dns_domestic_cdn)))),默认代理'),
+      'category-stun must precede geolocation-!cn',
     );
     assert.ok(config.rules.includes('RULE-SET,dns_microsoft_cdn,直连'));
     assert.ok(config.rules.includes('AND,((RULE-SET,microsoft),(NOT,((RULE-SET,dns_microsoft_cdn)))),Microsoft'));
@@ -1850,9 +1858,14 @@ test('anti-DNS-leak hardening blocks DoT/DoQ 853, Firefox DoH canary, aligns STU
       '+.cn DNS policy must stay after geolocation-cn and specific service policies',
     );
     assert.ok(
+      policyKeys.indexOf('+.cn') < policyKeys.indexOf(policyKeyForRuleSet(config, 'category-stun')),
+      'category-stun DNS policy must stay after +.cn and domestic DNS policies',
+    );
+    assert.ok(
       policyKeys.indexOf('+.cn') < policyKeys.indexOf(policyKeyForRuleSet(config, 'geolocation-!cn')),
       '+.cn DNS policy must precede geolocation-!cn',
     );
+    assert.deepEqual(policyForRuleSet(config, 'category-stun'), policyForRuleSet(config, 'geolocation-!cn'));
     assert.ok(config.rules.includes('AND,((RULE-SET,geolocation-!cn),(NOT,((RULE-SET,dns_domestic_cdn)))),默认代理'));
     assert.ok(config.rules.includes('RULE-SET,cn_ip,直连,no-resolve'));
     assert.deepEqual(policyForRuleSet(config, 'microsoft'), domesticDnsResolvers);
