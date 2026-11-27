@@ -1198,16 +1198,20 @@ test('AppleProxy and Apple product endpoints share one regional group; overseas 
       'AND,((DOMAIN-REGEX,ssl\\.ls\\.apple\\.com$|(^|\\.)ls-apple\\.com\\.akadns\\.net$),(NOT,((DOMAIN-REGEX,(^|[.-])cn([.-]|$)))))',
     ],
   });
-  assert.deepEqual(defaults['rule-providers'].apple_ls_cn_regex, {
+  assert.deepEqual(defaults['rule-providers'].apple_cn_regex, {
     type: 'inline',
     format: 'text',
     behavior: 'classical',
     payload: [
-      'AND,((DOMAIN-REGEX,ssl\\.ls\\.apple\\.com$|(^|\\.)ls-apple\\.com\\.akadns\\.net$),(DOMAIN-REGEX,(^|[.-])cn([.-]|$)))',
+      'AND,((DOMAIN-REGEX,(^|\\.)(apple\\.com|icloud\\.com|icloud-content\\.com|cdn-apple\\.com|aaplimg\\.com|apple-dns\\.(com|net)|ls-apple\\.com\\.akadns\\.net)(\\.cn)?$),(DOMAIN-REGEX,(^|[.-])cn([.-]|$)))',
     ],
   });
-  assert.ok(defaults.rules.includes('RULE-SET,apple_ls_cn_regex,直连'));
-  assert.deepEqual(policyForRuleSet(defaults, 'apple_ls_cn_regex'), domesticDnsResolvers);
+  assert.ok(defaults.rules.includes('RULE-SET,apple_cn_regex,直连'));
+  assert.ok(
+    defaults.rules.indexOf('RULE-SET,apple_cn_regex,直连') <
+      defaults.rules.indexOf(`RULE-SET,apple_siri_regex,${siriAiGroup}`),
+  );
+  assert.deepEqual(policyForRuleSet(defaults, 'apple_cn_regex'), domesticDnsResolvers);
   assert.ok(defaults.rules.includes(`RULE-SET,apple_siri_regex,${siriAiGroup}`));
   assert.ok(!defaults.rules.some((rule) => /^DOMAIN,gspe\d+-ssl\.ls\.apple\.com,/.test(rule)));
   assert.ok(policyForRuleSet(defaults, 'apple_siri_regex')?.every((dns) => dnsRouteFor(dns) === siriAiGroup));
