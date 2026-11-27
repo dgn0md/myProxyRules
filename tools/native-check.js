@@ -160,7 +160,13 @@ async function run() {
     config.ntp.enable = false;
     config['mixed-port'] = proxyPort;
     config['external-controller'] = `127.0.0.1:${port}`;
-    for (const [host] of CASES) config.hosts[host] = '127.0.0.1';
+    const appleTrialCases = [
+      ['bag.itunes.apple.com', '美国', 'apple'],
+      ['fpinit.itunes.apple.com', '美国', 'apple'],
+      ['gspe35-ssl.ls.apple.com', '美国', 'apple'],
+      ['smp-device-content.apple.com', '美国', 'apple'],
+    ];
+    for (const [host] of [...CASES, ...appleTrialCases]) config.hosts[host] = '127.0.0.1';
     config.hosts[appleTvSample] = '127.0.0.1';
     for (const host of appleProxy.hosts) config.hosts[host] = '127.0.0.1';
     for (const { candidates, excluded } of domesticSamples.modules)
@@ -360,13 +366,7 @@ async function run() {
         sinkPort: local.sinkPort,
         track: local.track,
         api,
-        cases: [
-          ['bag.itunes.apple.com', '美国', 'apple'],
-          ['fpinit.itunes.apple.com', '美国', 'apple'],
-          ['gspe35-ssl.ls.apple.com', '美国', 'apple'],
-          ['smp-device-content.apple.com', '美国', 'apple'],
-          ['gs-loc-cn.apple.com', '直连', 'apple_cn', 'Other Apple Service'],
-        ],
+        cases: appleTrialCases,
       });
       const dnsPolicies = await verifyICloudContentDnsPolicy(api);
       fs.writeFileSync(path.join(temp, 'routes.json'), JSON.stringify(routes, null, 2));

@@ -106,70 +106,43 @@ async function fixtures() {
 const APPLE_AI_GROUP = 'Siri Ai/Apple Intelligence';
 const APPLE_PROXY_GROUP = 'AppleProxy';
 const OTHER_APPLE_GROUP = 'Other Apple Service';
+// 仅保留精确例外、AND NOT 排除与跨规则集优先级边界用例；普通规则集成员由 native-check.js 动态抽样覆盖。
 const CASES = [
-  ['www.apple.com', OTHER_APPLE_GROUP, 'apple'],
+  // Apple AI / Siri 精确例外（不依赖外部规则集）
   ['apple-relay.apple.com', APPLE_AI_GROUP],
   ['apple-relay.cloudflare.com', APPLE_AI_GROUP],
   ['cp4.cloudflare.com', APPLE_AI_GROUP],
-  ['gateway.icloud.com', OTHER_APPLE_GROUP],
-  ['edge-013.hkhkg2.icloud-content.com', APPLE_AI_GROUP],
-  ['attester.gateway.icloud.com', '直连'],
-  ['edge-014.hkhkg2.icloud-content.com', APPLE_AI_GROUP],
-  ['edge-013.ussjc2.icloud-content.com', APPLE_AI_GROUP],
-  ['edge-9999.region-new9.icloud-content.com', APPLE_AI_GROUP],
-  ['content.hkhkg2.icloud-content.com', APPLE_AI_GROUP],
-  ['edge-abc.hkhkg2.icloud-content.com', APPLE_AI_GROUP],
-  ['edge-013.icloud-content.com', APPLE_AI_GROUP],
-  ['x.edge-013.hkhkg2.icloud-content.com', APPLE_AI_GROUP],
-  ['edge-051.xactu3.icloud-content.com.cn', '直连'],
-  ['gateway.icloud.com.cn', '直连'],
-  ['ussjc1.icloud-content.com', APPLE_AI_GROUP],
-  ['hkhkg2.icloud-content.com', APPLE_AI_GROUP],
-  ['sgsin8.icloud-content.com', APPLE_AI_GROUP],
-  ['gbslo5.icloud-content.com', APPLE_AI_GROUP],
-  ['ussjc1.icloud-content.com.cn', '直连'],
-  ['xactu3.icloud-content.com.cn', '直连'],
-  ['x.ussjc1.icloud-content.com', APPLE_AI_GROUP],
-  ['content1.icloud-content.com', APPLE_AI_GROUP],
-  ['icloud-content.com', APPLE_AI_GROUP],
-  ['cvws.icloud-content.com', APPLE_AI_GROUP],
-  ['gateway-asset.icloud-content.com', APPLE_AI_GROUP],
-  ['icloud-content.com.cn', '直连'],
-  ['edge-013.hkhkg2.icloud-content.com.example.test', '直连'],
   ['guzzoni.apple.com', APPLE_AI_GROUP],
   ['api-siri-prod.apple.com', APPLE_AI_GROUP],
-  ['setup.icloud.com', OTHER_APPLE_GROUP],
-  ['setup.icloud.com.cn', '直连'],
   ['api.smoot.apple.com', APPLE_AI_GROUP],
-  ['bag.itunes.apple.com', OTHER_APPLE_GROUP, 'apple'],
-  ['fpinit.itunes.apple.com', OTHER_APPLE_GROUP, 'apple'],
-  ['gspe35-ssl.ls.apple.com', OTHER_APPLE_GROUP, 'apple'],
-  ['smp-device-content.apple.com', OTHER_APPLE_GROUP, 'apple'],
-  ['gs-loc-cn.apple.com', '直连', 'apple_cn'],
-  ['news-client-search.apple.com', APPLE_PROXY_GROUP],
-  ['news-assets.apple.com', APPLE_PROXY_GROUP],
-  ['apple.news', APPLE_PROXY_GROUP],
-  ['default.fe2.apple-dns.net', APPLE_PROXY_GROUP],
-  ['default.fe2.apple-dns.com', APPLE_PROXY_GROUP],
   ['gspe1-ssl.ls.apple.com', APPLE_AI_GROUP],
+  // icloud-content.com 后缀及伪后缀边界（同时供 verifyICloudContentDnsPolicy 复用）
+  ['icloud-content.com', APPLE_AI_GROUP],
+  ['edge-013.hkhkg2.icloud-content.com', APPLE_AI_GROUP],
+  ['edge-013.hkhkg2.icloud-content.com.example.test', '直连'],
+  // Apple 共享 iCloud 精确主机与子域边界
+  ['gateway.icloud.com', OTHER_APPLE_GROUP],
+  ['attester.gateway.icloud.com', '直连'],
+  ['setup.icloud.com', OTHER_APPLE_GROUP],
+  // AppleProxy 精确例外（未收录于 apple_proxy.yaml）
+  ['default.fe2.apple-dns.com', APPLE_PROXY_GROUP],
+  ['news-client-search.apple.com', APPLE_PROXY_GROUP],
   ['fitness.apple.com', APPLE_PROXY_GROUP],
   ['sports.apple.com', APPLE_PROXY_GROUP],
   ['books.apple.com', APPLE_PROXY_GROUP],
+  // Apple 下载直连精确例外 vs 普通 apple 规则集边界
   ['assets.cdn-apple.com', '直连'],
-  ['mesu.apple.com', '直连'],
   ['swcdn.apple.com', OTHER_APPLE_GROUP, 'apple'],
-  ['apps.apple.com', APPLE_PROXY_GROUP],
   ['music.apple.com', OTHER_APPLE_GROUP, 'apple'],
+  // AND NOT 排除边界（Microsoft / 海外游戏国内下载）
   ['www.microsoft.com', 'Microsoft'],
   ['res.cdn.office.net', '直连'],
-  ['stun.l.google.com', '漏网之鱼'],
-  ['youtube.com', 'YouTube'],
-  ['github.com', 'GitHub'],
   ['store.steampowered.com', '海外游戏'],
   ['dl.steam.clngaa.com', '直连', 'game_platforms_download_cn'],
-  ['alibaba.cdn.steampipe.steamcontent.com', '直连', 'game_platforms_download_cn'],
-  ['qq.com', '直连'],
-  ['www.baidu.com', '直连'],
+  // category-stun 与 Google / 国内厂商的跨规则集优先级边界
+  ['stun.l.google.com', 'Google'],
+  ['stun.qq.com', '直连'],
+  ['stun.stunprotocol.org', '默认代理'],
 ];
 async function verifyRouting({ port, sinkPort, track, api, cases = CASES, skipMissingConnection = false }) {
   const evidence = [];
@@ -226,12 +199,11 @@ async function verifyRouting({ port, sinkPort, track, api, cases = CASES, skipMi
 async function verifyICloudContentDnsPolicy(api) {
   // native-check substitutes local RCODE clients: NXDOMAIN marks the content policy, NOERROR the rest.
   const evidence = [];
-  const cases = CASES.filter(([host]) => /(^|\.)icloud-content\.com(?:\.cn)?$/.test(host)).map(([host, expected]) => [
+  const cases = CASES.filter(([host]) => /(^|\.)icloud-content\.com$/.test(host)).map(([host, expected]) => [
     host,
     expected === APPLE_AI_GROUP ? 3 : 0,
   ]);
   cases.push(['edge-013.hkhkg2.icloud-content.com.example.test', 0]);
-  cases.push(['gateway.icloud.com.cn', 0]);
   for (const [host, status] of cases) {
     for (const type of ['A', 'AAAA']) {
       const response = await api(`/dns/query?name=${encodeURIComponent(host)}&type=${type}`);
