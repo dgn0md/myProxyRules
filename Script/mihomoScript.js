@@ -4,7 +4,7 @@
  * 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
  * 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
  *
- * 最新 Raw SHA-256：7974fc5bc7297488082f2e71d09ecae90ee5519bdb8a0d3ab50a8840e0f66c51
+ * 最新 Raw SHA-256：fdec4e8700f2523478c0033a09d34dd404c50fc3746bf9f5231b838736408c70
  * Raw 脚本：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js
  * CDN 脚本：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js
  */
@@ -311,6 +311,7 @@ const appleRealIpEndpoints = [
   '+.ropes.apple.com',
   '+.app.apple.com',
   'cp4.cloudflare.com',
+  'bag.itunes.apple.com',
 ];
 
 // 全部策略组定义（地区 + 倍率 + 家宽），统一用于节点匹配与归类
@@ -742,6 +743,7 @@ const appleEndpointDefinitions = [
       'dejavu.apple.com',
       'sequoia.apple.com',
       '+.smoot.apple.com',
+      'bag.itunes.apple.com',
     ],
   },
   {
@@ -767,7 +769,15 @@ const appleSiriRegexRuleProvider = {
     'DOMAIN-REGEX,(^|\\.)apple-relay\\.(apple\\.com|cloudflare\\.com|fastly-edge\\.com|akamaized\\.net)$',
     'DOMAIN-REGEX,(^|\\.)guzzoni\\.apple\\.com$|^guzzoni-apple-com\\.v\\.aaplimg\\.com$',
     'DOMAIN-REGEX,(^|[.-])siri(-[a-z0-9]+)*\\.apple\\.com$',
-    'DOMAIN-REGEX,ssl\\.ls\\.apple\\.com$',
+    'AND,((DOMAIN-REGEX,ssl\\.ls\\.apple\\.com$|(^|\\.)ls-apple\\.com\\.akadns\\.net$),(NOT,((DOMAIN-REGEX,(^|[.-])cn([.-]|$)))))',
+  ],
+};
+const appleCnRegexRuleProvider = {
+  type: 'inline',
+  format: 'text',
+  behavior: 'classical',
+  payload: [
+    'AND,((DOMAIN-REGEX,(^|\\.)(apple\\.com|icloud\\.com|icloud-content\\.com|cdn-apple\\.com|aaplimg\\.com|apple-dns\\.(com|net)|ls-apple\\.com\\.akadns\\.net)(\\.cn)?$),(DOMAIN-REGEX,(^|[.-])cn([.-]|$)))',
   ],
 };
 const appleMediaRegexRuleProvider = {
@@ -1784,6 +1794,10 @@ function applyAppleRouting(config, options) {
   const eligibleRegionNames = groups
     .filter((entry) => entry.type === 'select' && serviceRegionNames.has(entry.name))
     .map((entry) => entry.name);
+  if (options.国内服务优先直连) {
+    config['rule-providers'].apple_cn_regex = appleCnRegexRuleProvider;
+    specialRules.push('RULE-SET,apple_cn_regex,直连');
+  }
   // 极简模式仅关闭常规服务组；安全与 Apple 精细例外仍由各自开关控制。
   for (const { name, option, domains } of appleEndpointDefinitions) {
     if (!options[option]) continue;
@@ -2053,6 +2067,7 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
     orderedDnsPolicyEntries.push([key, value]);
   };
   for (const priorityProvider of [
+    'apple_cn_regex',
     'apple_siri_regex',
     'apple_media_regex',
     'apple_tv',
