@@ -1196,6 +1196,7 @@ test('AppleProxy and Apple product endpoints share one regional group; overseas 
       'DOMAIN-REGEX,(^|\\.)guzzoni\\.apple\\.com$|^guzzoni-apple-com\\.v\\.aaplimg\\.com$',
       'DOMAIN-REGEX,(^|[.-])siri(-[a-z0-9]+)*\\.apple\\.com$',
       'DOMAIN-REGEX,ssl\\.ls\\.apple\\.com$',
+      'DOMAIN-REGEX,(^|\\.)ls-apple\\.com\\.akadns\\.net$',
     ],
   });
   assert.ok(defaults.rules.includes(`RULE-SET,apple_siri_regex,${siriAiGroup}`));
@@ -1417,6 +1418,7 @@ test('AppleFlow PCC and Siri endpoints use the eligible selector with US default
     ['DOMAIN', 'dejavu.apple.com', siriAiGroup],
     ['DOMAIN', 'sequoia.apple.com', siriAiGroup],
     ['DOMAIN-SUFFIX', 'smoot.apple.com', siriAiGroup],
+    ['DOMAIN', 'bag.itunes.apple.com', siriAiGroup],
   ];
   const quicReject = config.rules.findIndex((rule) => rule.startsWith('AND,') && rule.endsWith(',REJECT'));
   assert.ok(quicReject >= 0, 'QUIC reject rule is enabled for this test');
@@ -1629,6 +1631,7 @@ test('Apple real-IP DNS exceptions preserve encrypted route-specific resolvers a
     '+.ropes.apple.com',
     '+.app.apple.com',
     'cp4.cloudflare.com',
+    'bag.itunes.apple.com',
   ])
     assert.ok(filters.includes(domain), `missing Fake-IP filter ${domain}`);
   assert.ok(!filters.includes('+.icloud-content.com'));
