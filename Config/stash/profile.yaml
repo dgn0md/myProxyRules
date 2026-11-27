@@ -1,7 +1,7 @@
 # myProxyRules Stash profile
 # Raw profile: https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/stash/profile.yaml
 # CDN profile: https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/stash/profile.cdn.yaml
-# Raw SHA-256: 88d1b6e48f9ee1efedd5018bce621a7f5cdeba4ea0fcfd9d01af1e272d9df5cc
+# Raw SHA-256: 11fd173045acf4654a66f0bd7f43228d65bae6223bd2e59a3a65f98bd693af93
 dns:
   enable: true
   ipv6: true
@@ -143,9 +143,6 @@ dns:
     +.ctaiot.com:
       - https://dns.alidns.com/dns-query#DIRECT
       - https://doh.pub/dns-query#DIRECT
-    +.stun.l.google.com:
-      - https://cloudflare-dns.com/dns-query#漏网之鱼&h3=true
-      - https://dns.google/dns-query#漏网之鱼
     +.mb3admin.com:
       - https://cloudflare-dns.com/dns-query#Emby&h3=true
       - https://dns.google/dns-query#Emby
@@ -233,7 +230,7 @@ dns:
     +.cn:
       - https://dns.alidns.com/dns-query#DIRECT
       - https://doh.pub/dns-query#DIRECT
-    rule-set:geolocation-!cn:
+    rule-set:category-stun,geolocation-!cn:
       - https://cloudflare-dns.com/dns-query#默认代理&h3=true
       - https://dns.google/dns-query#默认代理
   listen: 127.0.0.1:1053
@@ -2453,6 +2450,14 @@ rule-providers:
     url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/cn.mrs
     path: ./ruleset/cn_ip.mrs
     path-in-bundle: geo/geoip/cn.mrs
+  category-stun:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-stun.mrs
+    path: ./ruleset/category-stun.mrs
+    path-in-bundle: geo/geosite/category-stun.mrs
   geolocation-!cn:
     type: http
     format: mrs
@@ -3116,9 +3121,6 @@ rules:
   - DOMAIN,international-gfe.download.nvidia.com,直连
   - DOMAIN-SUFFIX,ctaiot.com,直连
   - RULE-SET,dns_microsoft_cdn,直连
-  - DOMAIN-SUFFIX,stun.l.google.com,漏网之鱼
-  - AND,((NETWORK,UDP),(DST-PORT,3478)),漏网之鱼
-  - AND,((NETWORK,UDP),(DST-PORT,19302)),漏网之鱼
   - RULE-SET,googlefcm,FCM
   - RULE-SET,youtube,YouTube
   - RULE-SET,google,Google
@@ -3161,6 +3163,7 @@ rules:
   - AND,((RULE-SET,domestic_xiaohongshu),(NOT,((RULE-SET,domestic_xiaohongshu_noncn)))),直连
   - RULE-SET,geolocation-cn,直连
   - DOMAIN-SUFFIX,cn,直连
+  - RULE-SET,category-stun,默认代理
   - AND,((RULE-SET,geolocation-!cn),(NOT,((RULE-SET,dns_domestic_cdn)))),默认代理
   - RULE-SET,apple_ip,AppleProxy,no-resolve
   - RULE-SET,private_ip,直连,no-resolve

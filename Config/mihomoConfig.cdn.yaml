@@ -1,10 +1,10 @@
 # myProxyRules Mihomo 全量静态配置
 # 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
 # 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
-# 最新 Raw SHA-256：53fb2fcdc3504d738f6193ae8525dca0e318e38be9b5607ee054a1f41efc12a8
+# 最新 Raw SHA-256：e8188ef2695ec94416ce18173355e471dad339fa22d058fe18585fb357777438
 # Raw 配置：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/mihomoConfig.yaml
 # CDN 配置：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/mihomoConfig.cdn.yaml
-# 缓存 CDN SHA-256：0b1e672beab6a862dace498fc2f15fb8e8a398b3648b3464fb0ebd5247d1c35f
+# 缓存 CDN SHA-256：d7add13d5fec489b2525c51c9f4dd0e17d0ee56fe58c0a1ed1a452593e85c72f
 # 仅适用于 Mihomo。关闭客户端 DNS 覆写。第一次使用请填 proxy-providers.订阅.url。
 # 此 YAML 的开关由生成器读取，Mihomo 不执行 x-myProxyRules。修改开关并推送后由 GitHub Actions 重新生成。
 # 机场非节点设置不会继承；需处理实际节点与节点 hosts 映射时使用 --subscription .local/subscription.yaml。
@@ -206,9 +206,6 @@ dns:
     +.ctaiot.com:
       - https://dns.alidns.com/dns-query#DIRECT
       - https://doh.pub/dns-query#DIRECT
-    +.stun.l.google.com:
-      - https://cloudflare-dns.com/dns-query#漏网之鱼&h3=true
-      - https://dns.google/dns-query#漏网之鱼
     +.mb3admin.com:
       - https://cloudflare-dns.com/dns-query#Emby&h3=true
       - https://dns.google/dns-query#Emby
@@ -296,7 +293,7 @@ dns:
     +.cn:
       - https://dns.alidns.com/dns-query#DIRECT
       - https://doh.pub/dns-query#DIRECT
-    rule-set:geolocation-!cn:
+    rule-set:category-stun,geolocation-!cn:
       - https://cloudflare-dns.com/dns-query#默认代理&h3=true
       - https://dns.google/dns-query#默认代理
   listen: 127.0.0.1:1053
@@ -2520,6 +2517,14 @@ rule-providers:
     url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/cn.mrs
     path: ./ruleset/cn_ip.mrs
     path-in-bundle: geo/geoip/cn.mrs
+  category-stun:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-stun.mrs
+    path: ./ruleset/category-stun.mrs
+    path-in-bundle: geo/geosite/category-stun.mrs
   geolocation-!cn:
     type: http
     format: mrs
@@ -3184,9 +3189,6 @@ rules:
   - DOMAIN,international-gfe.download.nvidia.com,直连
   - DOMAIN-SUFFIX,ctaiot.com,直连
   - RULE-SET,dns_microsoft_cdn,直连
-  - DOMAIN-SUFFIX,stun.l.google.com,漏网之鱼
-  - AND,((NETWORK,UDP),(DST-PORT,3478)),漏网之鱼
-  - AND,((NETWORK,UDP),(DST-PORT,19302)),漏网之鱼
   - RULE-SET,googlefcm,FCM
   - RULE-SET,youtube,YouTube
   - RULE-SET,google,Google
@@ -3229,6 +3231,7 @@ rules:
   - AND,((RULE-SET,domestic_xiaohongshu),(NOT,((RULE-SET,domestic_xiaohongshu_noncn)))),直连
   - RULE-SET,geolocation-cn,直连
   - DOMAIN-SUFFIX,cn,直连
+  - RULE-SET,category-stun,默认代理
   - AND,((RULE-SET,geolocation-!cn),(NOT,((RULE-SET,dns_domestic_cdn)))),默认代理
   - RULE-SET,apple_ip,AppleProxy,no-resolve
   - RULE-SET,private_ip,直连,no-resolve
