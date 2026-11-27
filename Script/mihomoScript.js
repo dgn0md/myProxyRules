@@ -4,7 +4,7 @@
  * 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
  * 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
  *
- * 最新 Raw SHA-256：99ea4bccb982a28fc6c447688870862cde0febbd591f0a1bc925e0f12a6d3f32
+ * 最新 Raw SHA-256：c2b95de2c0c00c47619655dea6a48bde940f37aeb263006097d94f4eaa0ab023
  * Raw 脚本：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js
  * CDN 脚本：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js
  */
@@ -425,6 +425,7 @@ const baseRuleProviders = {
 
   // --- 代理规则集 ---
 
+  'category-stun': geositeProvider('category-stun'),
   'geolocation-!cn': geositeProvider('geolocation-!cn'),
 
   // --- 其他规则集 ---
@@ -1717,6 +1718,7 @@ function main(config) {
     ...domesticServiceRules,
     geolocationCnRule,
     cnSuffixDirectRule,
+    'RULE-SET,category-stun,默认代理',
     'RULE-SET,geolocation-!cn,默认代理',
     ...appleIpRules,
     'RULE-SET,private_ip,直连,no-resolve',
@@ -1938,12 +1940,6 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
   while (usedNames.has(dnsOutbound)) dnsOutbound = `my-${dnsOutbound}`;
   config.proxies.push({ name: dnsOutbound, type: 'dns' });
   const safetyRules = [`DST-PORT,53,${dnsOutbound}`, 'DST-PORT,853,REJECT'];
-  const stunTarget = options.极简分流 ? '默认代理' : '漏网之鱼';
-  const stunRules = [
-    `DOMAIN-SUFFIX,stun.l.google.com,${stunTarget}`,
-    `AND,((NETWORK,UDP),(DST-PORT,3478)),${stunTarget}`,
-    `AND,((NETWORK,UDP),(DST-PORT,19302)),${stunTarget}`,
-  ];
   const directPrefixCdnRules = ['RULE-SET,dns_microsoft_cdn,直连'];
   const directDomesticCdnRules = ['RULE-SET,dns_domestic_cdn,直连'];
 
@@ -1973,7 +1969,7 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
   for (let i = 0; i < remainingRules.length; i++) {
     if (allPrefixRuleSet.has(remainingRules[i])) prefixInsertIndex = i + 1;
   }
-  remainingRules.splice(prefixInsertIndex, 0, ...directPrefixCdnRules, ...stunRules);
+  remainingRules.splice(prefixInsertIndex, 0, ...directPrefixCdnRules);
   if (directDomesticCdnRules.length) {
     const domesticInsertIndex = remainingRules.findIndex(
       (rule) =>
@@ -2076,6 +2072,7 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
     if (
       addedRuleSetKeys.has(`rule-set:${providerName}`) ||
       providerName === 'dns_domestic_cdn' ||
+      providerName === 'category-stun' ||
       providerName.startsWith('domestic_') ||
       providerName.startsWith('geolocation-')
     ) {
@@ -2102,6 +2099,12 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
   }
   if (options.国内服务优先直连) {
     orderedDnsPolicyEntries.push(['+.cn', [...chinaDNS]]);
+  }
+  if (domainRuleSetEgress.has('category-stun')) {
+    pushRuleSetPolicy(
+      'rule-set:category-stun',
+      resolveProviderDns('category-stun', domainRuleSetEgress.get('category-stun')),
+    );
   }
   if (domainRuleSetEgress.has('geolocation-!cn')) {
     pushRuleSetPolicy(
