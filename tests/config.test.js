@@ -646,7 +646,7 @@ test('Apple AI/Siri and product endpoints precede Apple CN, advertising and QUIC
   for (const ref of ['RULE-SET,apple_cn,直连', 'RULE-SET,category-ads-all,AdBlock', 'RULE-SET,httpdns,AdBlock'])
     assert.ok(apple < rules.indexOf(ref));
   assert.ok(apple < rules.findIndex((r) => r.startsWith('AND,')));
-  assert.ok(rules.indexOf(`DOMAIN-SUFFIX,smoot.apple.com,${siriAiGroup}`) < rules.indexOf('RULE-SET,apple_cn,直连'));
+  assert.ok(!rules.includes(`DOMAIN-SUFFIX,smoot.apple.com,${siriAiGroup}`));
   assert.ok(!rules.includes(`DOMAIN-SUFFIX,apple.com,${siriAiGroup}`));
   assert.equal(config['proxy-groups'].find((g) => g.name === siriAiGroup).proxies[0], '美国');
   const products = config['proxy-groups'].find((g) => g.name === appleProxyGroup);
@@ -660,7 +660,8 @@ test('Apple AI/Siri and product endpoints precede Apple CN, advertising and QUIC
     rules.indexOf(`RULE-SET,apple_ip,${appleProxyGroup},no-resolve`) < rules.indexOf('RULE-SET,cn_ip,直连,no-resolve'),
   );
   assert.equal(dnsRouteFor(policyForRuleSet(config, 'apple_siri_regex')[0]), siriAiGroup);
-  assert.equal(dnsRouteFor(config.dns['nameserver-policy']['+.smoot.apple.com'][0]), siriAiGroup);
+  assert.equal(dnsRouteFor(config.dns['nameserver-policy']['+.issuer.apple.com'][0]), siriAiGroup);
+  assert.equal(config.dns['nameserver-policy']['+.smoot.apple.com'], undefined);
   for (const domain of ['gdmf.apple.com', 'mesu.apple.com', 'updates.cdn-apple.com', 'assets.cdn-apple.com']) {
     const direct = rules.indexOf(`DOMAIN,${domain},直连`);
     assert.ok(direct >= 0, `missing direct download exception ${domain}`);
@@ -944,7 +945,10 @@ test('international iCloud content suffix shares priority routing and DNS while 
           if (/^RULE-SET,(apple_cn|apple|category-ads-all|httpdns),|^AND,/.test(other))
             assert.ok(index < i, `${policy} must precede ${other}`);
         }
-        assert.deepEqual(config.dns['nameserver-policy'][policy], config.dns['nameserver-policy']['+.smoot.apple.com']);
+        assert.deepEqual(
+          config.dns['nameserver-policy'][policy],
+          config.dns['nameserver-policy']['+.issuer.apple.com'],
+        );
       }
       for (const suffix of ['icloud.com', 'icloud.com.cn', 'icloud-content.com.cn', 'gateway.icloud.com']) {
         assert.ok(!config.rules.includes(`DOMAIN-SUFFIX,${suffix},${siriAiGroup}`));
@@ -1191,10 +1195,11 @@ test('AppleProxy and Apple product endpoints share one regional group; overseas 
     format: 'text',
     behavior: 'classical',
     payload: [
+      'DOMAIN-KEYWORD,siri',
+      'DOMAIN-KEYWORD,guzzoni',
+      'DOMAIN-KEYWORD,smoot',
       'DOMAIN-REGEX,^mask(-[a-z0-9]+)?\\.icloud\\.com$',
       'DOMAIN-REGEX,(^|\\.)apple-relay\\.(apple\\.com|cloudflare\\.com|fastly-edge\\.com|akamaized\\.net)$',
-      'DOMAIN-REGEX,(^|\\.)guzzoni\\.apple\\.com$|^guzzoni-apple-com\\.v\\.aaplimg\\.com$',
-      'DOMAIN-REGEX,(^|[.-])siri(-[a-z0-9]+)*\\.apple\\.com$',
       'AND,((DOMAIN-REGEX,ssl\\.ls\\.apple\\.com$|(^|\\.)ls-apple\\.com\\.akadns\\.net$),(NOT,((DOMAIN-REGEX,(^|[.-])cn([.-]|$)))))',
     ],
   });
@@ -1430,7 +1435,6 @@ test('AppleFlow PCC and Siri endpoints use the eligible selector with US default
   const siri = [
     ['DOMAIN', 'dejavu.apple.com', siriAiGroup],
     ['DOMAIN', 'sequoia.apple.com', siriAiGroup],
-    ['DOMAIN-SUFFIX', 'smoot.apple.com', siriAiGroup],
     ['DOMAIN', 'bag.itunes.apple.com', siriAiGroup],
   ];
   const quicReject = config.rules.findIndex((rule) => rule.startsWith('AND,') && rule.endsWith(',REJECT'));
@@ -1516,7 +1520,7 @@ test('AI, Google, TikTok, Meta and Siri AI expose only eligible country groups a
       if (minimal) continue;
       assert.ok(policyForRuleSet(config, provider).every((dns) => dnsRouteFor(dns) === target));
     }
-    assert.ok(config.dns['nameserver-policy']['+.smoot.apple.com'].every((dns) => dnsRouteFor(dns) === siriAiGroup));
+    assert.ok(config.dns['nameserver-policy']['+.issuer.apple.com'].every((dns) => dnsRouteFor(dns) === siriAiGroup));
     assert.ok(policyForRuleSet(config, 'apple_siri_regex').every((dns) => dnsRouteFor(dns) === siriAiGroup));
   }
 });
@@ -1554,7 +1558,7 @@ test('domestic DNS policy covers explicit direct routes, geolocation-cn and defa
   const msCdnKey = policyKeyForRuleSet(config, 'dns_microsoft_cdn');
   const gameDownloadCnKey = policyKeyForRuleSet(config, 'game_platforms_download_cn');
   const domesticCdnKey = policyKeyForRuleSet(config, 'dns_domestic_cdn');
-  assert.ok(keys.indexOf('+.smoot.apple.com') < keys.indexOf(msCdnKey));
+  assert.ok(keys.indexOf('+.issuer.apple.com') < keys.indexOf(msCdnKey));
   assert.ok(keys.indexOf(msCdnKey) < keys.indexOf(policyKeyForRuleSet(config, 'microsoft')));
   assert.ok(keys.indexOf(gameDownloadCnKey) < keys.indexOf(policyKeyForRuleSet(config, 'overseas_games')));
   assert.ok(keys.indexOf(policyKeyForRuleSet(config, 'google')) < keys.indexOf(domesticCdnKey));
@@ -1639,7 +1643,6 @@ test('Apple real-IP DNS exceptions preserve encrypted route-specific resolvers a
   const filters = config.dns['fake-ip-filter'];
   for (const domain of [
     'rule-set:apple_siri_regex',
-    '+.smoot.apple.com',
     '+.issuer.apple.com',
     '+.ropes.apple.com',
     '+.app.apple.com',
@@ -1647,9 +1650,10 @@ test('Apple real-IP DNS exceptions preserve encrypted route-specific resolvers a
     'bag.itunes.apple.com',
   ])
     assert.ok(filters.includes(domain), `missing Fake-IP filter ${domain}`);
+  assert.ok(!filters.includes('+.smoot.apple.com'));
   assert.ok(!filters.includes('+.icloud-content.com'));
   const policy = config.dns['nameserver-policy'];
-  for (const key of ['+.smoot.apple.com', '+.issuer.apple.com', 'cp4.cloudflare.com']) {
+  for (const key of ['+.issuer.apple.com', 'cp4.cloudflare.com']) {
     assert.ok(policy[key]);
     for (const resolver of policy[key]) assert.match(resolver, /^(https|tls|quic):\/\//);
   }
