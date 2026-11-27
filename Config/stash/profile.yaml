@@ -1,7 +1,7 @@
 # myProxyRules Stash profile
 # Raw profile: https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/stash/profile.yaml
 # CDN profile: https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/stash/profile.cdn.yaml
-# Raw SHA-256: e467f85055705f102947ebe9e54c1505bd17072e96dc334b36ee2479abf042df
+# Raw SHA-256: a62844ea708339508e13778cab3e247fb8c50020a9d143d5f80bc5fc89d1a951
 dns:
   enable: true
   ipv6: true
@@ -17,7 +17,6 @@ dns:
     - rule-set:fakeip_filter
     - dejavu.apple.com
     - sequoia.apple.com
-    - +.smoot.apple.com
     - +.issuer.apple.com
     - +.ropes.apple.com
     - +.app.apple.com
@@ -54,9 +53,6 @@ dns:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     sequoia.apple.com:
-      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
-      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
-    +.smoot.apple.com:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     bag.itunes.apple.com:
@@ -3031,10 +3027,11 @@ rule-providers:
     format: text
     behavior: classical
     payload:
+      - DOMAIN-KEYWORD,siri
+      - DOMAIN-KEYWORD,guzzoni
+      - DOMAIN-KEYWORD,smoot
       - DOMAIN-REGEX,^mask(-[a-z0-9]+)?\.icloud\.com$
       - DOMAIN-REGEX,(^|\.)apple-relay\.(apple\.com|cloudflare\.com|fastly-edge\.com|akamaized\.net)$
-      - DOMAIN-REGEX,(^|\.)guzzoni\.apple\.com$|^guzzoni-apple-com\.v\.aaplimg\.com$
-      - DOMAIN-REGEX,(^|[.-])siri(-[a-z0-9]+)*\.apple\.com$
       - AND,((DOMAIN-REGEX,ssl\.ls\.apple\.com$|(^|\.)ls-apple\.com\.akadns\.net$),(NOT,((DOMAIN-REGEX,(^|[.-])cn([.-]|$)))))
   apple_tv:
     type: http
@@ -3069,7 +3066,6 @@ rules:
   - DOMAIN-SUFFIX,icloud-content.com,Siri Ai/Apple Intelligence
   - DOMAIN,dejavu.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,sequoia.apple.com,Siri Ai/Apple Intelligence
-  - DOMAIN-SUFFIX,smoot.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,bag.itunes.apple.com,Siri Ai/Apple Intelligence
   - RULE-SET,apple_siri_regex,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,apple-dns.com,AppleProxy

@@ -1,10 +1,10 @@
 # myProxyRules Mihomo 全量静态配置
 # 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
 # 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
-# 最新 Raw SHA-256：4608354442881fed72e972defc99c05aa30325341d96e8fd38ec4b97d691d869
+# 最新 Raw SHA-256：73758bdcdedbdacfec7bd30ef5ce389147e6359efc4d1b8c5fe00e0b6f2fc87d
 # Raw 配置：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/mihomoConfig.yaml
 # CDN 配置：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/mihomoConfig.cdn.yaml
-# 缓存 CDN SHA-256：170672675094b8bd8718c8de0d506a0dcf45eec53f54af80e6a25663106969f8
+# 缓存 CDN SHA-256：cb5b0b36d1279340df877a4a43d520d77f37f7357e8bb98c857d6e8e20e6dbb6
 # 仅适用于 Mihomo。关闭客户端 DNS 覆写。第一次使用请填 proxy-providers.订阅.url。
 # 此 YAML 的开关由生成器读取，Mihomo 不执行 x-myProxyRules。修改开关并推送后由 GitHub Actions 重新生成。
 # 机场非节点设置不会继承；需处理实际节点与节点 hosts 映射时使用 --subscription .local/subscription.yaml。
@@ -80,7 +80,6 @@ dns:
     - rule-set:fakeip_filter
     - dejavu.apple.com
     - sequoia.apple.com
-    - +.smoot.apple.com
     - +.issuer.apple.com
     - +.ropes.apple.com
     - +.app.apple.com
@@ -117,9 +116,6 @@ dns:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     sequoia.apple.com:
-      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
-      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
-    +.smoot.apple.com:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     bag.itunes.apple.com:
@@ -3098,10 +3094,11 @@ rule-providers:
     format: text
     behavior: classical
     payload:
+      - DOMAIN-KEYWORD,siri
+      - DOMAIN-KEYWORD,guzzoni
+      - DOMAIN-KEYWORD,smoot
       - DOMAIN-REGEX,^mask(-[a-z0-9]+)?\.icloud\.com$
       - DOMAIN-REGEX,(^|\.)apple-relay\.(apple\.com|cloudflare\.com|fastly-edge\.com|akamaized\.net)$
-      - DOMAIN-REGEX,(^|\.)guzzoni\.apple\.com$|^guzzoni-apple-com\.v\.aaplimg\.com$
-      - DOMAIN-REGEX,(^|[.-])siri(-[a-z0-9]+)*\.apple\.com$
       - AND,((DOMAIN-REGEX,ssl\.ls\.apple\.com$|(^|\.)ls-apple\.com\.akadns\.net$),(NOT,((DOMAIN-REGEX,(^|[.-])cn([.-]|$)))))
   apple_tv:
     type: http
@@ -3137,7 +3134,6 @@ rules:
   - DOMAIN-SUFFIX,icloud-content.com,Siri Ai/Apple Intelligence
   - DOMAIN,dejavu.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,sequoia.apple.com,Siri Ai/Apple Intelligence
-  - DOMAIN-SUFFIX,smoot.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,bag.itunes.apple.com,Siri Ai/Apple Intelligence
   - RULE-SET,apple_siri_regex,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,apple-dns.com,AppleProxy
