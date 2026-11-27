@@ -4,11 +4,11 @@
  * 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
  * 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
  *
- * 最新 Raw SHA-256：d5bfe059580f9d7b9448c4bdb20173788d31aaf6436ef9b2e35b1d2bc2cbc8a6
+ * 最新 Raw SHA-256：99ea4bccb982a28fc6c447688870862cde0febbd591f0a1bc925e0f12a6d3f32
  * Raw 脚本：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js
  * CDN 脚本：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js
  *
- * 缓存 CDN SHA-256：9787e87a68ba1a0c333a44b2d6b6f91615a5a7c363e72c22b3e0ad12882a3cc7
+ * 缓存 CDN SHA-256：b37cd280860c39e403a06d1c4b7e666dfae98c379e5e08afac0d8cb52b0c5a9b
  */
 
 // --- 静态配置区域 ---
@@ -40,7 +40,7 @@ const ruleOptionsEnable = {
   Microsoft: true, // Microsoft服务
   Apple其他服务: true, // 普通 Apple 服务
   Telegram: true, // Telegram通讯软件
-  Steam: true, // Steam游戏平台
+  海外游戏: true, // 海外游戏平台与服务（含国内下载直连集）
   TikTok: true, // TikTok视频平台
   Twitter: true, // Twitter社交平台
   Meta: true, // Meta服务
@@ -48,6 +48,7 @@ const ruleOptionsEnable = {
   Netflix: true, // Netflix视频平台
   Emby: true, // Emby媒体服务
   PikPak: true, // PikPak网盘服务
+  'BT/PT': true, // BT/PT Tracker服务
   Spotify: true, // Spotify音乐服务
   Crypto: true, // 加密货币相关服务
   PayPal: true, // PayPal支付服务
@@ -61,10 +62,6 @@ const ruleOptionsEnable = {
   Apple媒体代理: false, // iTunes/App Store/Arcade 共用购买与媒体接口；会增加 Music/商店代理流量
   Apple下载直连: true, // 模型/系统资源下载保持国内 CDN；关闭后交给 Apple 其他服务组
   严格DNS校验: true, // 校验脚本生成的加密 DNS；不从机场配置继承 DNS
-  接管DNS53: true, // 接管流量中的 TCP/UDP 53 并拦截外部 853 DoT/DoQ（需 TUN）
-  国内CDN解析: true, // 国内 CDN 小集合直连并使用国内加密 DNS，位于明确海外服务组之后
-  微软下载解析: true, // Microsoft 下载 CDN 直连并使用国内加密 DNS，同时从 Microsoft 代理规则排除
-  Steam下载解析: true, // Steam 国内下载动态集合直连并使用国内加密 DNS，保留服务器/用户内容后缀走 Steam 组
   国内服务优先直连: true, // 保留国内服务/CDN 例外；不将整个 cn 域名库强制直连
   Apple其他默认直连: true, // Other Apple Service 默认直连；AI/Siri 和产品地区组独立优先
   TUN: true, // 接管 DNS 所必需；关闭仅适合上级路由器已经接管 DNS 的环境
@@ -95,7 +92,6 @@ const prefixRules = [
   'RULE-SET,private,直连',
 
   // 国内专用直连
-  'RULE-SET,games_cn,直连', // 已包含 steam 下载域名
   'RULE-SET,synology,直连',
   'RULE-SET,nvidia_cn,直连',
   'RULE-SET,apple_cn,直连',
@@ -105,6 +101,7 @@ const prefixRules = [
   'DOMAIN-SUFFIX,ctaiot.com,直连',
 ];
 const geolocationCnRule = 'RULE-SET,geolocation-cn,直连';
+const cnSuffixDirectRule = 'DOMAIN-SUFFIX,cn,直连';
 
 // 此处添加自定义节点，填入下方[]内（可选，留空则不生成“自建节点”策略组）
 // 自定义节点不参与节点过滤与 hosts 改写；与订阅节点（标准化后）重名时自动添加“自建-”前缀
@@ -368,36 +365,33 @@ function geoipProvider(source, localName = `${source}_ip`) {
   };
 }
 
-// 大陆核心服务与基础设施厂商动态集合；子品牌尽量由其厂商集合覆盖。
-// Bett 当前没有 baidu@!cn，百度按完整厂商集合路由和 DNS；其他模块排除同源海外子集。
+// 大陆核心服务与基础设施厂商动态集合；无 @!cn 的国内厂商/大类已由 geolocation-cn 覆盖，
+// 此处仅保留带同源 @!cn 海外子集的 13 组核心厂商，按 domestic AND NOT domestic_noncn 路由与 DNS 解析。
 const domesticServiceModules = [
-  { source: 'alibaba' },
-  { source: 'baidu', excludeOverseas: false },
-  { source: 'bilibili' },
-  { source: 'bytedance' },
-  { source: 'chinamobile' },
-  { source: 'chinatelecom' },
-  { source: 'chinaunicom' },
-  { source: 'huaweicloud' },
-  { source: 'jd' },
-  { source: 'netease' },
-  { source: 'tencent' },
-  { source: 'xiaomi' },
+  'alibaba',
+  'bilibili',
+  'bytedance',
+  'chinamobile',
+  'chinatelecom',
+  'chinaunicom',
+  'huaweicloud',
+  'jd',
+  'netease',
+  'sina',
+  'tencent',
+  'xiaomi',
+  'xiaohongshu',
 ];
 
 function buildDomesticServiceRoutes(providers) {
   const routesEnabled = ruleOptionsEnable.国内服务优先直连;
   if (!routesEnabled) return [];
   const rules = [];
-  for (const { source, excludeOverseas = true } of domesticServiceModules) {
+  for (const source of domesticServiceModules) {
     const name = `domestic_${source}`;
-    providers[name] = geositeProvider(source, name);
-    if (!excludeOverseas) {
-      rules.push(`RULE-SET,${name},直连`);
-      continue;
-    }
     const overseas = `${name}_noncn`;
     const overseasFile = `${source}@!cn`;
+    providers[name] = geositeProvider(source, name);
     providers[overseas] = geositeProvider(overseasFile, overseas);
     providers[`${name}_dns`] = {
       type: 'inline',
@@ -416,7 +410,6 @@ const baseRuleProviders = {
 
   private: geositeProvider('private'),
   private_ip: geoipProvider('private'),
-  games_cn: geositeProvider('category-games@cn'),
   synology: geositeProvider('synology'),
   nvidia_cn: geositeProvider('nvidia@cn'),
   apple_cn: {
@@ -526,9 +519,14 @@ const serviceConfigs = [
     name: 'AI',
     baseOption: selectBaseOption,
     defaultSelected: '美国',
-    providers: { ai: geositeProvider('category-ai-!cn', 'ai') },
+    providers: {
+      ai: geositeProvider('category-ai-!cn', 'ai'),
+      openai_ip: geoipProvider('openai'),
+    },
     icon: `${iconBaseUrl}common/ChatGPT.svg`,
     rules: ['RULE-SET,ai,AI'],
+    proxyIpRequired: true,
+    ipRules: ['RULE-SET,openai_ip,AI,no-resolve'],
   },
   {
     name: 'GitHub',
@@ -571,16 +569,18 @@ const serviceConfigs = [
     ipRules: ['RULE-SET,telegram_ip,Telegram,no-resolve'],
   },
   {
-    name: 'Steam',
+    name: '海外游戏',
     baseOption: selectBaseOption,
     direct: true,
     providers: {
-      steam: geositeProvider('steam'),
-      steam_ip: geoipProvider('steam'),
+      overseas_games: geositeProvider('category-games-!cn', 'overseas_games'),
+      game_platforms_download_cn: geositeProvider('category-game-platforms-download@cn', 'game_platforms_download_cn'),
     },
-    icon: `${iconBaseUrl}common/Steam.svg`,
-    rules: ['RULE-SET,steam,Steam'],
-    ipRules: ['RULE-SET,steam_ip,Steam,no-resolve'],
+    icon: `${iconBaseUrl}common/Game.svg`,
+    rules: [
+      'RULE-SET,game_platforms_download_cn,直连',
+      'AND,((RULE-SET,overseas_games),(NOT,((RULE-SET,game_platforms_download_cn)))),海外游戏',
+    ],
   },
   {
     name: 'TikTok',
@@ -668,6 +668,14 @@ const serviceConfigs = [
     rules: ['RULE-SET,pikpak,PikPak'],
   },
   {
+    name: 'BT/PT',
+    baseOption: selectBaseOption,
+    direct: true,
+    providers: { tracker: geositeProvider('tracker') },
+    icon: `${iconBaseUrl}common/QBittorrent.svg`,
+    rules: ['RULE-SET,tracker,BT/PT'],
+  },
+  {
     name: 'Spotify',
     baseOption: selectBaseOption,
     direct: true,
@@ -717,9 +725,12 @@ const serviceConfigs = [
     baseOption: selectBaseOption,
     reject: true,
     priority: true,
-    providers: { 'category-ads': geositeProvider('category-ads') },
+    providers: {
+      'category-ads-all': geositeProvider('category-ads-all'),
+      httpdns: geositeProvider('httpdns'),
+    },
     icon: `${iconBaseUrl}common/AdBlock.svg`,
-    rules: ['RULE-SET,category-ads,AdBlock'],
+    rules: ['RULE-SET,category-ads-all,AdBlock', 'RULE-SET,httpdns,AdBlock'],
   },
 ];
 
@@ -1707,6 +1718,7 @@ function main(config) {
     ...functionalRules,
     ...domesticServiceRules,
     geolocationCnRule,
+    cnSuffixDirectRule,
     'RULE-SET,geolocation-!cn,默认代理',
     ...appleIpRules,
     'RULE-SET,private_ip,直连,no-resolve',
@@ -1885,43 +1897,27 @@ function applyAppleRouting(config, options) {
 function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
   const groups = config['proxy-groups'];
   const groupByName = new Map(groups.map((group) => [group.name, group]));
-  const dnsWhitelist = {
-    国内CDN解析: [
-      'dns_domestic_cdn',
-      {
-        type: 'http',
-        behavior: 'classical',
-        format: 'text',
-        interval: 86400,
-        url: 'https://ruleset.skk.moe/Clash/non_ip/domestic_cdn.txt',
-        path: './ruleset/dns_domestic_cdn.list',
-      },
-    ],
-    微软下载解析: [
-      'dns_microsoft_cdn',
-      {
-        type: 'http',
-        behavior: 'classical',
-        format: 'text',
-        interval: 86400,
-        url: 'https://ruleset.skk.moe/Clash/non_ip/microsoft_cdn.txt',
-        path: './ruleset/dns_microsoft_cdn.list',
-      },
-    ],
-    Steam下载解析: [
-      'dns_steam_cn',
-      {
-        ...ruleProviderCommonDomain,
-        url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam@cn.mrs',
-        path: './ruleset/dns_steam_cn.mrs',
-      },
-    ],
+  const dnsWhitelistProviders = {
+    dns_domestic_cdn: {
+      type: 'http',
+      behavior: 'classical',
+      format: 'text',
+      interval: 86400,
+      url: 'https://ruleset.skk.moe/Clash/non_ip/domestic_cdn.txt',
+      path: './ruleset/dns_domestic_cdn.list',
+    },
+    dns_microsoft_cdn: {
+      type: 'http',
+      behavior: 'classical',
+      format: 'text',
+      interval: 86400,
+      url: 'https://ruleset.skk.moe/Clash/non_ip/microsoft_cdn.txt',
+      path: './ruleset/dns_microsoft_cdn.list',
+    },
   };
 
-  // 加载启用的直连 CDN 规则集（路由直连与国内 DNS 一体化）。
-  for (const [option, [name, provider]] of Object.entries(dnsWhitelist)) {
-    if (options[option]) config['rule-providers'][name] = provider;
-  }
+  // 默认加载直连 CDN 规则集（路由直连与国内 DNS 一体化）。
+  Object.assign(config['rule-providers'], dnsWhitelistProviders);
 
   // 直连目标使用国内 DNS；代理服务的 DNS 请求经对应路由组建立连接。
   // Other Apple Service 的 DNS 例外明确使用 Siri 的选择器。
@@ -1942,25 +1938,16 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
   let dnsOutbound = '内置DNS';
   const usedNames = new Set([...config.proxies, ...groups].map((entry) => entry.name));
   while (usedNames.has(dnsOutbound)) dnsOutbound = `my-${dnsOutbound}`;
-  if (options.接管DNS53) config.proxies.push({ name: dnsOutbound, type: 'dns' });
-  const safetyRules = options.接管DNS53 ? [`DST-PORT,53,${dnsOutbound}`, 'DST-PORT,853,REJECT'] : [];
-  const steamRouteGroup = groupByName.has('Steam') ? 'Steam' : '默认代理';
+  config.proxies.push({ name: dnsOutbound, type: 'dns' });
+  const safetyRules = [`DST-PORT,53,${dnsOutbound}`, 'DST-PORT,853,REJECT'];
   const stunTarget = options.极简分流 ? '默认代理' : '漏网之鱼';
   const stunRules = [
     `DOMAIN-SUFFIX,stun.l.google.com,${stunTarget}`,
     `AND,((NETWORK,UDP),(DST-PORT,3478)),${stunTarget}`,
     `AND,((NETWORK,UDP),(DST-PORT,19302)),${stunTarget}`,
   ];
-  const directPrefixCdnRules = [];
-  if (options.微软下载解析) directPrefixCdnRules.push('RULE-SET,dns_microsoft_cdn,直连');
-  if (options.Steam下载解析) {
-    directPrefixCdnRules.push(
-      `DOMAIN-SUFFIX,steamserver.net,${steamRouteGroup}`,
-      `DOMAIN-SUFFIX,steamusercontent.com,${steamRouteGroup}`,
-      'RULE-SET,dns_steam_cn,直连',
-    );
-  }
-  const directDomesticCdnRules = options.国内CDN解析 ? ['RULE-SET,dns_domestic_cdn,直连'] : [];
+  const directPrefixCdnRules = ['RULE-SET,dns_microsoft_cdn,直连'];
+  const directDomesticCdnRules = ['RULE-SET,dns_domestic_cdn,直连'];
 
   const specialRuleSet = new Set(specialRules);
   const specialIpRuleSet = new Set(specialIpRules);
@@ -1969,16 +1956,16 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
   const remainingRules = [];
   for (const rule of config.rules) {
     if (specialRuleSet.has(rule) || specialIpRuleSet.has(rule)) continue;
-    if (!options.国内服务优先直连 && (domesticPrefixRuleSet.has(rule) || rule === geolocationCnRule)) continue;
-    if (options.微软下载解析 && rule === 'RULE-SET,microsoft,Microsoft') {
+    if (
+      !options.国内服务优先直连 &&
+      (domesticPrefixRuleSet.has(rule) || rule === geolocationCnRule || rule === cnSuffixDirectRule)
+    )
+      continue;
+    if (rule === 'RULE-SET,microsoft,Microsoft') {
       remainingRules.push('AND,((RULE-SET,microsoft),(NOT,((RULE-SET,dns_microsoft_cdn)))),Microsoft');
       continue;
     }
-    if (options.Steam下载解析 && rule === 'RULE-SET,steam,Steam') {
-      remainingRules.push('AND,((RULE-SET,steam),(NOT,((RULE-SET,dns_steam_cn)))),Steam');
-      continue;
-    }
-    if (options.国内CDN解析 && rule === 'RULE-SET,geolocation-!cn,默认代理') {
+    if (rule === 'RULE-SET,geolocation-!cn,默认代理') {
       remainingRules.push('AND,((RULE-SET,geolocation-!cn),(NOT,((RULE-SET,dns_domestic_cdn)))),默认代理');
       continue;
     }
@@ -2024,6 +2011,8 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
       const [, type, domain, target] = literalMatch;
       if (rejectTargets.has(target)) continue;
       const policyKey = type === 'DOMAIN-SUFFIX' ? `+.${domain}` : domain;
+      // 广域 +.cn 后缀不前置到显式域名区，避免抢先覆盖广告/HTTPDNS/服务 rule-set policy；在下方 geolocation-cn 之后追加。
+      if (policyKey === '+.cn') continue;
       if (!literalDomainEgress.has(policyKey)) literalDomainEgress.set(policyKey, target);
     }
   }
@@ -2051,10 +2040,6 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
     const dnsEgressGroup = groupByName.get(dnsEgressGroupName);
     literalEntries.set(policyKey, dnsForRoute(target, dnsEgressGroupName, dnsEgressGroup));
   }
-  // Steam @cn 成品含宽泛的服务器/用户内容域；这些域名始终保持国外解析。
-  for (const suffix of ['+.steamserver.net', '+.steamusercontent.com']) {
-    literalEntries.set(suffix, dnsForGroup(steamRouteGroup));
-  }
   // 禁用 Firefox 等浏览器的内置 DoH 旁路（返回 NXDOMAIN 迫使其回退到系统/TUN DNS）。
   literalEntries.set('use-application-dns.net', 'rcode://name_error');
   orderedDnsPolicyEntries.push(...literalEntries.entries());
@@ -2081,7 +2066,7 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
     addedRuleSetKeys.add(key);
     orderedDnsPolicyEntries.push([key, value]);
   };
-  for (const priorityProvider of ['apple_tv', 'apple_proxy', 'category-ads']) {
+  for (const priorityProvider of ['apple_tv', 'apple_proxy', 'category-ads-all', 'httpdns']) {
     if (domainRuleSetEgress.has(priorityProvider)) {
       pushRuleSetPolicy(
         `rule-set:${priorityProvider}`,
@@ -2103,19 +2088,22 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
   for (const [key, value] of extraRuleSetEntries) {
     if (!addedRuleSetKeys.has(key)) pushRuleSetPolicy(key, value);
   }
-  if (options.国内CDN解析 && config['rule-providers'].dns_domestic_cdn) {
+  if (config['rule-providers'].dns_domestic_cdn) {
     pushRuleSetPolicy('rule-set:dns_domestic_cdn', [...chinaDNS]);
   }
-  // Domestic vendor DNS policies follow the domestic-service route switch: paired sets use the
-  // same AND NOT predicate as routing, while Baidu has no upstream @!cn subset and uses its full set.
-  for (const { source, excludeOverseas = true } of domesticServiceModules) {
-    const providerName = excludeOverseas ? `domestic_${source}_dns` : `domestic_${source}`;
+  // Domestic vendor DNS policies follow the domestic-service route switch: all 13 paired sets
+  // use the same AND NOT predicate as routing.
+  for (const source of domesticServiceModules) {
+    const providerName = `domestic_${source}_dns`;
     if (config['rule-providers'][providerName]) pushRuleSetPolicy(`rule-set:${providerName}`, [...chinaDNS]);
   }
   // geolocation-cn is the existing mainland domain DNS match set. Keep its policy even
   // when the domestic-route switch removes its routing rule; specific policies must win.
   if (config['rule-providers']['geolocation-cn']) {
     pushRuleSetPolicy('rule-set:geolocation-cn', [...chinaDNS]);
+  }
+  if (options.国内服务优先直连) {
+    orderedDnsPolicyEntries.push(['+.cn', [...chinaDNS]]);
   }
   if (domainRuleSetEgress.has('geolocation-!cn')) {
     pushRuleSetPolicy(

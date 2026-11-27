@@ -1,10 +1,10 @@
 # myProxyRules Mihomo 全量静态配置
 # 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
 # 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
-# 最新 Raw SHA-256：7f310432c43c683573bb8486dd9db7604743c81f5ef01141218bd45c8d96b245
+# 最新 Raw SHA-256：53fb2fcdc3504d738f6193ae8525dca0e318e38be9b5607ee054a1f41efc12a8
 # Raw 配置：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/mihomoConfig.yaml
 # CDN 配置：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/mihomoConfig.cdn.yaml
-# 缓存 CDN SHA-256：0f929211ba85c9af1ce2dbeda64399df9c339fc74ac8b8bddf62791e82bee180
+# 缓存 CDN SHA-256：0b1e672beab6a862dace498fc2f15fb8e8a398b3648b3464fb0ebd5247d1c35f
 # 仅适用于 Mihomo。关闭客户端 DNS 覆写。第一次使用请填 proxy-providers.订阅.url。
 # 此 YAML 的开关由生成器读取，Mihomo 不执行 x-myProxyRules。修改开关并推送后由 GitHub Actions 重新生成。
 # 机场非节点设置不会继承；需处理实际节点与节点 hosts 映射时使用 --subscription .local/subscription.yaml。
@@ -23,7 +23,7 @@ x-myProxyRules:
     Microsoft: true # Microsoft服务
     Apple其他服务: true # 普通 Apple 服务
     Telegram: true # Telegram通讯软件
-    Steam: true # Steam游戏平台
+    海外游戏: true # 海外游戏平台与服务（含国内下载直连集）
     TikTok: true # TikTok视频平台
     Twitter: true # Twitter社交平台
     Meta: true # Meta服务
@@ -31,6 +31,7 @@ x-myProxyRules:
     Netflix: true # Netflix视频平台
     Emby: true # Emby媒体服务
     PikPak: true # PikPak网盘服务
+    BT/PT: true # BT/PT Tracker服务
     Spotify: true # Spotify音乐服务
     Crypto: true # 加密货币相关服务
     PayPal: true # PayPal支付服务
@@ -42,10 +43,6 @@ x-myProxyRules:
     Apple媒体代理: false # iTunes/App Store/Arcade 共用购买与媒体接口；会增加 Music/商店代理流量
     Apple下载直连: true # 模型/系统资源下载保持国内 CDN；关闭后交给 Apple 其他服务组
     严格DNS校验: true # 校验脚本生成的加密 DNS；不从机场配置继承 DNS
-    接管DNS53: true # 接管流量中的 TCP/UDP 53 并拦截外部 853 DoT/DoQ（需 TUN）
-    国内CDN解析: true # 国内 CDN 小集合直连并使用国内加密 DNS，位于明确海外服务组之后
-    微软下载解析: true # Microsoft 下载 CDN 直连并使用国内加密 DNS，同时从 Microsoft 代理规则排除
-    Steam下载解析: true # Steam 国内下载动态集合直连并使用国内加密 DNS，保留服务器/用户内容后缀走 Steam 组
     国内服务优先直连: true # 保留国内服务/CDN 例外；不将整个 cn 域名库强制直连
     Apple其他默认直连: true # Other Apple Service 默认直连；AI/Siri 和产品地区组独立优先
     TUN: true # 接管 DNS 所必需；关闭仅适合上级路由器已经接管 DNS 的环境
@@ -68,7 +65,7 @@ x-myProxyRules:
     链式代理: false # 是否启用链式代理（自定义节点作为落地节点，经“链式中转”策略组中转）
   customProxies: []
 dns:
-  # DNS：显式直连域名规则、geolocation-cn、国内服务 AND NOT 海外子集、完整百度集合、白名单、代理节点域名引导和 Apple 国内例外使用阿里/腾讯 DoH；服务组目标的 DNS 请求经对应组选择出口；普通默认查询使用 Cloudflare 强制 DoH-H3 和 Google DoH。厂商 DNS policy 随国内服务优先直连开关启停。default-nameserver 使用阿里/腾讯 IP DoH 仅作域名端点启动解析。
+  # DNS：显式直连域名规则、geolocation-cn、国内服务 AND NOT 海外子集、.cn 后缀直连规则、白名单、代理节点域名引导和 Apple 国内例外使用阿里/腾讯 DoH；服务组目标的 DNS 请求经对应组选择出口；普通默认查询使用 Cloudflare 强制 DoH-H3 和 Google DoH。厂商与 .cn DNS policy 随国内服务优先直连开关启停。default-nameserver 使用阿里/腾讯 IP DoH 仅作域名端点启动解析。
   enable: true
   ipv6: true
   use-hosts: true
@@ -209,12 +206,6 @@ dns:
     +.ctaiot.com:
       - https://dns.alidns.com/dns-query#DIRECT
       - https://doh.pub/dns-query#DIRECT
-    +.steamserver.net:
-      - https://cloudflare-dns.com/dns-query#Steam&h3=true
-      - https://dns.google/dns-query#Steam
-    +.steamusercontent.com:
-      - https://cloudflare-dns.com/dns-query#Steam&h3=true
-      - https://dns.google/dns-query#Steam
     +.stun.l.google.com:
       - https://cloudflare-dns.com/dns-query#漏网之鱼&h3=true
       - https://dns.google/dns-query#漏网之鱼
@@ -229,8 +220,8 @@ dns:
     rule-set:apple_tv,apple_proxy:
       - https://cloudflare-dns.com/dns-query#AppleProxy&h3=true
       - https://dns.google/dns-query#AppleProxy
-    rule-set:category-ads: rcode://name_error
-    rule-set:games_cn,synology,nvidia_cn,apple_cn,microsoft_cn,dns_microsoft_cdn,dns_steam_cn,googlefcm:
+    rule-set:category-ads-all,httpdns: rcode://name_error
+    rule-set:synology,nvidia_cn,apple_cn,microsoft_cn,dns_microsoft_cdn,googlefcm:
       - https://dns.alidns.com/dns-query#DIRECT
       - https://doh.pub/dns-query#DIRECT
     rule-set:youtube:
@@ -254,9 +245,12 @@ dns:
     rule-set:telegram:
       - https://cloudflare-dns.com/dns-query#Telegram&h3=true
       - https://dns.google/dns-query#Telegram
-    rule-set:steam:
-      - https://cloudflare-dns.com/dns-query#Steam&h3=true
-      - https://dns.google/dns-query#Steam
+    rule-set:game_platforms_download_cn:
+      - https://dns.alidns.com/dns-query#DIRECT
+      - https://doh.pub/dns-query#DIRECT
+    rule-set:overseas_games:
+      - https://cloudflare-dns.com/dns-query#海外游戏&h3=true
+      - https://dns.google/dns-query#海外游戏
     rule-set:tiktok:
       - https://cloudflare-dns.com/dns-query#TikTok&h3=true
       - https://dns.google/dns-query#TikTok
@@ -278,6 +272,9 @@ dns:
     rule-set:pikpak:
       - https://cloudflare-dns.com/dns-query#PikPak&h3=true
       - https://dns.google/dns-query#PikPak
+    rule-set:tracker:
+      - https://cloudflare-dns.com/dns-query#BT/PT&h3=true
+      - https://dns.google/dns-query#BT/PT
     rule-set:spotify:
       - https://cloudflare-dns.com/dns-query#Spotify&h3=true
       - https://dns.google/dns-query#Spotify
@@ -293,7 +290,10 @@ dns:
     rule-set:ehentai:
       - https://cloudflare-dns.com/dns-query#EHentai&h3=true
       - https://dns.google/dns-query#EHentai
-    rule-set:dns_domestic_cdn,domestic_alibaba_dns,domestic_baidu,domestic_bilibili_dns,domestic_bytedance_dns,domestic_chinamobile_dns,domestic_chinatelecom_dns,domestic_chinaunicom_dns,domestic_huaweicloud_dns,domestic_jd_dns,domestic_netease_dns,domestic_tencent_dns,domestic_xiaomi_dns,geolocation-cn:
+    rule-set:dns_domestic_cdn,domestic_alibaba_dns,domestic_bilibili_dns,domestic_bytedance_dns,domestic_chinamobile_dns,domestic_chinatelecom_dns,domestic_chinaunicom_dns,domestic_huaweicloud_dns,domestic_jd_dns,domestic_netease_dns,domestic_sina_dns,domestic_tencent_dns,domestic_xiaomi_dns,domestic_xiaohongshu_dns,geolocation-cn:
+      - https://dns.alidns.com/dns-query#DIRECT
+      - https://doh.pub/dns-query#DIRECT
+    +.cn:
       - https://dns.alidns.com/dns-query#DIRECT
       - https://doh.pub/dns-query#DIRECT
     rule-set:geolocation-!cn:
@@ -393,7 +393,7 @@ proxy-groups:
       - Microsoft
       - Other Apple Service
       - Telegram
-      - Steam
+      - 海外游戏
       - TikTok
       - Twitter
       - Meta
@@ -401,6 +401,7 @@ proxy-groups:
       - Netflix
       - Emby
       - PikPak
+      - BT/PT
       - Spotify
       - Crypto
       - PayPal
@@ -854,8 +855,8 @@ proxy-groups:
     max-failed-times: 3
     empty-fallback: REJECT
     type: select
-    name: Steam
-    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Steam.svg
+    name: 海外游戏
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/Game.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -1127,6 +1128,48 @@ proxy-groups:
     type: select
     name: PikPak
     icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/PikPak.svg
+    proxies:
+      - 默认代理
+      - 手动选择
+      - 自动选择ex(大陆&香港)
+      - 香港
+      - 日本
+      - 美国
+      - 新加坡
+      - 台湾
+      - 韩国
+      - 澳大利亚
+      - 印度尼西亚
+      - 印度
+      - 加拿大
+      - 德国
+      - 英国
+      - 法国
+      - 荷兰
+      - 西班牙
+      - 俄罗斯
+      - 乌克兰
+      - 土耳其
+      - 挪威
+      - 瑞士
+      - 瑞典
+      - 爱尔兰
+      - 菲律宾
+      - 越南
+      - 泰国
+      - 马来西亚
+      - 低倍率节点
+      - 高倍率节点
+      - 家宽节点
+      - 其他节点
+      - 直连
+  - timeout: 5000
+    url: https://www.apple.com/library/test/success.html
+    max-failed-times: 3
+    empty-fallback: REJECT
+    type: select
+    name: BT/PT
+    icon: https://fastly.jsdelivr.net/gh/dgn0md/myProxyRules@main/Icons/svg/common/QBittorrent.svg
     proxies:
       - 默认代理
       - 手动选择
@@ -2430,14 +2473,6 @@ rule-providers:
     url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/private.mrs
     path: ./ruleset/private_ip.mrs
     path-in-bundle: geo/geoip/private.mrs
-  games_cn:
-    type: http
-    format: mrs
-    interval: 86400
-    behavior: domain
-    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-games@cn.mrs
-    path: ./ruleset/category-games@cn.mrs
-    path-in-bundle: geo/geosite/category-games@cn.mrs
   synology:
     type: http
     format: mrs
@@ -2541,6 +2576,14 @@ rule-providers:
     url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-ai-!cn.mrs
     path: ./ruleset/ai.mrs
     path-in-bundle: geo/geosite/category-ai-!cn.mrs
+  openai_ip:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: ipcidr
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/openai.mrs
+    path: ./ruleset/openai_ip.mrs
+    path-in-bundle: geo/geoip/openai.mrs
   github:
     type: http
     format: mrs
@@ -2589,22 +2632,22 @@ rule-providers:
     url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/telegram.mrs
     path: ./ruleset/telegram_ip.mrs
     path-in-bundle: geo/geoip/telegram.mrs
-  steam:
+  overseas_games:
     type: http
     format: mrs
     interval: 86400
     behavior: domain
-    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/steam.mrs
-    path: ./ruleset/steam.mrs
-    path-in-bundle: geo/geosite/steam.mrs
-  steam_ip:
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-games-!cn.mrs
+    path: ./ruleset/overseas_games.mrs
+    path-in-bundle: geo/geosite/category-games-!cn.mrs
+  game_platforms_download_cn:
     type: http
     format: mrs
     interval: 86400
-    behavior: ipcidr
-    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/steam.mrs
-    path: ./ruleset/steam_ip.mrs
-    path-in-bundle: geo/geoip/steam.mrs
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-game-platforms-download@cn.mrs
+    path: ./ruleset/game_platforms_download_cn.mrs
+    path-in-bundle: geo/geosite/category-game-platforms-download@cn.mrs
   tiktok:
     type: http
     format: mrs
@@ -2699,6 +2742,14 @@ rule-providers:
     url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/pikpak.mrs
     path: ./ruleset/pikpak.mrs
     path-in-bundle: geo/geosite/pikpak.mrs
+  tracker:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/tracker.mrs
+    path: ./ruleset/tracker.mrs
+    path-in-bundle: geo/geosite/tracker.mrs
   spotify:
     type: http
     format: mrs
@@ -2747,14 +2798,22 @@ rule-providers:
     url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/ehentai.mrs
     path: ./ruleset/ehentai.mrs
     path-in-bundle: geo/geosite/ehentai.mrs
-  category-ads:
+  category-ads-all:
     type: http
     format: mrs
     interval: 86400
     behavior: domain
-    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-ads.mrs
-    path: ./ruleset/category-ads.mrs
-    path-in-bundle: geo/geosite/category-ads.mrs
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-ads-all.mrs
+    path: ./ruleset/category-ads-all.mrs
+    path-in-bundle: geo/geosite/category-ads-all.mrs
+  httpdns:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/httpdns.mrs
+    path: ./ruleset/httpdns.mrs
+    path-in-bundle: geo/geosite/httpdns.mrs
   apple_proxy:
     type: http
     format: yaml
@@ -2792,14 +2851,6 @@ rule-providers:
     behavior: classical
     payload:
       - AND,((RULE-SET,domestic_alibaba),(NOT,((RULE-SET,domestic_alibaba_noncn))))
-  domestic_baidu:
-    type: http
-    format: mrs
-    interval: 86400
-    behavior: domain
-    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/baidu.mrs
-    path: ./ruleset/domestic_baidu.mrs
-    path-in-bundle: geo/geosite/baidu.mrs
   domestic_bilibili:
     type: http
     format: mrs
@@ -2976,6 +3027,28 @@ rule-providers:
     behavior: classical
     payload:
       - AND,((RULE-SET,domestic_netease),(NOT,((RULE-SET,domestic_netease_noncn))))
+  domestic_sina:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/sina.mrs
+    path: ./ruleset/domestic_sina.mrs
+    path-in-bundle: geo/geosite/sina.mrs
+  domestic_sina_noncn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/sina@!cn.mrs
+    path: ./ruleset/domestic_sina_noncn.mrs
+    path-in-bundle: geo/geosite/sina@!cn.mrs
+  domestic_sina_dns:
+    type: inline
+    format: text
+    behavior: classical
+    payload:
+      - AND,((RULE-SET,domestic_sina),(NOT,((RULE-SET,domestic_sina_noncn))))
   domestic_tencent:
     type: http
     format: mrs
@@ -3020,6 +3093,28 @@ rule-providers:
     behavior: classical
     payload:
       - AND,((RULE-SET,domestic_xiaomi),(NOT,((RULE-SET,domestic_xiaomi_noncn))))
+  domestic_xiaohongshu:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/xiaohongshu.mrs
+    path: ./ruleset/domestic_xiaohongshu.mrs
+    path-in-bundle: geo/geosite/xiaohongshu.mrs
+  domestic_xiaohongshu_noncn:
+    type: http
+    format: mrs
+    interval: 86400
+    behavior: domain
+    url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/xiaohongshu@!cn.mrs
+    path: ./ruleset/domestic_xiaohongshu_noncn.mrs
+    path-in-bundle: geo/geosite/xiaohongshu@!cn.mrs
+  domestic_xiaohongshu_dns:
+    type: inline
+    format: text
+    behavior: classical
+    payload:
+      - AND,((RULE-SET,domestic_xiaohongshu),(NOT,((RULE-SET,domestic_xiaohongshu_noncn))))
   apple_tv:
     type: http
     format: mrs
@@ -3042,13 +3137,6 @@ rule-providers:
     interval: 86400
     url: https://ruleset.skk.moe/Clash/non_ip/microsoft_cdn.txt
     path: ./ruleset/dns_microsoft_cdn.list
-  dns_steam_cn:
-    type: http
-    format: mrs
-    interval: 86400
-    behavior: domain
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam@cn.mrs
-    path: ./ruleset/dns_steam_cn.mrs
 rules:
   # 顺序：DNS 接管 → Apple 精确域名例外 → 广告/国内服务 → 服务域名 → 海外域名 → Apple IP → 私网 IP → 其他服务 IP → CN IP → 兜底。
   - DST-PORT,53,内置DNS
@@ -3085,9 +3173,9 @@ rules:
   - DOMAIN,updates.cdn-apple.com,直连
   - DOMAIN,assets.cdn-apple.com,直连
   - RULE-SET,apple_proxy,AppleProxy
-  - RULE-SET,category-ads,AdBlock
+  - RULE-SET,category-ads-all,AdBlock
+  - RULE-SET,httpdns,AdBlock
   - RULE-SET,private,直连
-  - RULE-SET,games_cn,直连
   - RULE-SET,synology,直连
   - RULE-SET,nvidia_cn,直连
   - RULE-SET,apple_cn,直连
@@ -3096,9 +3184,6 @@ rules:
   - DOMAIN,international-gfe.download.nvidia.com,直连
   - DOMAIN-SUFFIX,ctaiot.com,直连
   - RULE-SET,dns_microsoft_cdn,直连
-  - DOMAIN-SUFFIX,steamserver.net,Steam
-  - DOMAIN-SUFFIX,steamusercontent.com,Steam
-  - RULE-SET,dns_steam_cn,直连
   - DOMAIN-SUFFIX,stun.l.google.com,漏网之鱼
   - AND,((NETWORK,UDP),(DST-PORT,3478)),漏网之鱼
   - AND,((NETWORK,UDP),(DST-PORT,19302)),漏网之鱼
@@ -3110,7 +3195,8 @@ rules:
   - AND,((RULE-SET,microsoft),(NOT,((RULE-SET,dns_microsoft_cdn)))),Microsoft
   - RULE-SET,apple,Other Apple Service
   - RULE-SET,telegram,Telegram
-  - AND,((RULE-SET,steam),(NOT,((RULE-SET,dns_steam_cn)))),Steam
+  - RULE-SET,game_platforms_download_cn,直连
+  - AND,((RULE-SET,overseas_games),(NOT,((RULE-SET,game_platforms_download_cn)))),海外游戏
   - RULE-SET,tiktok,TikTok
   - RULE-SET,twitter,Twitter
   - RULE-SET,meta,Meta
@@ -3121,6 +3207,7 @@ rules:
   - DOMAIN-SUFFIX,nubebelle.com,Emby
   - RULE-SET,emby_keyword,Emby
   - RULE-SET,pikpak,PikPak
+  - RULE-SET,tracker,BT/PT
   - RULE-SET,spotify,Spotify
   - RULE-SET,cryptocurrency,Crypto
   - RULE-SET,paypal,PayPal
@@ -3128,7 +3215,6 @@ rules:
   - RULE-SET,ehentai,EHentai
   - RULE-SET,dns_domestic_cdn,直连
   - AND,((RULE-SET,domestic_alibaba),(NOT,((RULE-SET,domestic_alibaba_noncn)))),直连
-  - RULE-SET,domestic_baidu,直连
   - AND,((RULE-SET,domestic_bilibili),(NOT,((RULE-SET,domestic_bilibili_noncn)))),直连
   - AND,((RULE-SET,domestic_bytedance),(NOT,((RULE-SET,domestic_bytedance_noncn)))),直连
   - AND,((RULE-SET,domestic_chinamobile),(NOT,((RULE-SET,domestic_chinamobile_noncn)))),直连
@@ -3137,16 +3223,19 @@ rules:
   - AND,((RULE-SET,domestic_huaweicloud),(NOT,((RULE-SET,domestic_huaweicloud_noncn)))),直连
   - AND,((RULE-SET,domestic_jd),(NOT,((RULE-SET,domestic_jd_noncn)))),直连
   - AND,((RULE-SET,domestic_netease),(NOT,((RULE-SET,domestic_netease_noncn)))),直连
+  - AND,((RULE-SET,domestic_sina),(NOT,((RULE-SET,domestic_sina_noncn)))),直连
   - AND,((RULE-SET,domestic_tencent),(NOT,((RULE-SET,domestic_tencent_noncn)))),直连
   - AND,((RULE-SET,domestic_xiaomi),(NOT,((RULE-SET,domestic_xiaomi_noncn)))),直连
+  - AND,((RULE-SET,domestic_xiaohongshu),(NOT,((RULE-SET,domestic_xiaohongshu_noncn)))),直连
   - RULE-SET,geolocation-cn,直连
+  - DOMAIN-SUFFIX,cn,直连
   - AND,((RULE-SET,geolocation-!cn),(NOT,((RULE-SET,dns_domestic_cdn)))),默认代理
   - RULE-SET,apple_ip,AppleProxy,no-resolve
   - RULE-SET,private_ip,直连,no-resolve
   - RULE-SET,google_ip,Google,no-resolve
+  - RULE-SET,openai_ip,AI,no-resolve
   - RULE-SET,microsoft_ip,Microsoft,no-resolve
   - RULE-SET,telegram_ip,Telegram,no-resolve
-  - RULE-SET,steam_ip,Steam,no-resolve
   - RULE-SET,tiktok_ip,TikTok,no-resolve
   - RULE-SET,twitter_ip,Twitter,no-resolve
   - RULE-SET,facebook_ip,Meta,no-resolve
