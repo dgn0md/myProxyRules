@@ -4,7 +4,7 @@
  * 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
  * 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
  *
- * 最新 Raw SHA-256：fdec4e8700f2523478c0033a09d34dd404c50fc3746bf9f5231b838736408c70
+ * 最新 Raw SHA-256：834d0a7f4e0750a2c950faf205ccc13630059f17b2fd5f46f62698df80e0da84
  * Raw 脚本：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js
  * CDN 脚本：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js
  */
@@ -302,11 +302,10 @@ const serviceRegionNames = new Set(
   regionDefinitions.filter(({ name }) => !excludedServiceRegionNames.has(name)).map(({ name }) => name),
 );
 const regionRestrictedServiceNames = new Set(['Google', 'AI', 'TikTok', 'Meta', appleAiGroupName]);
-// Mihomo `+.` 后缀同时匹配根域主机，避免重复列举精确域名；Siri 正则族通过内联规则集 apple_siri_regex 注入。
+// Mihomo `+.` 后缀同时匹配根域主机，避免重复列举精确域名；Siri 关键字与正则族通过内联规则集 apple_siri_regex 注入。
 const appleRealIpEndpoints = [
   'dejavu.apple.com',
   'sequoia.apple.com',
-  '+.smoot.apple.com',
   '+.issuer.apple.com',
   '+.ropes.apple.com',
   '+.app.apple.com',
@@ -742,7 +741,6 @@ const appleEndpointDefinitions = [
       '+.icloud-content.com',
       'dejavu.apple.com',
       'sequoia.apple.com',
-      '+.smoot.apple.com',
       'bag.itunes.apple.com',
     ],
   },
@@ -765,10 +763,11 @@ const appleSiriRegexRuleProvider = {
   format: 'text',
   behavior: 'classical',
   payload: [
+    'DOMAIN-KEYWORD,siri',
+    'DOMAIN-KEYWORD,guzzoni',
+    'DOMAIN-KEYWORD,smoot',
     'DOMAIN-REGEX,^mask(-[a-z0-9]+)?\\.icloud\\.com$',
     'DOMAIN-REGEX,(^|\\.)apple-relay\\.(apple\\.com|cloudflare\\.com|fastly-edge\\.com|akamaized\\.net)$',
-    'DOMAIN-REGEX,(^|\\.)guzzoni\\.apple\\.com$|^guzzoni-apple-com\\.v\\.aaplimg\\.com$',
-    'DOMAIN-REGEX,(^|[.-])siri(-[a-z0-9]+)*\\.apple\\.com$',
     'AND,((DOMAIN-REGEX,ssl\\.ls\\.apple\\.com$|(^|\\.)ls-apple\\.com\\.akadns\\.net$),(NOT,((DOMAIN-REGEX,(^|[.-])cn([.-]|$)))))',
   ],
 };
