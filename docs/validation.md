@@ -32,7 +32,7 @@
 - 实际 rule provider 保持加载，用回环 CONNECT 检查命中的规则与策略链；DNS 检查将上游替换为本地计数器，不产生公共业务 DNS 查询。
 - 本地支持 TLS 隧道的 HTTP 代理配合临时测试证书模拟 200、204、500、302 和超时，验证 Mihomo provider 对配置的 200 测速期望状态的处理，并核对实际发出的 Apple HTTPS 测速主机、路径与 HEAD 方法，以及统一延迟启用时的重复请求；自动组的期望状态通过内核 API 核对。合成 QUIC v1/v2 Initial 经回环 SOCKS UDP 验证嗅探开启和关闭时的域名路由及原目标 IP，出口限制在回环。此检查不启用 TUN，也不验证完整 QUIC 握手。
 - 可选运行 `MYPROXY_CACHE_BENCH=1 ./tools/npmw run native:check`，在回环解析器上对照 ARC 和 LRU：先重复查询热点域名，再查询多于默认缓存容量的一次性域名，最后复查热点，记录上游查询次数、耗时和进程 RSS。它是合成负载，结果与实际设备流量可能不同，不作为性能门禁。
-- 国内 DNS 回归从实际 `geolocation-cn` 与 Bett 国内服务快照抽取样本，覆盖明确直连域名规则的国内 DNS、`domestic AND NOT domestic_noncn` 命中与排除、完整百度集合、厂商 DNS policy 随国内路由开关启停、白名单 provider 开关、重叠集合、Steam 排除项、名单外查询、A/AAAA 与直连拨号；代理服务 DNS policy 按对应服务组验证。它验证生成策略在隔离环境的选择，不测量真实线路延迟。
+- 国内 DNS 回归从实际 `geolocation-cn` 与 Bett 国内服务快照抽取样本，覆盖明确直连域名规则的国内 DNS、`domestic AND NOT domestic_noncn` 命中与排除、无海外子集的完整国内集合、厂商 DNS policy 随国内路由开关启停、白名单 provider 开关、游戏平台国内下载集合、重叠集合、名单外查询、A/AAAA 与直连拨号；代理服务 DNS policy 按对应服务组验证。它验证生成策略在隔离环境的选择，不测量真实线路延迟。
 
 ## CI 与用户网络
 
