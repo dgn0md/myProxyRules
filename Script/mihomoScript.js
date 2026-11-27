@@ -4,7 +4,7 @@
  * 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
  * 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
  *
- * 最新 Raw SHA-256：6c9285fd43a4979047f6f7079f03a9d1a2fe38cde26f3ab8285af5e276402161
+ * 最新 Raw SHA-256：7974fc5bc7297488082f2e71d09ecae90ee5519bdb8a0d3ab50a8840e0f66c51
  * Raw 脚本：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js
  * CDN 脚本：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js
  */
@@ -302,27 +302,14 @@ const serviceRegionNames = new Set(
   regionDefinitions.filter(({ name }) => !excludedServiceRegionNames.has(name)).map(({ name }) => name),
 );
 const regionRestrictedServiceNames = new Set(['Google', 'AI', 'TikTok', 'Meta', appleAiGroupName]);
-// Mihomo `+.` 后缀同时匹配根域主机，避免重复列举精确域名。
+// Mihomo `+.` 后缀同时匹配根域主机，避免重复列举精确域名；Siri 正则族通过内联规则集 apple_siri_regex 注入。
 const appleRealIpEndpoints = [
-  '+.guzzoni.apple.com',
-  'guzzoni-apple-com.v.aaplimg.com',
-  '+.siri.apple.com',
   'dejavu.apple.com',
   'sequoia.apple.com',
   '+.smoot.apple.com',
-  'api-siri-prod.apple.com',
-  'gspe1-ssl.ls.apple.com',
-  'gspe35-ssl.ls.apple.com',
   '+.issuer.apple.com',
   '+.ropes.apple.com',
-  'mask-api.icloud.com',
-  'mask.icloud.com',
-  'mask-h2.icloud.com',
   '+.app.apple.com',
-  '+.apple-relay.apple.com',
-  '+.apple-relay.cloudflare.com',
-  '+.apple-relay.fastly-edge.com',
-  '+.apple-relay.akamaized.net',
   'cp4.cloudflare.com',
 ];
 
@@ -747,30 +734,14 @@ const appleEndpointDefinitions = [
     domains: [
       '+.issuer.apple.com',
       '+.ropes.apple.com',
-      'mask-api.icloud.com',
-      'mask.icloud.com',
-      'mask-h2.icloud.com',
       // app.apple.com 后缀规则已覆盖 Apple 清理代理主机。
       '+.app.apple.com',
-      '+.apple-relay.apple.com',
-      '+.apple-relay.cloudflare.com',
-      '+.apple-relay.fastly-edge.com',
-      '+.apple-relay.akamaized.net',
       'cp4.cloudflare.com',
       // 国际内容域整体覆盖，中国站内容域保留原规则；gateway 单独归入 Other Apple Service。
       '+.icloud-content.com',
-      // +.guzzoni.apple.com 同时覆盖根域主机；补充其 CNAME 目标主机。
-      '+.guzzoni.apple.com',
-      'guzzoni-apple-com.v.aaplimg.com',
-      '+.siri.apple.com',
       'dejavu.apple.com',
       'sequoia.apple.com',
       '+.smoot.apple.com',
-      // 精确匹配 Siri API 主机，并沿用该组的 DNS 与出口。
-      'api-siri-prod.apple.com',
-      // Apple 地区检测端点按用户指定与 Siri/Apple Intelligence 共用此组出口。
-      'gspe1-ssl.ls.apple.com',
-      'gspe35-ssl.ls.apple.com',
     ],
   },
   {
@@ -787,6 +758,24 @@ const appleEndpointDefinitions = [
     ],
   },
 ];
+const appleSiriRegexRuleProvider = {
+  type: 'inline',
+  format: 'text',
+  behavior: 'classical',
+  payload: [
+    'DOMAIN-REGEX,^mask(-[a-z0-9]+)?\\.icloud\\.com$',
+    'DOMAIN-REGEX,(^|\\.)apple-relay\\.(apple\\.com|cloudflare\\.com|fastly-edge\\.com|akamaized\\.net)$',
+    'DOMAIN-REGEX,(^|\\.)guzzoni\\.apple\\.com$|^guzzoni-apple-com\\.v\\.aaplimg\\.com$',
+    'DOMAIN-REGEX,(^|[.-])siri(-[a-z0-9]+)*\\.apple\\.com$',
+    'DOMAIN-REGEX,ssl\\.ls\\.apple\\.com$',
+  ],
+};
+const appleMediaRegexRuleProvider = {
+  type: 'inline',
+  format: 'text',
+  behavior: 'classical',
+  payload: ['DOMAIN-REGEX,^(?:(?:p\\d+-)?buy|play|se\\d*)\\.itunes\\.apple\\.com$'],
+};
 const appleProxyRuleProvider = {
   type: 'http',
   format: 'yaml',
@@ -798,13 +787,6 @@ const appleProxyRuleProvider = {
 const appleIpRuleProvider = geoipProvider('apple');
 const appleTvRuleProvider = geositeProvider('apple-tvplus', 'apple_tv');
 const appleOtherExactEndpoints = ['gateway.icloud.com', 'setup.icloud.com'];
-const appleOverseasMediaEndpoints = [
-  'buy.itunes.apple.com',
-  'p12-buy.itunes.apple.com',
-  'play.itunes.apple.com',
-  'se.itunes.apple.com',
-  'se2.itunes.apple.com',
-];
 for (const { name, option } of appleEndpointDefinitions) {
   serviceConfigs.push({
     name,
@@ -1615,7 +1597,6 @@ function buildDnsAndHostsConfig(config, filteredProxies) {
     'doh.pub': ['1.12.12.12', '120.53.53.53'],
     'cloudflare-dns.com': ['1.1.1.1', '1.0.0.1'],
     'dns.google': ['8.8.8.8', '8.8.4.4'],
-
     // 解决谷歌商店无法下载的问题
     'services.googleapis.cn': 'services.googleapis.com',
 
@@ -1836,6 +1817,13 @@ function applyAppleRouting(config, options) {
         `${domain.startsWith('+.') ? 'DOMAIN-SUFFIX' : 'DOMAIN'},${domain.replace(/^\+\./, '')},${name}`,
       );
     }
+    if (name === appleAiGroupName) {
+      config['rule-providers'].apple_siri_regex = appleSiriRegexRuleProvider;
+      specialRules.push(`RULE-SET,apple_siri_regex,${appleAiGroupName}`);
+      if (!config.dns['fake-ip-filter'].includes('rule-set:apple_siri_regex')) {
+        config.dns['fake-ip-filter'].push('rule-set:apple_siri_regex');
+      }
+    }
     if (name === appleProxyGroupName) {
       // TV+ 动态规则与其他产品共享同一地区选择器。
       config['rule-providers'].apple_proxy = appleProxyRuleProvider;
@@ -1846,9 +1834,8 @@ function applyAppleRouting(config, options) {
       config['rule-providers'].apple_tv = appleTvRuleProvider;
       specialRules.push(`RULE-SET,apple_tv,${appleProxyGroupName}`);
       if (options.Apple媒体代理) {
-        for (const domain of appleOverseasMediaEndpoints) {
-          specialRules.push(`DOMAIN,${domain},${appleProxyGroupName}`);
-        }
+        config['rule-providers'].apple_media_regex = appleMediaRegexRuleProvider;
+        specialRules.push(`RULE-SET,apple_media_regex,${appleProxyGroupName}`);
       }
     }
   }
@@ -2064,7 +2051,14 @@ function applyDnsPolicies(config, options, { specialRules, specialIpRules }) {
     addedRuleSetKeys.add(key);
     orderedDnsPolicyEntries.push([key, value]);
   };
-  for (const priorityProvider of ['apple_tv', 'apple_proxy', 'category-ads-all', 'httpdns']) {
+  for (const priorityProvider of [
+    'apple_siri_regex',
+    'apple_media_regex',
+    'apple_tv',
+    'apple_proxy',
+    'category-ads-all',
+    'httpdns',
+  ]) {
     if (domainRuleSetEgress.has(priorityProvider)) {
       pushRuleSetPolicy(
         `rule-set:${priorityProvider}`,
