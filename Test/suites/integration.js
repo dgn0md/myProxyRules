@@ -151,7 +151,7 @@ function runIntegrationTests(h, api, fx, loadScript, scriptFile) {
     const policyKeys = Object.keys(out.dns['nameserver-policy']);
     h.assert(policyKeys.some((k) => k.startsWith('rule-set:') && k.includes('dns_domestic_cdn')));
     h.assert(policyKeys.some((k) => k.startsWith('rule-set:') && k.includes('dns_microsoft_cdn')));
-    h.assert(policyKeys.some((k) => k.startsWith('rule-set:') && k.includes('dns_steam_cn')));
+    h.assert(policyKeys.some((k) => k.startsWith('rule-set:') && k.includes('game_platforms_download_cn')));
   });
   h.test('节点 hosts 映射改写为 server，不再复制 hosts', () => {
     const out = api.main(fx.typicalSubscription());
@@ -276,7 +276,10 @@ function runIntegrationTests(h, api, fx, loadScript, scriptFile) {
         '极简模式生成 Apple AI/Siri 所需且排除香港的地区组与 setup.icloud.com 服务组',
       );
       h.assert(!out.dns['fake-ip-filter'].includes('rule-set:googlefcm'), '不应注入 FCM fake-IP 规则');
-      h.assert(!out.rules.some((rule) => /,(Google|AI|Telegram|Steam|AdBlock)$/.test(rule)), '不应生成分流规则');
+      h.assert(
+        !out.rules.some((rule) => /,(Google|AI|Telegram|海外游戏|BT\/PT|AdBlock)$/.test(rule)),
+        '不应生成分流规则',
+      );
     }),
   );
   h.test('过滤高倍率=true → 移除高倍率节点及组', () =>
