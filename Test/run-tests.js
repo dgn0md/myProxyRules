@@ -53,7 +53,6 @@ async function main() {
       api.ruleOptionsEnable.严格DNS校验 = false;
       api.ruleOptionsEnable.Apple智能分流 = false;
       api.ruleOptionsEnable['AppleProxy'] = false;
-      api.ruleOptionsEnable.接管DNS53 = false;
       api.ruleOptionsEnable.Apple媒体代理 = false;
       const h = new Harness(script.label);
 

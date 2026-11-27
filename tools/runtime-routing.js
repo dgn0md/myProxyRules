@@ -165,7 +165,9 @@ const CASES = [
   ['stun.l.google.com', '漏网之鱼'],
   ['youtube.com', 'YouTube'],
   ['github.com', 'GitHub'],
-  ['store.steampowered.com', 'Steam'],
+  ['store.steampowered.com', '海外游戏'],
+  ['dl.steam.clngaa.com', '直连', 'game_platforms_download_cn'],
+  ['alibaba.cdn.steampipe.steamcontent.com', '直连', 'game_platforms_download_cn'],
   ['qq.com', '直连'],
   ['www.baidu.com', '直连'],
 ];

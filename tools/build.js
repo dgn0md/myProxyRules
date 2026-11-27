@@ -49,11 +49,8 @@ function configure(api, settings) {
     Apple海外媒体: 'Apple媒体代理',
     Apple模型下载直连: 'Apple下载直连',
     Apple服务默认直连: 'Apple其他默认直连',
-    国内CDNDNS: '国内CDN解析',
-    微软下载DNS: '微软下载解析',
-    Steam下载DNS: 'Steam下载解析',
+    Steam: '海外游戏',
     严格加密DNS: '严格DNS校验',
-    拦截外部明文DNS: '接管DNS53',
     代理IPV4优先: '节点IPv4优先',
     代理IPV6优先: '节点IPv6优先',
     极简国内外分流模式: '极简分流',
@@ -77,7 +74,20 @@ function configure(api, settings) {
     AppleBooks: 'AppleProxy',
     Apple地区检测: 'Apple智能分流',
   };
-  const removedOptions = new Set(['AppleRelay', '负载均衡', '微软默认直连', '微软服务默认直连']);
+  const removedOptions = new Set([
+    'AppleRelay',
+    '负载均衡',
+    '微软默认直连',
+    '微软服务默认直连',
+    '接管DNS53',
+    '拦截外部明文DNS',
+    '国内CDN解析',
+    '国内CDNDNS',
+    '微软下载解析',
+    '微软下载DNS',
+    'Steam下载解析',
+    'Steam下载DNS',
+  ]);
   const migratedOptions = new Map();
   for (const [key, value] of Object.entries(options)) {
     if (typeof value !== 'boolean') throw new Error(`${key} 必须填写 true 或 false`);
@@ -207,7 +217,7 @@ function render(config, api, settings) {
   const options = doc.getIn(['x-myProxyRules', 'options'], true);
   for (const pair of options.items) pair.value.comment = ' ' + (descriptions[pair.key.value] || '');
   const comments = {
-    dns: 'DNS：显式直连域名规则、geolocation-cn、国内服务 AND NOT 海外子集、完整百度集合、白名单、代理节点域名引导和 Apple 国内例外使用阿里/腾讯 DoH；服务组目标的 DNS 请求经对应组选择出口；普通默认查询使用 Cloudflare 强制 DoH-H3 和 Google DoH。厂商 DNS policy 随国内服务优先直连开关启停。default-nameserver 使用阿里/腾讯 IP DoH 仅作域名端点启动解析。',
+    dns: 'DNS：显式直连域名规则、geolocation-cn、国内服务 AND NOT 海外子集、.cn 后缀直连规则、白名单、代理节点域名引导和 Apple 国内例外使用阿里/腾讯 DoH；服务组目标的 DNS 请求经对应组选择出口；普通默认查询使用 Cloudflare 强制 DoH-H3 和 Google DoH。厂商与 .cn DNS policy 随国内服务优先直连开关启停。default-nameserver 使用阿里/腾讯 IP DoH 仅作域名端点启动解析。',
     tun: 'TUN 接管 TCP/UDP 53；strict-route 在支持的平台防多网卡旁路。关闭 TUN 需上级 DNS 接管。',
     'proxy-providers': '填入 Clash/Mihomo 订阅 URL；静态 provider 模式不能读取机场的顶层 DNS/hosts。',
     proxies: '自定义节点与五种直连出口；链式落地须在 x-myProxyRules.customProxies 配置并重新生成。',
