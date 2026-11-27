@@ -7,7 +7,7 @@ myProxyRules 以 Mihomo 为唯一功能源和主支持客户端，提供覆写�
 ## 项目重点
 
 - **Apple 精细分流**：将 Apple Intelligence / Siri、`AppleProxy` 动态集合与产品入口、其他 Apple 服务分组。Siri 组默认美国，没有合格地区候选时拒绝连接；`AppleProxy` 初始选择美国且可切换直连；其他 Apple 服务默认直连。共享端点和 DNS policy 的细节见 [Apple 路由说明](docs/apple-routing.md)。
-- **DNS policy 与出口联动**：明确路由到 `直连` 的域名规则与动态域名规则集使用阿里 DoH 与腾讯 DoH；代理服务的 DNS 请求经对应服务组选择出口。`geolocation-cn`、国内 CDN、Microsoft 下载、Steam 国内节点及国内服务集合也使用国内加密 DNS；11 组国内服务集合按 `domestic AND NOT domestic_noncn`，百度按完整集合匹配，厂商 policy 随 `国内服务优先直连` 开关启停。仅因 IP 兜底规则直连或未命中明确域名 policy 的查询仍使用默认国外 DNS。普通默认查询使用 Cloudflare 强制 DoH-H3 与 Google DoH；代理节点域名使用阿里/腾讯 DoH，经直连建立连接，避免节点启动依赖境外 DNS。启动解析单独使用阿里/腾讯 IP DoH。地区服务保持专属解析出口。严格模式不接受生成配置里的明文或不安全 DNS，也不静默回退。它描述的是配置行为，不代表所有设备流量都已被接管。
+- **DNS policy 与出口联动**：明确路由到 `直连` 的域名规则与动态域名规则集使用阿里 DoH 与腾讯 DoH；代理服务的 DNS 请求经对应服务组选择出口。`geolocation-cn`、`.cn` 后缀直连规则、国内 CDN、Microsoft 下载、游戏平台国内下载集合及 13 组国内服务集合（`domestic AND NOT domestic_noncn`）也使用国内加密 DNS；厂商与 `.cn` policy 随 `国内服务优先直连` 开关启停。仅因 IP 兜底规则直连或未命中明确域名 policy 的查询仍使用默认国外 DNS。普通默认查询使用 Cloudflare 强制 DoH-H3 与 Google DoH；代理节点域名使用阿里/腾讯 DoH，经直连建立连接，避免节点启动依赖境外 DNS。启动解析单独使用阿里/腾讯 IP DoH。地区服务保持专属解析出口。严格模式不接受生成配置里的明文或不安全 DNS，也不静默回退。它描述的是配置行为，不代表所有设备流量都已被接管。
 - **机场配置只接管节点**：展开订阅时处理节点；机场 DNS、路由、策略组和其他非节点设置由脚本重建。机场 hosts 只在满足节点改写条件时用于改写节点 server，不复制到结果配置。
 - **纯 IP 域名识别**：从支持的 HTTP Host、TLS SNI 与 QUIC 元数据补充路由所需域名；不解密 HTTPS，也不改写目标地址。
 - **Mihomo 功能源与兼容配置**：`Script/mihomoScript.js` 管理规则和选项，`Config/mihomoConfig.yaml` 由 GitHub Actions 构建并回写；Stash 沿用 Mihomo provider、MRS 与 DNS policy。Surge、Shadowrocket 和 Quantumult X 原生配置由适配器从同一配置对象生成。YAML 中的 `x-myProxyRules` 扩展字段供构建工具读取。
@@ -17,14 +17,14 @@ myProxyRules 以 Mihomo 为唯一功能源和主支持客户端，提供覆写�
 ## 常规能力
 
 提供 26 个地区节点组、倍率和家宽节点分类、AI / Google / YouTube / Microsoft 等常见服务分流，以及手动选择、测速和链式代理等配置选项。
-私网 IP 使用 `直连,no-resolve`；Google、Telegram、TikTok、Twitter、Facebook/Meta IP 使用代理出口及 `no-resolve`，关闭服务组或启用极简模式时改用 `默认代理`。Apple、Microsoft、Steam、Netflix、Spotify IP 与末端 `cn_ip` 均使用 `no-resolve`，避免 Fake-IP 下未知海外域名被 `cn_ip` 触发本地双重 DNS 解析。AI 当前使用域名集合，没有独立 IP 集合。
+私网 IP 使用 `直连,no-resolve`；Google、AI（OpenAI）、Telegram、TikTok、Twitter、Facebook/Meta IP 使用代理出口及 `no-resolve`，关闭服务组或启用极简模式时改用 `默认代理`。Apple、Microsoft、Netflix、Spotify IP 与末端 `cn_ip` 均使用 `no-resolve`，避免 Fake-IP 下未知海外域名被 `cn_ip` 触发本地双重 DNS 解析。
 `GLOBAL`、`Google`、`AI`、`TikTok`、`Meta` 与 Apple 代理组首次默认选择 `美国`，`默认代理`、`Microsoft`、`FCM` 首次默认选择 `自动选择ex(大陆&香港)` / `默认代理`；仅在相应候选组存在时生效，已有客户端选择缓存优先。
-阿里、百度、B站、字节、中国移动/电信/联通、华为云、京东、网易、腾讯、小米提供国内服务模块，连接规则和厂商 DNS policy 统一受默认开启的 `国内服务优先直连` 控制。模块动态使用 Bett 厂商集合，有同源 `@!cn` 海外子集时，路由和 DNS 都排除该子集；百度当前没有配套子集，因此完整百度集合使用国内加密 DNS。阿里/淘宝、腾讯云、火山引擎等子品牌由上层厂商集合覆盖，不重复加载；未标注海外的共享域名仍依赖上游分类质量。
+阿里、B站、字节、中国移动/电信/联通、华为云、京东、网易、新浪/微博、腾讯、小米、小红书共 13 组提供国内服务模块（百度、国内银行、美团、拼多多、知乎等无 `@!cn` 子集的国内服务已由 `geolocation-cn` 覆盖，不重复加载），并在 `geolocation-cn` 后补充 `DOMAIN-SUFFIX,cn,直连`；连接规则与对应国内 DNS policy 统一受默认开启的 `国内服务优先直连` 控制。13 组模块动态使用 Bett 集合，路由和 DNS 均排除同源 `@!cn` 海外子集；阿里/淘宝、腾讯云、火山引擎等子品牌由上层厂商集合覆盖，不重复加载；未标注海外的共享域名仍依赖上游分类质量。`海外游戏` 组使用 `category-games-!cn` 并排除直连的 `category-game-platforms-download@cn`，`BT/PT` 组使用 `tracker`，`AdBlock` 使用 `category-ads-all` 并同时拦截 `httpdns`。
 测速使用 `https://www.apple.com/library/test/success.html`；Mihomo 内核通过被测节点发起 HTTPS 请求，provider 与自动测速组要求返回 HTTP 200。测速只检查状态码，不校验网页正文。普通 `www.apple.com` 访问仍按现有 Apple 规则与 DNS policy 处理；探测服务异常时节点可能暂时被判为不可用。
 
-Mihomo TUN 默认使用 `mips` 栈，DNS 使用 `lru` + `cache-max-size: 1` 并关闭全局 TCP Keep-Alive；`sniffer.override-destination` 默认开启；开启 `接管DNS53` 时同时以 `DST-PORT,853,REJECT` 拦截外部 DoT/DoQ 并对 `use-application-dns.net` 返回 `rcode://name_error`；公共 WebRTC STUN（`stun.l.google.com` 及 UDP 3478/19302）优先归入 `漏网之鱼`（极简模式为 `默认代理`）。系统 DNS 的设置沿用内核的平台默认：开启自动路由时 Windows/Linux 默认 `hijack`，macOS 默认 `disabled`；设备和客户端仍需确认流量进入 TUN。非 Mihomo 客户端的相关行为以其应用为准。
+Mihomo TUN 默认使用 `mips` 栈，DNS 使用 `lru` + `cache-max-size: 1` 并关闭全局 TCP Keep-Alive；`sniffer.override-destination` 默认开启；默认接管流量中的 TCP/UDP 53、以 `DST-PORT,853,REJECT` 拦截外部 DoT/DoQ 并对 `use-application-dns.net` 返回 `rcode://name_error`；公共 WebRTC STUN（`stun.l.google.com` 及 UDP 3478/19302）优先归入 `漏网之鱼`（极简模式为 `默认代理`）。系统 DNS 的设置沿用内核的平台默认：开启自动路由时 Windows/Linux 默认 `hijack`，macOS 默认 `disabled`；设备和客户端仍需确认流量进入 TUN。非 Mihomo 客户端的相关行为以其应用为准。
 
-明确直连的域名规则、三大直连 CDN 集合（开启时同时生成直连路由并在对应代理规则中以 `AND NOT` 排除）、`geolocation-cn`、`Microsoft`/`FCM` 选直连时的本地解析及 Apple 国内例外使用阿里/腾讯 DoH；其他代理服务的 policy 经对应服务组选择 DNS 出口。普通业务查询默认经 `自动选择ex(大陆&香港)`（极简或关闭该组时经 `默认代理`）使用 Cloudflare DoH-H3 与 Google DoH；节点域名使用阿里/腾讯 DoH 并经直连解析，避免代理可用前依赖境外 DNS。`default-nameserver` 启动解析使用阿里/腾讯 IP DoH。这不代表完全不向国内解析器发送查询。来源、重叠处理和边界见 [规则来源说明](docs/rule-sources.md)。
+明确直连的域名规则、两大独立直连 CDN 集合（开启时同时生成直连路由并在对应代理规则中以 `AND NOT` 排除）、`海外游戏` 组内直连的游戏平台国内下载集合、`geolocation-cn`、`Microsoft`/`FCM` 选直连时的本地解析及 Apple 国内例外使用阿里/腾讯 DoH；其他代理服务的 policy 经对应服务组选择 DNS 出口。普通业务查询默认经 `自动选择ex(大陆&香港)`（极简或关闭该组时经 `默认代理`）使用 Cloudflare DoH-H3 与 Google DoH；节点域名使用阿里/腾讯 DoH 并经直连解析，避免代理可用前依赖境外 DNS。`default-nameserver` 启动解析使用阿里/腾讯 IP DoH。这不代表完全不向国内解析器发送查询。来源、重叠处理和边界见 [规则来源说明](docs/rule-sources.md)。
 
 ## Mihomo 主支持入口
 

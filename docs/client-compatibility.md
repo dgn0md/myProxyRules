@@ -36,7 +36,7 @@ npm run check 会检查四种客户端产物与构建器是否一致。该检查
 | MRS | 原生动态规则 provider | 支持 domain/IP MRS，沿用项目 provider；iOS/tvOS 忽略进程名规则 | 不读本项目 MRS；使用原生规则资源替代可映射的服务集合 | 不读本项目 MRS；使用原生规则资源替代可映射的服务集合 | 不读本项目 MRS；使用 Quantumult X 规则资源替代可映射的服务集合 |
 | 动态节点筛选 | provider、过滤器与策略组 | 沿用 Clash/Mihomo 结构 | policy-path 与策略组正则 | 应用内节点与策略组正则 | server_remote、资源标签与节点标签正则；带正则筛选的自动组降为可用性选择 |
 | DNS | 完整 nameserver-policy、启动解析和 Fake-IP | 沿用项目 DNS 配置 | 加密 DNS 与按路由出口查询；不等价于 Mihomo 每个 provider 的 DNS policy | 加密 DoH 与客户端 fallback；按域名动态跟随组的能力不同 | 加密 DoH；静态精确域名有映射，动态 rule-set DNS policy 不等价 |
-| 国内服务集合 | 12 组路由，其中 11 组 AND NOT 海外子集 | 沿用原生规则与 MRS | 省略无法证明等价的 AND/NOT 直连规则 | 同左 | 同左 |
+| 国内服务集合 | 13 组路由（全部 AND NOT 海外子集）+ `.cn` 后缀直连 | 沿用原生规则与 MRS | 保留 `.cn` 后缀直连；省略无法证明等价的 AND/NOT 直连规则 | 同左 | 同左 |
 | 脚本、模块 | 执行项目 Mihomo 脚本 | Stash 脚本/覆写能力由应用支持 | Surge JavaScript 与 .sgmodule 由应用支持 | Shadowrocket 脚本与 .module 由应用支持 | rewrite_remote、task_local 等脚本资源由应用支持 |
 | 本仓库生成脚本/模块 | mihomoScript.js | 不生成 Stash 专用脚本或覆写模块 | 不生成 .sgmodule 或 Surge 脚本 | 不生成 .module 或 Shadowrocket 脚本 | 不生成 QX 重写、任务或资源解析脚本 |
 
@@ -52,9 +52,9 @@ npm run check 会检查四种客户端产物与构建器是否一致。该检查
 | `apple_cn` / 固定提交的 SukkaW Surge 规则 | SukkaW 文件可直接作为 Surge 与 Shadowrocket 规则集；没有验证过的 Quantumult X 同范围原生版本。 | Surge、Shadowrocket 使用同一 SukkaW URL；Quantumult X 省略。 |
 | Bett domain MRS providers | 上游的 `.list` / `.yaml` 是通用域名 payload 变体，不等同于每个客户端的规则行；目前没有可对所有 provider 证明格式和语义均兼容的版本。 | 对已声明的服务集合使用 Blackmatrix7 对应客户端原生列表；其他 provider 继续省略。 |
 | Bett IP-CIDR MRS providers | 裸 CIDR 列表缺少目标规则类型与策略，不能直接当作客户端规则集。 | 保留省略，不替换为其他 GeoIP/IP 数据库。 |
-| Sukka CDN、MetaCubeX Steam 与其他 classical/DNS 专用 provider | 当前源是 DNS/路由专用；没有验证出与目标客户端等价的同上游文件和 DNS policy 行为。 | 保留各客户端原生已验证映射；无可验证映射时省略并在配置注释中说明。 |
+| Sukka CDN 与其他 classical/DNS 专用 provider | 当前源是 DNS/路由专用；没有验证出与目标客户端等价的同上游文件和 DNS policy 行为。 | 保留各客户端原生已验证映射；无可验证映射时省略并在配置注释中说明。 |
 
-当前映射到 Blackmatrix7 客户端目录的 Bett 服务 provider 为 `googlefcm`、`youtube`、`google`、`github`、`microsoft`、`apple`、`telegram`、`steam`、`tiktok`、`twitter`、`meta`、`line`、`netflix`、`pikpak`、`spotify`、`cryptocurrency`、`paypal`、`patreon`、`ehentai` 和 `category-ads`。兼容性由生成器中的规则源注册表维护，并由 `tests/build-targets.test.js` 验证其优先级与回退行为。
+当前映射到 Blackmatrix7 客户端目录的 Bett 服务 provider 为 `googlefcm`、`youtube`、`google`、`github`、`microsoft`、`apple`、`telegram`、`tiktok`、`twitter`、`meta`、`line`、`netflix`、`pikpak`、`spotify`、`cryptocurrency`、`paypal`、`patreon`、`ehentai` 和 `category-ads-all`。兼容性由生成器中的规则源注册表维护，并由 `tests/build-targets.test.js` 验证其优先级与回退行为。
 
 Surge 与 Shadowrocket 的 Apple CN 规则固定引用 [SukkaW Apple CN 文本规则](https://github.com/SukkaW/Surge/blob/0afc9c2ee92aadbf79ce1c9caf03f724135073ea/Source/non_ip/apple_cn.conf)。Bett 的通用列表在目标文件语法或精确/后缀语义没有确认时不被当作直接替代；Quantumult X 规则资源使用其原生过滤规则格式。
 
@@ -64,9 +64,9 @@ Stash 的 MRS provider 保留项目规则，但 Stash iOS/tvOS 因 Network Exten
 
 以下 Mihomo 行为没有被转换成未经验证的替代规则：
 
-- domestic AND NOT domestic_noncn 的 11 组厂商直连规则和完整 domestic_baidu 直连规则。其他客户端不因此扩大国内直连；未匹配时继续按配置末尾的策略处理。
+- domestic AND NOT domestic_noncn 的 13 组厂商直连规则。其他客户端不因此扩大国内直连；未匹配时继续按配置末尾的策略处理（`.cn` 后缀直连规则作为静态后缀规则保留）。
 - geolocation-cn 与 geolocation-!cn 动态域名集合，以及 cn_ip MRS IP 兜底。目标配置不以可能扩大匹配面的客户端 GeoIP 数据代替。
-- Apple、服务与私网 IP MRS provider、Apple TV+ MRS、Emby MRS/关键词、AI MRS、以及 DNS 专用的 CDN、Microsoft 下载和 Steam 国内名单。
+- Apple、服务与私网 IP MRS provider、Apple TV+ MRS、Emby MRS/关键词、AI MRS、`海外游戏` 组合规则与游戏平台国内下载集合、`BT/PT`（`tracker`）、`httpdns`，以及 DNS 专用的 CDN 与 Microsoft 下载名单。
 - Mihomo private/private_ip provider 与用于端口 53 的 dns 出站规则。配置将 DNS 流量交给目标应用自身的 DNS 引擎处理。
 
 未映射的 provider 在 .conf 的 [Rule] 或 [filter_local] 中用 COMPATIBILITY: omitted 注释说明；兼容性差异以此文档为准。精确域名规则和策略组引用仍按目标语法输出。
