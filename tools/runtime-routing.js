@@ -118,9 +118,12 @@ const CASES = [
   ['guzzoni-apple-com.v.aaplimg.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['api-siri-prod.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['api.smoot.apple.com', APPLE_AI_GROUP],
+  ['bag.itunes.apple.com', APPLE_AI_GROUP],
   ['gspe1-ssl.ls.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['gspe35-ssl.ls.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['ssl.ls.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
+  ['gspe1-ssl.ls-apple.com.akadns.net', APPLE_AI_GROUP, 'apple_siri_regex'],
+  ['ls-apple.com.akadns.net', APPLE_AI_GROUP, 'apple_siri_regex'],
   // icloud-content.com 后缀及伪后缀边界（同时供 verifyICloudContentDnsPolicy 复用）
   ['icloud-content.com', APPLE_AI_GROUP],
   ['edge-013.hkhkg2.icloud-content.com', APPLE_AI_GROUP],

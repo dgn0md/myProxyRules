@@ -161,7 +161,6 @@ async function run() {
     config['mixed-port'] = proxyPort;
     config['external-controller'] = `127.0.0.1:${port}`;
     const appleTrialCases = [
-      ['bag.itunes.apple.com', '美国', 'apple'],
       ['fpinit.itunes.apple.com', '美国', 'apple'],
       ['smp-device-content.apple.com', '美国', 'apple'],
     ];
