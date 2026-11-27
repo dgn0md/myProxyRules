@@ -1189,8 +1189,10 @@ test('AppleProxy and Apple product endpoints share one regional group; overseas 
     assert.ok(defaults.rules.includes(`${type},${ruleDomain},${appleProxyGroup}`));
     assert.equal(dnsRouteFor(defaults.dns['nameserver-policy'][domain]?.[0]), appleProxyGroup);
   }
-  assert.ok(defaults.rules.includes(`DOMAIN,gspe1-ssl.ls.apple.com,${siriAiGroup}`));
-  assert.equal(dnsRouteFor(defaults.dns['nameserver-policy']['gspe1-ssl.ls.apple.com'][0]), siriAiGroup);
+  for (const host of ['guzzoni-apple-com.v.aaplimg.com', 'gspe1-ssl.ls.apple.com', 'gspe35-ssl.ls.apple.com']) {
+    assert.ok(defaults.rules.includes(`DOMAIN,${host},${siriAiGroup}`));
+    assert.equal(dnsRouteFor(defaults.dns['nameserver-policy'][host][0]), siriAiGroup);
+  }
   const appleProxyProvider = defaults['rule-providers'].apple_proxy;
   assert.equal(appleProxyProvider.behavior, 'classical');
   assert.equal(appleProxyProvider.format, 'yaml');
@@ -1405,7 +1407,9 @@ test('AppleFlow PCC and Siri endpoints use the eligible selector with US default
   ];
   const siri = [
     ['DOMAIN', 'gspe1-ssl.ls.apple.com', siriAiGroup],
+    ['DOMAIN', 'gspe35-ssl.ls.apple.com', siriAiGroup],
     ['DOMAIN-SUFFIX', 'guzzoni.apple.com', siriAiGroup],
+    ['DOMAIN', 'guzzoni-apple-com.v.aaplimg.com', siriAiGroup],
     ['DOMAIN-SUFFIX', 'siri.apple.com', siriAiGroup],
     ['DOMAIN', 'dejavu.apple.com', siriAiGroup],
     ['DOMAIN', 'sequoia.apple.com', siriAiGroup],
