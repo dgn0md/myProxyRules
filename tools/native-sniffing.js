@@ -159,13 +159,13 @@ async function verifySniffing({ binary, rulesDir, temp }) {
               host: 'api-siri-prod.apple.com',
               protocol: 'TLS',
               expected: 'Siri Ai/Apple Intelligence',
-              payload: 'api-siri-prod.apple.com',
+              payload: 'apple_siri_regex',
             },
             {
               host: 'apple-relay.apple.com',
               protocol: 'TLS',
               expected: 'Siri Ai/Apple Intelligence',
-              payload: 'apple-relay.apple.com',
+              payload: 'apple_siri_regex',
             },
             {
               host: 'unlisted-route-check.net',

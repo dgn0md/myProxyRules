@@ -108,16 +108,19 @@ const APPLE_PROXY_GROUP = 'AppleProxy';
 const OTHER_APPLE_GROUP = 'Other Apple Service';
 // 仅保留精确例外、AND NOT 排除与跨规则集优先级边界用例；普通规则集成员由 native-check.js 动态抽样覆盖。
 const CASES = [
-  // Apple AI / Siri 精确例外（不依赖外部规则集）
-  ['apple-relay.apple.com', APPLE_AI_GROUP],
-  ['apple-relay.cloudflare.com', APPLE_AI_GROUP],
+  // Apple AI / Siri 精确与内联正则例外（不依赖外部规则集）
+  ['mask.icloud.com', APPLE_AI_GROUP, 'apple_siri_regex'],
+  ['mask-h2.icloud.com', APPLE_AI_GROUP, 'apple_siri_regex'],
+  ['apple-relay.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
+  ['apple-relay.cloudflare.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['cp4.cloudflare.com', APPLE_AI_GROUP],
-  ['guzzoni.apple.com', APPLE_AI_GROUP],
-  ['guzzoni-apple-com.v.aaplimg.com', APPLE_AI_GROUP],
-  ['api-siri-prod.apple.com', APPLE_AI_GROUP],
+  ['guzzoni.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
+  ['guzzoni-apple-com.v.aaplimg.com', APPLE_AI_GROUP, 'apple_siri_regex'],
+  ['api-siri-prod.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['api.smoot.apple.com', APPLE_AI_GROUP],
-  ['gspe1-ssl.ls.apple.com', APPLE_AI_GROUP],
-  ['gspe35-ssl.ls.apple.com', APPLE_AI_GROUP],
+  ['gspe1-ssl.ls.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
+  ['gspe35-ssl.ls.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
+  ['ssl.ls.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   // icloud-content.com 后缀及伪后缀边界（同时供 verifyICloudContentDnsPolicy 复用）
   ['icloud-content.com', APPLE_AI_GROUP],
   ['edge-013.hkhkg2.icloud-content.com', APPLE_AI_GROUP],
