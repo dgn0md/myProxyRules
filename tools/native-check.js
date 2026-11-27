@@ -163,7 +163,6 @@ async function run() {
     const appleTrialCases = [
       ['bag.itunes.apple.com', '美国', 'apple'],
       ['fpinit.itunes.apple.com', '美国', 'apple'],
-      ['gspe35-ssl.ls.apple.com', '美国', 'apple'],
       ['smp-device-content.apple.com', '美国', 'apple'],
     ];
     for (const [host] of [...CASES, ...appleTrialCases]) config.hosts[host] = '127.0.0.1';

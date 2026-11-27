@@ -113,9 +113,11 @@ const CASES = [
   ['apple-relay.cloudflare.com', APPLE_AI_GROUP],
   ['cp4.cloudflare.com', APPLE_AI_GROUP],
   ['guzzoni.apple.com', APPLE_AI_GROUP],
+  ['guzzoni-apple-com.v.aaplimg.com', APPLE_AI_GROUP],
   ['api-siri-prod.apple.com', APPLE_AI_GROUP],
   ['api.smoot.apple.com', APPLE_AI_GROUP],
   ['gspe1-ssl.ls.apple.com', APPLE_AI_GROUP],
+  ['gspe35-ssl.ls.apple.com', APPLE_AI_GROUP],
   // icloud-content.com 后缀及伪后缀边界（同时供 verifyICloudContentDnsPolicy 复用）
   ['icloud-content.com', APPLE_AI_GROUP],
   ['edge-013.hkhkg2.icloud-content.com', APPLE_AI_GROUP],
