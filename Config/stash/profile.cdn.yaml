@@ -1,8 +1,8 @@
 # myProxyRules Stash profile
 # Raw profile: https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/stash/profile.yaml
 # CDN profile: https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/stash/profile.cdn.yaml
-# Raw SHA-256: 86dc7277e1eff9f39881adf425101c954ed876e3e5a8cf25b251347b451691f6
-# CDN SHA-256: 469835e9e821cc1b2769fb2e8a181c8110d820fd33f67d949ad37b533b2ff936
+# Raw SHA-256: 8b34955bdf1e99283d286ccd165fed171472ab0385360ae3662e939bff529bde
+# CDN SHA-256: 53d32dc7b4637bf06ad24732516ee2cc5903d4cef762be2204dbe51bf73b3ff7
 dns:
   enable: true
   ipv6: true
@@ -23,6 +23,7 @@ dns:
     - +.app.apple.com
     - cp4.cloudflare.com
     - gateway.icloud.com
+    - tis.gateway.icloud.com
     - bag.itunes.apple.com
     - configuration.ls.apple.com
     - configuration.apple.com
@@ -55,6 +56,9 @@ dns:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     gateway.icloud.com:
+      - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
+      - https://dns.google/dns-query#Siri Ai/Apple Intelligence
+    tis.gateway.icloud.com:
       - https://cloudflare-dns.com/dns-query#Siri Ai/Apple Intelligence&h3=true
       - https://dns.google/dns-query#Siri Ai/Apple Intelligence
     dejavu.apple.com:
@@ -3079,6 +3083,7 @@ rules:
   - DOMAIN,cp4.cloudflare.com,Siri Ai/Apple Intelligence
   - DOMAIN-SUFFIX,icloud-content.com,Siri Ai/Apple Intelligence
   - DOMAIN,gateway.icloud.com,Siri Ai/Apple Intelligence
+  - DOMAIN,tis.gateway.icloud.com,Siri Ai/Apple Intelligence
   - DOMAIN,dejavu.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,sequoia.apple.com,Siri Ai/Apple Intelligence
   - DOMAIN,bag.itunes.apple.com,Siri Ai/Apple Intelligence
