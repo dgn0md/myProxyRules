@@ -1,34 +1,29 @@
 # 节点处理与兼容性测试
 
-此目录包含节点处理逻辑的兼容性回归用例，并在入口中运行 ES2026 语法兼容性和 QuickJS 执行检查。
+本目录负责验证 `Script/mihomoScript.js` 的节点处理逻辑、ES2026 语法兼容性及 QuickJS 执行兼容性。
 
-从仓库根目录运行：
+## 1. 运行命令
 
 ```sh
-npm ci
+./tools/npmw test
+# 或单独运行节点兼容套件：
 node Test/run-tests.js
 ```
 
-`npm test` 会运行这里的兼容性套件，随后运行 `tests/*.test.js` 中针对生成配置的 Node 回归。后者覆盖配置图、服务与 Apple 规则、DNS policy 与路由出口、动态 IP provider 顺序、规则源注册表的同上游优先/原生回退/省略行为、严格加密 DNS、开关行为和静态生成一致性。
+## 2. 测试套件分工
 
-`npm run check` 比较默认 Mihomo YAML 与提交产物，并检查 Stash、Surge、Shadowrocket、Quantumult X profile 的生成一致性。可用官方 Mihomo 内核时，`tools/native-check.js` 和 `tools/native-sniffing.js` 提供额外的原生配置与隔离流量检查。配置测试、原生解析和设备/运营商网络行为是不同的检查范围。
+| 套件 | 覆盖范围 |
+| --- | --- |
+| `Test/run-tests.js` | 域名匹配、rule-set 引用收集、地区/倍率/家宽识别、零宽字符剥离、补旗、去重、`dialer-proxy` 修复、hosts 链式改写与机场配置隔离；同时校验 ES2026 语法与 QuickJS 运行时兼容。 |
+| `tests/*.test.js` | 生成配置图无环校验、Apple/Siri/PCC 与服务路由、13 组国内厂商 `AND NOT` 与 `+.cn` 开关、DNS 白名单与严格加密 DNS、IP provider 顺序、多客户端选源注册表及静态生成一致性。 |
+| `tools/native-check.js`（`native:check`） | 锁定版 Mihomo 内核语法校验、公开快照抽样回环 CONNECT 路由、隔离 DNS 上游计数器（`tools/native-dns-whitelist.js`）、纯 IP HTTP/TLS/QUIC 嗅探（`tools/native-sniffing.js`）与健康检查。 |
 
-新增模块与测试遵守 [模块化与动态规则集开发原则](../docs/development-principles.md)，复用统一开关，移除无用接口，避免逐业务域名维护。现有 Apple 精确功能回归按其专项约定保留。
+## 3. 新增测试须遵守的约束
 
-## 多客户端配置
+| 约束 | 要求 |
+| --- | --- |
+| **动态抽样，不维护业务名单** | 国内厂商、`geolocation-cn`、`apple_proxy`、`apple_tv` 样本均从实际公开快照自动提取，集合外用合成 `.invalid` 域名；快照与解码证据仅保存在忽略目录。 |
+| **路由与 DNS 分别断言** | 显式直连域名与动态集合使用阿里/腾讯 DoH；代理服务组跟随对应出口；`default-nameserver` 保持 IP DoH；不得因可用性问题放宽国内 DNS 或引入 `direct-nameserver`。 |
+| **边界表述一致** | 配置测试、离线原生回环与真实设备/运营商网络属于不同验证层级；只改文档时核对链接与原则一致性即可。 |
 
-`npm run build` 生成四个客户端 profile；`npm run check` 比较 Mihomo 与各目标 profile 的生成一致性。此门禁不会在 Stash、Surge、Shadowrocket 或 Quantumult X 应用内导入配置；各目标规则源和保守省略项见[兼容性说明](../docs/client-compatibility.md)。
-
-## 国内服务路由模块
-
-`tests/config.test.js` 验证 13 组国内服务模块（阿里、B站、字节、三家运营商、华为云、京东、网易、新浪/微博、腾讯、小米、小红书）与 `DOMAIN-SUFFIX,cn,直连` 的路由开关、DNS policy、专用服务优先级、静态/展开与全量/极简输出，并确认关闭 `国内服务优先直连` 后移除厂商与 `+.cn` policy。原生回归从实际 Bett 厂商 MRS 快照自动提取配对集合的命中/排除样本，在开关开启时用隔离 DNS 上游验证 `domestic AND NOT domestic_noncn`；路由匹配仍在全量/极简和开关组合下执行回环 CONNECT 验证。集合外样本使用随机 `.invalid` 域名。运行时样本与解码文件只保存在忽略的临时目录，不用于生成或发布客户端规则。
-
-## DNS 白名单回归原则
-
-修改 DNS、规则源或相关开关前遵守 [国内 DNS 白名单维护原则](../docs/dns-whitelist.md)。显式目标为 `直连` 的域名规则和动态 domain/classical 集合应使用国内 DNS；不能扩大为通用 `cn`、未知域名或仅由 `cn_ip` 兜底直连的域名，也不配置通用 `direct-nameserver`。应区分连接路由、`geolocation-cn` policy、`domestic AND NOT domestic_noncn` policy、DNS 白名单和 Apple/启动解析例外。
-
-`tests/config.test.js` 覆盖 `geolocation-cn` policy、白名单开关组合、游戏平台国内下载与海外游戏组边界、服务组/极简模式独立性、DNS provider 引用及优先级。`tools/native-check.js` 调用 `tools/native-dns-whitelist.js`，从实际 `geolocation-cn` 快照抽取域名样本，并保留生产 policy 顺序，用回环上游计数验证 A/AAAA 和真实直连拨号。确认更具体的服务 policy、游戏下载直连与海外游戏排除边界和名单外查询仍使用各自解析器；上游成员更新仍由客户端 HTTP provider 每日直接拉取。
-
-DNS resolver 回归同时锁定 Ali DoH (`dns.alidns.com`)、Tencent DoH (`doh.pub`)、Cloudflare 强制 DoH-H3 (`cloudflare-dns.com`) 和 Google DoH (`dns.google`) 的职责：普通默认查询使用 Cloudflare 与 Google；代理节点域名引导使用 Ali 与 Tencent，并经直连建立连接，避免节点可用前依赖境外解析器。Mihomo 要求 IP 字面量的 `default-nameserver` 使用 Ali/Tencent IP DoH，并保留证书域名校验。国内动态 policy 使用域名端点，不使用 IP 启动解析器作为通用回退。
-
-只改文档时检查链接与原则一致性即可；行为改动须运行项目测试、生成一致性检查与可用的原生验证。方法和隐私/延迟结论的边界见 [验证说明](../docs/validation.md)。
+关联文档：[开发原则](../docs/development-principles.md) · [国内 DNS 白名单原则](../docs/dns-whitelist.md) · [多客户端兼容性](../docs/client-compatibility.md) · [验证说明](../docs/validation.md)
