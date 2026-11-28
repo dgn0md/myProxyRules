@@ -55,7 +55,7 @@
 | 任一明确域名规则或动态 domain/classical 规则集目标为 `直连` | 与连接规则使用同一精确域名/集合谓词，解析使用阿里/腾讯加密 DNS；不改变默认解析器，也不覆盖 `private` 本地名称安全 policy。 |
 | 固定版本 `apple_cn`                         | 其直连路由启用时保留国内加密 DNS，不改成整份动态 `apple_cdn`。                                                                                         |
 | `Apple下载直连` 开启                        | `gdmf.apple.com`、`mesu.apple.com`、`updates.cdn-apple.com`、`assets.cdn-apple.com` 四个精确域名保留国内加密 DNS。                                     |
-| 无合格 Siri 地区候选，且普通 Apple 默认直连 | `rule-set:apple`、`gateway.icloud.com`、`setup.icloud.com` 保留国内加密解析回退；有合格候选时恢复跟随 Siri 组，关闭普通 Apple 默认直连时不启用此回退。 |
+| 无合格 Siri 地区候选，且普通 Apple 默认直连 | `rule-set:apple`、`setup.icloud.com` 保留国内加密解析回退；有合格候选时恢复跟随 Siri 组，关闭普通 Apple 默认直连时不启用此回退。 |
 | 代理节点域名解析                            | 使用阿里与腾讯 DoH，连接通过 `DIRECT` 建立；避免代理启动依赖境外解析器，且不作为普通业务查询的通用兜底。                                                 |
 | DoH 服务器启动解析                           | `default-nameserver` 使用阿里/腾讯 IP DoH，满足 Mihomo 的 IP 字面量要求；只用于解析 DoH 端点，不作为普通业务查询的通用兜底。                           |
 | 私有域名与拒绝出口                          | 保留本地 hosts/专用 RCODE 安全处理；严格模式不为 LAN 名称查询系统或公共 DNS。                                                                          |

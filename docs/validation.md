@@ -16,7 +16,7 @@
 - `check` 比较 Mihomo Raw/CDN YAML、四种客户端 Raw/CDN profile 与各自生成器结果。
 - `native:check` 使用项目锁定的 Mihomo 版本和公开规则快照，检查各选项组合的原生配置，并在隔离回环环境验证实际规则路由、DNS policy 与节点分类。
 - 首次原生检查会下载 Mihomo 和当前公开规则；需要手动刷新快照时运行 `./tools/npmw run native:refresh-rules`。
-- 本机诊断可运行 `./tools/npmw run diagnose -- --probe-domain gateway.icloud.com` 或 `./tools/npmw run diagnose -- --probe-ip 17.0.0.1`；可以附加 `--select 'Other Apple Service=美国'` 检查一次手动选择。
+- 本机诊断可运行 `./tools/npmw run diagnose -- --probe-domain setup.icloud.com` 或 `./tools/npmw run diagnose -- --probe-ip 17.0.0.1`；可以附加 `--select 'Other Apple Service=美国'` 检查一次手动选择。
 
 ## 推送前门禁
 
@@ -26,7 +26,7 @@
 
 ## Apple 与 DNS 覆盖范围
 
-- 配置回归断言 `apple_ip` 在 `cn_ip` 前进入 `AppleProxy`，AppleProxy/TV+ 动态集合使用同一产品组，含 `cn` 段的 Apple 域由前置内联正则集合 `apple_cn_regex` 统一走直连与国内 DNS，内联规则集 `apple_siri_regex`（覆盖含 `siri`、`guzzoni`、`smoot` 关键字的域名，以及 `mask*.icloud.com`、`apple-relay.*` 及排除 `cn` 段的 `ssl.ls.apple.com$` / `ls-apple.com.akadns.net` 后缀）及 `bag.itunes.apple.com` 进入 `Siri Ai/Apple Intelligence`，`gateway.icloud.com` / `setup.icloud.com` 精确进入 `Other Apple Service` 且 DNS 跟随 Siri 选择。
+- 配置回归断言 `apple_ip` 在 `cn_ip` 前进入 `AppleProxy`，AppleProxy/TV+ 动态集合使用同一产品组，含 `cn` 段的 Apple 域由前置内联正则集合 `apple_cn_regex` 统一走直连与国内 DNS，内联规则集 `apple_siri_regex`（覆盖含 `siri`、`guzzoni`、`smoot` 关键字的域名，以及 `mask*.icloud.com` / `mask*.apple-dns.net`、`apple-relay.*` 及排除 `cn` 段的 `ssl.ls.apple.com$` / `ls-apple.com.akadns.net` 后缀）及 `gateway.icloud.com` / `bag.itunes.apple.com` / `configuration.ls.apple.com` / `configuration.apple.com` / `gs-loc.apple.com` 进入 `Siri Ai/Apple Intelligence`，`setup.icloud.com` 精确进入 `Other Apple Service` 且 DNS 跟随 Siri 选择。
 - 配置回归断言国内 DNS policy 与代理节点域名引导使用 `dns.alidns.com`、`doh.pub` DoH，并经 `DIRECT` 建连；普通默认查询使用 Cloudflare `cloudflare-dns.com` 强制 H3 和 Google `dns.google` DoH。原生回归用合成节点和回环 DNS stub 验证节点域名实际发往国内 resolver。`default-nameserver` 保持 IP 字面量并使用阿里/腾讯 DoH IP 与证书域名校验。
 - Apple News、Fitness、Sports、Books、PCC、Siri 和模型下载的有限端点按功能范围回归；上游 Apple 集合未覆盖这些组的边界时，不用宽泛集合代替。
 - 实际 rule provider 保持加载，用回环 CONNECT 检查命中的规则与策略链；DNS 检查将上游替换为本地计数器，不产生公共业务 DNS 查询。

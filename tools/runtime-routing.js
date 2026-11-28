@@ -111,9 +111,14 @@ const CASES = [
   // Apple AI / Siri 精确与内联正则例外（不依赖外部规则集）
   ['mask.icloud.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['mask-h2.icloud.com', APPLE_AI_GROUP, 'apple_siri_regex'],
+  ['mask.apple-dns.net', APPLE_AI_GROUP, 'apple_siri_regex'],
+  ['mask-t.apple-dns.net', APPLE_AI_GROUP, 'apple_siri_regex'],
+  ['mask-api.fe.apple-dns.net', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['apple-relay.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['apple-relay.cloudflare.com', APPLE_AI_GROUP, 'apple_siri_regex'],
+  ['apple-relay.mask.apple-dns.net', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['cp4.cloudflare.com', APPLE_AI_GROUP],
+  ['gateway.icloud.com', APPLE_AI_GROUP],
   ['guzzoni.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['guzzoni-apple-com.v.aaplimg.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['api-siri-prod.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
@@ -121,6 +126,9 @@ const CASES = [
   ['api.smoot.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['smoot-apple-com.v.aaplimg.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['bag.itunes.apple.com', APPLE_AI_GROUP],
+  ['configuration.ls.apple.com', APPLE_AI_GROUP],
+  ['configuration.apple.com', APPLE_AI_GROUP],
+  ['gs-loc.apple.com', APPLE_AI_GROUP],
   ['gspe1-ssl.ls.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['gspe35-ssl.ls.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['ssl.ls.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
@@ -132,7 +140,6 @@ const CASES = [
   ['edge-013.hkhkg2.icloud-content.com', APPLE_AI_GROUP],
   ['edge-013.hkhkg2.icloud-content.com.example.test', '直连'],
   // Apple 共享 iCloud 精确主机与子域边界
-  ['gateway.icloud.com', OTHER_APPLE_GROUP],
   ['attester.gateway.icloud.com', '直连'],
   ['setup.icloud.com', OTHER_APPLE_GROUP],
   // AppleProxy 精确例外（未收录于 apple_proxy.yaml）

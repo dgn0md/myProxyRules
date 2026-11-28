@@ -81,7 +81,7 @@ npm run build:targets -- --target all
 
 更多说明：[多客户端兼容性](docs/client-compatibility.md)、[DNS 白名单原则](docs/dns-whitelist.md)、[功能目录](docs/feature-matrix.md)、[Apple 路由](docs/apple-routing.md)、[动态规则来源](docs/rule-sources.md)、[节点处理测试](Test/README.md)。
 
-可用 `./tools/npmw run diagnose -- --probe-domain gateway.icloud.com` 或 `--probe-ip 17.0.0.1` 在隔离的 Mihomo 回环环境中查看实际命中的规则与策略链；`--select 'Other Apple Service=美国'` 可模拟一次组内选择。诊断使用合成节点和本机下载的规则快照，所有出口终止在本地，不代表真实订阅当前选择、设备网络或 UDP 行为。
+可用 `./tools/npmw run diagnose -- --probe-domain setup.icloud.com` 或 `--probe-ip 17.0.0.1` 在隔离的 Mihomo 回环环境中查看实际命中的规则与策略链；`--select 'Other Apple Service=美国'` 可模拟一次组内选择。诊断使用合成节点和本机下载的规则快照，所有出口终止在本地，不代表真实订阅当前选择、设备网络或 UDP 行为。
 
 ## 来源与许可
 
