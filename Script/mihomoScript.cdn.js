@@ -4,11 +4,11 @@
  * 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
  * 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
  *
- * 最新 Raw SHA-256：834d0a7f4e0750a2c950faf205ccc13630059f17b2fd5f46f62698df80e0da84
+ * 最新 Raw SHA-256：9cda0d99bb3b100b8ba2eb1c26c218fdf810487bd71ffc5fde2cf4c10ba984ea
  * Raw 脚本：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js
  * CDN 脚本：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js
  *
- * 缓存 CDN SHA-256：a7c89fe615492aaee381540faf21fd837b1b40d1bafae3df342b15f6385411c7
+ * 缓存 CDN SHA-256：479278dd00a5b42344e45601f1098a6e49703d23f684f577c3b879c9e4200f46
  */
 
 // --- 静态配置区域 ---
@@ -312,7 +312,11 @@ const appleRealIpEndpoints = [
   '+.ropes.apple.com',
   '+.app.apple.com',
   'cp4.cloudflare.com',
+  'gateway.icloud.com',
   'bag.itunes.apple.com',
+  'configuration.ls.apple.com',
+  'configuration.apple.com',
+  'gs-loc.apple.com',
 ];
 
 // 全部策略组定义（地区 + 倍率 + 家宽），统一用于节点匹配与归类
@@ -739,11 +743,15 @@ const appleEndpointDefinitions = [
       // app.apple.com 后缀规则已覆盖 Apple 清理代理主机。
       '+.app.apple.com',
       'cp4.cloudflare.com',
-      // 国际内容域整体覆盖，中国站内容域保留原规则；gateway 单独归入 Other Apple Service。
+      // 国际内容域整体覆盖，中国站内容域保留原规则；gateway 归入 Siri 组，setup 单独归入 Other Apple Service。
       '+.icloud-content.com',
+      'gateway.icloud.com',
       'dejavu.apple.com',
       'sequoia.apple.com',
       'bag.itunes.apple.com',
+      'configuration.ls.apple.com',
+      'configuration.apple.com',
+      'gs-loc.apple.com',
     ],
   },
   {
@@ -768,8 +776,8 @@ const appleSiriRegexRuleProvider = {
     'DOMAIN-KEYWORD,siri',
     'DOMAIN-KEYWORD,guzzoni',
     'DOMAIN-KEYWORD,smoot',
-    'DOMAIN-REGEX,^mask(-[a-z0-9]+)?\\.icloud\\.com$',
-    'DOMAIN-REGEX,(^|\\.)apple-relay\\.(apple\\.com|cloudflare\\.com|fastly-edge\\.com|akamaized\\.net)$',
+    'DOMAIN-REGEX,^mask(-[a-z0-9]+)?(\\.[a-z0-9-]+)*\\.(icloud\\.com|apple-dns\\.net)$',
+    'DOMAIN-REGEX,(^|\\.)apple-relay\\.(apple\\.com|cloudflare\\.com|fastly-edge\\.com|akamaized\\.net|(mask\\.)?apple-dns\\.net)$',
     'AND,((DOMAIN-REGEX,ssl\\.ls\\.apple\\.com$|(^|\\.)ls-apple\\.com\\.akadns\\.net$),(NOT,((DOMAIN-REGEX,(^|[.-])cn([.-]|$)))))',
   ],
 };
@@ -797,7 +805,7 @@ const appleProxyRuleProvider = {
 };
 const appleIpRuleProvider = geoipProvider('apple');
 const appleTvRuleProvider = geositeProvider('apple-tvplus', 'apple_tv');
-const appleOtherExactEndpoints = ['gateway.icloud.com', 'setup.icloud.com'];
+const appleOtherExactEndpoints = ['setup.icloud.com'];
 for (const { name, option } of appleEndpointDefinitions) {
   serviceConfigs.push({
     name,
