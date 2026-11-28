@@ -4,7 +4,7 @@
  * 来源：最初基于 AIsouler/MyClash（commit 4861619be366c7bacabfed6d581bb8c450de1ca1），现由本项目独立维护。
  * 许可：MIT License；Copyright (c) 2026 dgn0md、AIsouler。
  *
- * 最新 Raw SHA-256：9cda0d99bb3b100b8ba2eb1c26c218fdf810487bd71ffc5fde2cf4c10ba984ea
+ * 最新 Raw SHA-256：dfb570efb6e7efa077c20753cb9f7164b6dd4a1c6d20cfde78f473e17ea599bb
  * Raw 脚本：https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js
  * CDN 脚本：https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js
  */
@@ -311,6 +311,7 @@ const appleRealIpEndpoints = [
   '+.app.apple.com',
   'cp4.cloudflare.com',
   'gateway.icloud.com',
+  'tis.gateway.icloud.com',
   'bag.itunes.apple.com',
   'configuration.ls.apple.com',
   'configuration.apple.com',
@@ -744,6 +745,7 @@ const appleEndpointDefinitions = [
       // 国际内容域整体覆盖，中国站内容域保留原规则；gateway 归入 Siri 组，setup 单独归入 Other Apple Service。
       '+.icloud-content.com',
       'gateway.icloud.com',
+      'tis.gateway.icloud.com',
       'dejavu.apple.com',
       'sequoia.apple.com',
       'bag.itunes.apple.com',
