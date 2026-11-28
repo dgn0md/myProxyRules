@@ -119,6 +119,7 @@ const CASES = [
   ['apple-relay.mask.apple-dns.net', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['cp4.cloudflare.com', APPLE_AI_GROUP],
   ['gateway.icloud.com', APPLE_AI_GROUP],
+  ['tis.gateway.icloud.com', APPLE_AI_GROUP],
   ['guzzoni.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['guzzoni-apple-com.v.aaplimg.com', APPLE_AI_GROUP, 'apple_siri_regex'],
   ['api-siri-prod.apple.com', APPLE_AI_GROUP, 'apple_siri_regex'],

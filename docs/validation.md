@@ -26,7 +26,7 @@
 
 ## Apple 与 DNS 覆盖范围
 
-- 配置回归断言 `apple_ip` 在 `cn_ip` 前进入 `AppleProxy`，AppleProxy/TV+ 动态集合使用同一产品组，含 `cn` 段的 Apple 域由前置内联正则集合 `apple_cn_regex` 统一走直连与国内 DNS，内联规则集 `apple_siri_regex`（覆盖含 `siri`、`guzzoni`、`smoot` 关键字的域名，以及 `mask*.icloud.com` / `mask*.apple-dns.net`、`apple-relay.*` 及排除 `cn` 段的 `ssl.ls.apple.com$` / `ls-apple.com.akadns.net` 后缀）及 `gateway.icloud.com` / `bag.itunes.apple.com` / `configuration.ls.apple.com` / `configuration.apple.com` / `gs-loc.apple.com` 进入 `Siri Ai/Apple Intelligence`，`setup.icloud.com` 精确进入 `Other Apple Service` 且 DNS 跟随 Siri 选择。
+- 配置回归断言 `apple_ip` 在 `cn_ip` 前进入 `AppleProxy`，AppleProxy/TV+ 动态集合使用同一产品组，含 `cn` 段的 Apple 域由前置内联正则集合 `apple_cn_regex` 统一走直连与国内 DNS，内联规则集 `apple_siri_regex`（覆盖含 `siri`、`guzzoni`、`smoot` 关键字的域名，以及 `mask*.icloud.com` / `mask*.apple-dns.net`、`apple-relay.*` 及排除 `cn` 段的 `ssl.ls.apple.com$` / `ls-apple.com.akadns.net` 后缀）及 `gateway.icloud.com` / `tis.gateway.icloud.com` / `bag.itunes.apple.com` / `configuration.ls.apple.com` / `configuration.apple.com` / `gs-loc.apple.com` 进入 `Siri Ai/Apple Intelligence`，`setup.icloud.com` 精确进入 `Other Apple Service` 且 DNS 跟随 Siri 选择。
 - 配置回归断言国内 DNS policy 与代理节点域名引导使用 `dns.alidns.com`、`doh.pub` DoH，并经 `DIRECT` 建连；普通默认查询使用 Cloudflare `cloudflare-dns.com` 强制 H3 和 Google `dns.google` DoH。原生回归用合成节点和回环 DNS stub 验证节点域名实际发往国内 resolver。`default-nameserver` 保持 IP 字面量并使用阿里/腾讯 DoH IP 与证书域名校验。
 - Apple News、Fitness、Sports、Books、PCC、Siri 和模型下载的有限端点按功能范围回归；上游 Apple 集合未覆盖这些组的边界时，不用宽泛集合代替。
 - 实际 rule provider 保持加载，用回环 CONNECT 检查命中的规则与策略链；DNS 检查将上游替换为本地计数器，不产生公共业务 DNS 查询。
