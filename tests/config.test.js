@@ -887,7 +887,7 @@ test('Siri AI domain routes use matching DNS policy and precede QUIC rejection i
   }
 });
 test('shared iCloud endpoints use Other Apple Service and matching DNS in both output modes', () => {
-  const hosts = ['gateway.icloud.com', 'setup.icloud.com'];
+  const hosts = ['setup.icloud.com'];
   for (const subscription of [undefined, clean()]) {
     for (const minimal of [false, true]) {
       const config = build({
@@ -1198,8 +1198,8 @@ test('AppleProxy and Apple product endpoints share one regional group; overseas 
       'DOMAIN-KEYWORD,siri',
       'DOMAIN-KEYWORD,guzzoni',
       'DOMAIN-KEYWORD,smoot',
-      'DOMAIN-REGEX,^mask(-[a-z0-9]+)?\\.icloud\\.com$',
-      'DOMAIN-REGEX,(^|\\.)apple-relay\\.(apple\\.com|cloudflare\\.com|fastly-edge\\.com|akamaized\\.net)$',
+      'DOMAIN-REGEX,^mask(-[a-z0-9]+)?(\\.[a-z0-9-]+)*\\.(icloud\\.com|apple-dns\\.net)$',
+      'DOMAIN-REGEX,(^|\\.)apple-relay\\.(apple\\.com|cloudflare\\.com|fastly-edge\\.com|akamaized\\.net|(mask\\.)?apple-dns\\.net)$',
       'AND,((DOMAIN-REGEX,ssl\\.ls\\.apple\\.com$|(^|\\.)ls-apple\\.com\\.akadns\\.net$),(NOT,((DOMAIN-REGEX,(^|[.-])cn([.-]|$)))))',
     ],
   });
@@ -1304,7 +1304,7 @@ test('Other Apple Service traffic stays on its group while DNS follows the Siri 
     const config = build({ subscription }).config;
     assert.ok(config.rules.includes(`RULE-SET,apple,${otherAppleGroup}`));
     assert.ok(config.dns['nameserver-policy']['rule-set:apple'].every((dns) => dnsRouteFor(dns) === siriAiGroup));
-    for (const host of ['gateway.icloud.com', 'setup.icloud.com']) {
+    for (const host of ['setup.icloud.com']) {
       assert.ok(config.rules.includes(`DOMAIN,${host},${otherAppleGroup}`));
       assert.ok(config.dns['nameserver-policy'][host].every((dns) => dnsRouteFor(dns) === siriAiGroup));
     }
@@ -1330,8 +1330,8 @@ test('Other Apple direct route keeps encrypted DNS when no eligible Siri region 
   assert.deepEqual(config['proxy-groups'].find((group) => group.name === siriAiGroup).proxies, ['REJECT']);
   assert.equal(config['proxy-groups'].find((group) => group.name === otherAppleGroup).proxies[0], '直连');
   assert.deepEqual(policyForRuleSet(config, 'apple'), domesticDnsResolvers);
-  for (const key of ['gateway.icloud.com', 'setup.icloud.com'])
-    assert.deepEqual(config.dns['nameserver-policy'][key], domesticDnsResolvers);
+  for (const key of ['setup.icloud.com']) assert.deepEqual(config.dns['nameserver-policy'][key], domesticDnsResolvers);
+  assert.equal(config.dns['nameserver-policy']['gateway.icloud.com'], 'rcode://name_error');
   assert.equal(policyForRuleSet(config, 'apple_siri_regex'), 'rcode://name_error');
 });
 test('strict DNS validates every generated upstream field', () => {
@@ -1433,9 +1433,13 @@ test('AppleFlow PCC and Siri endpoints use the eligible selector with US default
     ['DOMAIN', 'cp4.cloudflare.com', siriAiGroup],
   ];
   const siri = [
+    ['DOMAIN', 'gateway.icloud.com', siriAiGroup],
     ['DOMAIN', 'dejavu.apple.com', siriAiGroup],
     ['DOMAIN', 'sequoia.apple.com', siriAiGroup],
     ['DOMAIN', 'bag.itunes.apple.com', siriAiGroup],
+    ['DOMAIN', 'configuration.ls.apple.com', siriAiGroup],
+    ['DOMAIN', 'configuration.apple.com', siriAiGroup],
+    ['DOMAIN', 'gs-loc.apple.com', siriAiGroup],
   ];
   const quicReject = config.rules.findIndex((rule) => rule.startsWith('AND,') && rule.endsWith(',REJECT'));
   assert.ok(quicReject >= 0, 'QUIC reject rule is enabled for this test');
@@ -1647,7 +1651,11 @@ test('Apple real-IP DNS exceptions preserve encrypted route-specific resolvers a
     '+.ropes.apple.com',
     '+.app.apple.com',
     'cp4.cloudflare.com',
+    'gateway.icloud.com',
     'bag.itunes.apple.com',
+    'configuration.ls.apple.com',
+    'configuration.apple.com',
+    'gs-loc.apple.com',
   ])
     assert.ok(filters.includes(domain), `missing Fake-IP filter ${domain}`);
   assert.ok(!filters.includes('+.smoot.apple.com'));
