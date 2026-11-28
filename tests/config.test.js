@@ -1332,6 +1332,7 @@ test('Other Apple direct route keeps encrypted DNS when no eligible Siri region 
   assert.deepEqual(policyForRuleSet(config, 'apple'), domesticDnsResolvers);
   for (const key of ['setup.icloud.com']) assert.deepEqual(config.dns['nameserver-policy'][key], domesticDnsResolvers);
   assert.equal(config.dns['nameserver-policy']['gateway.icloud.com'], 'rcode://name_error');
+  assert.equal(config.dns['nameserver-policy']['tis.gateway.icloud.com'], 'rcode://name_error');
   assert.equal(policyForRuleSet(config, 'apple_siri_regex'), 'rcode://name_error');
 });
 test('strict DNS validates every generated upstream field', () => {
@@ -1434,6 +1435,7 @@ test('AppleFlow PCC and Siri endpoints use the eligible selector with US default
   ];
   const siri = [
     ['DOMAIN', 'gateway.icloud.com', siriAiGroup],
+    ['DOMAIN', 'tis.gateway.icloud.com', siriAiGroup],
     ['DOMAIN', 'dejavu.apple.com', siriAiGroup],
     ['DOMAIN', 'sequoia.apple.com', siriAiGroup],
     ['DOMAIN', 'bag.itunes.apple.com', siriAiGroup],
@@ -1652,6 +1654,7 @@ test('Apple real-IP DNS exceptions preserve encrypted route-specific resolvers a
     '+.app.apple.com',
     'cp4.cloudflare.com',
     'gateway.icloud.com',
+    'tis.gateway.icloud.com',
     'bag.itunes.apple.com',
     'configuration.ls.apple.com',
     'configuration.apple.com',
