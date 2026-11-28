@@ -1,44 +1,42 @@
 # myProxyRules
 
-myProxyRules 以 Mihomo 为唯一功能源和主支持客户端，提供覆写脚本、静态配置及 Stash 可用的 Mihomo 风格配置。Surge、Shadowrocket 和 Quantumult X 的原生配置作为兼容入口提供，规则与 DNS 覆盖差异见[多客户端兼容性说明](docs/client-compatibility.md)。项目最初基于 [AIsouler/MyClash](https://github.com/AIsouler/MyClash/commit/4861619be366c7bacabfed6d581bb8c450de1ca1)，现独立维护功能和版本，不与其同步。地区节点分组、倍率与家宽分类、常见服务分流是基础能力；本仓库重点维护以下功能。
+myProxyRules 以 **Mihomo** 为唯一功能源和主支持客户端，提供全量覆写脚本、静态配置及 Stash 兼容配置，并自动生成 Surge、Shadowrocket 与 Quantumult X 的原生兼容配置。项目最初基于 [AIsouler/MyClash](https://github.com/AIsouler/MyClash/commit/4861619be366c7bacabfed6d581bb8c450de1ca1)，现独立维护演进，不与其同步。
 
-参与维护的人员和各类 AI 助手开始修改前，请先阅读 [仓库维护约定](AGENTS.md)，并遵守其中引用的 [模块化与动态规则集开发原则](docs/development-principles.md) 和 [国内 DNS 白名单维护原则](docs/dns-whitelist.md)。`AGENTS.md` 是共享维护规则的入口，适用于所有工具和贡献者；图标来源和许可见文末说明。
+贡献与维护前请先阅读 [仓库维护约定](AGENTS.md)。
 
 ## 项目重点
 
-- **Apple 精细分流**：将 Apple Intelligence / Siri、`AppleProxy` 动态集合与产品入口、其他 Apple 服务分组。Siri 组默认美国，没有合格地区候选时拒绝连接；`AppleProxy` 初始选择美国且可切换直连；其他 Apple 服务默认直连。共享端点和 DNS policy 的细节见 [Apple 路由说明](docs/apple-routing.md)。
-- **DNS policy 与出口联动**：明确路由到 `直连` 的域名规则与动态域名规则集使用阿里 DoH 与腾讯 DoH；代理服务的 DNS 请求经对应服务组选择出口。`geolocation-cn`、`.cn` 后缀直连规则、国内 CDN、Microsoft 下载、游戏平台国内下载集合及 13 组国内服务集合（`domestic AND NOT domestic_noncn`）也使用国内加密 DNS；厂商与 `.cn` policy 随 `国内服务优先直连` 开关启停。仅因 IP 兜底规则直连或未命中明确域名 policy 的查询仍使用默认国外 DNS。普通默认查询使用 Cloudflare 强制 DoH-H3 与 Google DoH；代理节点域名使用阿里/腾讯 DoH，经直连建立连接，避免节点启动依赖境外 DNS。启动解析单独使用阿里/腾讯 IP DoH。地区服务保持专属解析出口。严格模式不接受生成配置里的明文或不安全 DNS，也不静默回退。它描述的是配置行为，不代表所有设备流量都已被接管。
-- **机场配置只接管节点**：展开订阅时处理节点；机场 DNS、路由、策略组和其他非节点设置由脚本重建。机场 hosts 只在满足节点改写条件时用于改写节点 server，不复制到结果配置。
-- **纯 IP 域名识别**：从支持的 HTTP Host、TLS SNI 与 QUIC 元数据补充路由所需域名；不解密 HTTPS，也不改写目标地址。
-- **Mihomo 功能源与兼容配置**：`Script/mihomoScript.js` 管理规则和选项，`Config/mihomoConfig.yaml` 由 GitHub Actions 构建并回写；Stash 沿用 Mihomo provider、MRS 与 DNS policy。Surge、Shadowrocket 和 Quantumult X 原生配置由适配器从同一配置对象生成。YAML 中的 `x-myProxyRules` 扩展字段供构建工具读取。
-- **自动选择排除组**：开关 `排除大陆香港自动选` 控制 `自动选择ex(大陆&香港)` 策略组；该组按节点名称排除大陆和香港候选，保留台湾节点。
-- **默认控制面最小化**：发布配置不启动外部控制 API，也不自动下载 Web 控制面；需要管理界面时由本地客户端单独配置并保护 API 密钥。
+- **Apple 精细分流**：按功能拆分为 `Siri Ai/Apple Intelligence`（Siri、Apple Intelligence、PCC 与中继/配置端点，默认美国，无合格地区候选时拒绝）、`AppleProxy`（产品入口、动态集合与 `apple_ip`，默认美国且可选直连）和 `Other Apple Service`（常规 Apple 服务默认直连，DNS 跟随 Siri 组）。详见 [Apple 路由说明](docs/apple-routing.md)。
+- **DNS 与分流出口联动**：明确直连的域名、国内白名单与国内厂商集合走阿里/腾讯 DoH；代理服务的 DNS 查询经对应策略组出口解析；其余默认走 Cloudflare DoH-H3 与 Google DoH。不配置通用 `direct-nameserver`，严格模式下拒绝明文 DNS 与静默降级。详见 [国内 DNS 白名单原则](docs/dns-whitelist.md)。
+- **机场配置只接管节点**：覆写或本地展开订阅时只读取并标准化节点信息（含按条件改写节点 hosts），机场的 DNS、路由、策略组与控制面设置全部丢弃并由脚本重建。
+- **单一功能源，多客户端自动同步**：`Script/mihomoScript.js` 是唯一功能源；GitHub Actions 自动验证并生成 Mihomo 静态 YAML、CDN 副本与四种客户端原生配置。差异见 [多客户端兼容性](docs/client-compatibility.md)。
+- **默认最小暴露面**：发布配置默认不开启外部控制 API、不自动下载 Web 面板，目标配置仅含示例订阅占位符。
 
 ## 常规能力
 
-提供 26 个地区节点组、倍率和家宽节点分类、AI / Google / YouTube / Microsoft 等常见服务分流，以及手动选择、测速和链式代理等配置选项。
-私网 IP 使用 `直连,no-resolve`；Google、AI（OpenAI）、Telegram、TikTok、Twitter、Facebook/Meta IP 使用代理出口及 `no-resolve`，关闭服务组或启用极简模式时改用 `默认代理`。Apple、Microsoft、Netflix、Spotify IP 与末端 `cn_ip` 均使用 `no-resolve`，避免 Fake-IP 下未知海外域名被 `cn_ip` 触发本地双重 DNS 解析。
-`GLOBAL`、`Google`、`AI`、`TikTok`、`Meta` 与 Apple 代理组首次默认选择 `美国`，`默认代理`、`Microsoft`、`FCM` 首次默认选择 `自动选择ex(大陆&香港)` / `默认代理`；仅在相应候选组存在时生效，已有客户端选择缓存优先。
-阿里、B站、字节、中国移动/电信/联通、华为云、京东、网易、新浪/微博、腾讯、小米、小红书共 13 组提供国内服务模块（百度、国内银行、美团、拼多多、知乎等无 `@!cn` 子集的国内服务已由 `geolocation-cn` 覆盖，不重复加载），并在 `geolocation-cn` 后补充 `DOMAIN-SUFFIX,cn,直连`；连接规则与对应国内 DNS policy 统一受默认开启的 `国内服务优先直连` 控制。13 组模块动态使用 Bett 集合，路由和 DNS 均排除同源 `@!cn` 海外子集；阿里/淘宝、腾讯云、火山引擎等子品牌由上层厂商集合覆盖，不重复加载；未标注海外的共享域名仍依赖上游分类质量。`海外游戏` 组使用 `category-games-!cn` 并排除直连的 `category-game-platforms-download@cn`，`BT/PT` 组使用 `tracker`，`AdBlock` 使用 `category-ads-all` 并同时拦截 `httpdns`。
-测速使用 `https://www.apple.com/library/test/success.html`；Mihomo 内核通过被测节点发起 HTTPS 请求，provider 与自动测速组要求返回 HTTP 200。测速只检查状态码，不校验网页正文。普通 `www.apple.com` 访问仍按现有 Apple 规则与 DNS policy 处理；探测服务异常时节点可能暂时被判为不可用。
+| 能力类别 | 默认行为与说明 |
+| --- | --- |
+| **节点整理与分类** | 自动清理公告/信息行、处理零宽字符、补全地区国旗、去重并修复 `dialer-proxy`；按名称归类为 **26 个地区组**、**低/高倍率组** 与 **家宽节点组**。 |
+| **自动选路与默认出口** | 提供 `自动选择ex(大陆&香港)`（排除大陆/香港，保留台湾）作为 `默认代理` 优选；`GLOBAL`、`Google`、`AI`、`TikTok`、`Meta`、`AppleProxy` 与 Siri 组默认优先选 `美国`；`Microsoft`、`FCM` 默认走 `默认代理`。 |
+| **常见服务分流** | 内置 Google、AI、YouTube、GitHub、Microsoft、Telegram、海外游戏、TikTok、Twitter、Meta、Line、Netflix、Emby、PikPak、BT/PT、Spotify、Crypto、PayPal、Patreon、EHentai 等独立策略组。 |
+| **国内直连与下载优化** | 13 组国内核心厂商通过 `AND NOT @!cn` 排除海外子集后直连；配合 `geolocation-cn`、`.cn` 后缀以及国内 CDN、Microsoft CDN、游戏平台国内下载和 Apple 下载直连规则兼顾速度与分流边界。 |
+| **广告与安全拦截** | `AdBlock` 拦截 `category-ads-all` 与 `httpdns`；默认接管 DNS 53、拦截外部 DoT/DoQ（853 端口）并禁用浏览器内置 DoH 旁路；默认开启 B 站 PCDN 屏蔽。 |
+| **协议与 IP 规则** | TUN 默认 `mips` 栈并开启 HTTP/TLS/QUIC 域名嗅探；STUN 通过 `category-stun` 动态分流；`apple_ip`、私网 IP、常用代理服务 IP 与末端 `cn_ip` 均带 `no-resolve`，避免 Fake-IP 下额外本地解析。 |
+| **可选扩展模式** | 支持一键切换 `极简分流`、自定义节点与链式代理、IPv4/IPv6 偏好、隐藏地区手选组与可选 QUIC 阻断，详见 [功能目录](docs/feature-matrix.md)。 |
 
-Mihomo TUN 默认使用 `mips` 栈，DNS 使用 `lru` + `cache-max-size: 1` 并关闭全局 TCP Keep-Alive；`sniffer.override-destination` 默认开启；默认接管流量中的 TCP/UDP 53、以 `DST-PORT,853,REJECT` 拦截外部 DoT/DoQ 并对 `use-application-dns.net` 返回 `rcode://name_error`；STUN 流量通过动态规则集 `category-stun`（置于国内域名之后、`geolocation-!cn` 之前，指向 `默认代理`）配合常规域名/IP 规则分流：Google 相关归入 `Google` 组，大陆与内网保持直连，其余海外公共 STUN 走 `默认代理`。系统 DNS 的设置沿用内核的平台默认：开启自动路由时 Windows/Linux 默认 `hijack`，macOS 默认 `disabled`；设备和客户端仍需确认流量进入 TUN。非 Mihomo 客户端的相关行为以其应用为准。
+## 下载入口
 
-明确直连的域名规则、两大独立直连 CDN 集合（开启时同时生成直连路由并在对应代理规则中以 `AND NOT` 排除）、`海外游戏` 组内直连的游戏平台国内下载集合、`geolocation-cn`、`Microsoft`/`FCM` 选直连时的本地解析及 Apple 国内例外使用阿里/腾讯 DoH；其他代理服务的 policy 经对应服务组选择 DNS 出口。普通业务查询默认经 `自动选择ex(大陆&香港)`（极简或关闭该组时经 `默认代理`）使用 Cloudflare DoH-H3 与 Google DoH；节点域名使用阿里/腾讯 DoH 并经直连解析，避免代理可用前依赖境外 DNS。`default-nameserver` 启动解析使用阿里/腾讯 IP DoH。这不代表完全不向国内解析器发送查询。来源、重叠处理和边界见 [规则来源说明](docs/rule-sources.md)。
+### Mihomo / Stash（主支持）
 
-## Mihomo 主支持入口
-
-Mihomo 是本项目的主要支持客户端，功能源为覆写脚本和全量静态 YAML。Stash 使用同一 Mihomo 配置模型和 MRS provider，放在主支持入口下提供：
-
-| Mihomo / Stash 产物 | Raw 下载 | CDN 下载 |
+| 产物 | Raw 下载 | CDN 下载 |
 | --- | --- | --- |
 | Mihomo 全量覆写脚本 | [mihomoScript.js](https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Script/mihomoScript.js) | [mihomoScript.cdn.js](https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Script/mihomoScript.cdn.js) |
 | Mihomo 全量静态配置 | [mihomoConfig.yaml](https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/mihomoConfig.yaml) | [mihomoConfig.cdn.yaml](https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/mihomoConfig.cdn.yaml) |
 | Stash Mihomo 风格配置 | [profile.yaml](https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/stash/profile.yaml) | [profile.cdn.yaml](https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/stash/profile.cdn.yaml) |
 
-## 其他客户端原生配置
+### 其他客户端原生配置
 
-以下 profile 使用各自的配置与规则格式。客户端配置只含示例订阅 URL；请替换为对应应用支持的订阅格式。它们不会自动获得 Mihomo 的全部动态规则与 DNS 行为，具体覆盖范围和省略项见[多客户端兼容性说明](docs/client-compatibility.md)。
+以下配置仅包含示例订阅 URL，导入后请替换为对应客户端支持的订阅地址；动态规则与 DNS 覆盖差异见 [多客户端兼容性](docs/client-compatibility.md)。
 
 | 客户端 | Raw 配置 | CDN 配置 |
 | --- | --- | --- |
@@ -46,42 +44,29 @@ Mihomo 是本项目的主要支持客户端，功能源为覆写脚本和全量�
 | Shadowrocket | [profile.conf](https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/shadowrocket/profile.conf) | [profile.cdn.conf](https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/shadowrocket/profile.cdn.conf) |
 | Quantumult X | [profile.conf](https://raw.githubusercontent.com/dgn0md/myProxyRules/main/Config/quantumultx/profile.conf) | [profile.cdn.conf](https://cdn.jsdelivr.net/gh/dgn0md/myProxyRules@main/Config/quantumultx/profile.cdn.conf) |
 
-## 使用
+## 快速使用
 
-支持 `main(config)` 的 Mihomo 脚本覆写客户端可直接导入上表中的全量覆写脚本。
+- **覆写脚本模式（推荐）**：支持 `main(config)` 的 Mihomo 客户端直接导入 `mihomoScript.js`（或 CDN 版）即可自动处理订阅节点并生成完整配置。
+- **静态配置模式**：下载 `mihomoConfig.yaml` 并填写 `proxy-providers.订阅.url` 后导入 Mihomo；静态 provider 由内核直接拉取订阅，无法读取机场私有 DNS、hosts 或在构建期处理动态节点名称。需要完整节点展开时，请使用本地 `--subscription` 展开模式（见 [功能目录](docs/feature-matrix.md)）。
+- **自动更新**：客户端规则集由 HTTP provider 每 24 小时直接拉取上游；脚本与配置产物由 GitHub Actions 在通过行为与 Mihomo 原生校验后自动同步。
 
-静态配置可下载上表中的 YAML，填写 `proxy-providers.订阅.url` 后导入 Mihomo。静态 provider 由内核读取订阅，无法在构建时处理远端节点名称或机场 hosts。需要完整节点处理时，使用本地订阅展开模式，见[功能目录](docs/feature-matrix.md)。
+## 边界说明
 
-静态 YAML 中的扩展开关不会由 Mihomo 内核执行。更改 `Config/mihomoConfig.yaml` 中的选项并推送后，GitHub Actions 会自动重新生成 Raw YAML 和带独立 CDN SHA-256 的 `Config/mihomoConfig.cdn.yaml`，同时更新 Stash 和其他客户端 profile。
+- 地区分组仅按节点名称筛选候选，不代表公网出口真实所在地；Apple 共享域名不改变账号地区、设备资格或服务端策略。
+- 严格加密 DNS、Fake-IP 与 `no-resolve` 描述的是生成配置的行为边界，不能作为“零 DNS 泄漏”证明，也不代表所有设备流量均已进入 TUN。
+- 单元测试与离线原生校验基于合成节点与公开规则快照，不替代真机网络实测。
 
-旧设置文件使用 `x-myClashRules` 时，请将该键改为 `x-myProxyRules`；构建工具不再读取旧键，并会提示迁移。
+## 文档与开发
 
-GitHub Actions 每天定时验证并重生静态配置；脚本、配置开关、构建器或依赖锁文件变更时也会触发。只有生成内容变化且 Mihomo 行为与原生校验通过时，Action 才会提交更新后的 YAML、Stash 和其他客户端配置及 CDN 副本。也可在仓库的 Actions 页面手动运行 `Sync script and generate config`。
-
-脚本和配置都由 GitHub Actions 生成 CDN 副本；Mihomo YAML 与客户端 profile 分别显示 Raw SHA-256 和 CDN SHA-256。Mihomo YAML CDN 入口直接链接 `mihomoConfig.cdn.yaml`。
-
-## 边界
-
-节点名称用于筛选地区候选，不代表节点的真实出口地区。Apple 共享域名可能由多个产品共用，网络规则不能按 HTTPS 路径拆分应用，也不决定账号或设备资格。
-
-## 维护原则
-
-后续 DNS、规则源和开关更新遵守 [国内 DNS 白名单维护原则](docs/dns-whitelist.md) 与 [仓库维护约定](AGENTS.md)：明确域名规则目标为 `直连` 时使用国内 DNS；仅因 IP 兜底而直连、未命中明确域名 policy 的查询仍使用默认国外 DNS，不配置通用 `direct-nameserver`。其他授权来自现有 `geolocation-cn`、受国内服务开关控制的厂商集合、独立 DNS 白名单和专项例外。客户端 HTTP provider 每日直接更新，上游成员不经本仓库 CI 筛选发布。
-
-## 开发
-
-当前开发和 CI 锁定 Node.js 24.19.0 与 npm 11.17.0。
-
-```sh
-npm ci
-npm test
-npm run check
-npm run build:targets -- --target all
-```
-
-更多说明：[多客户端兼容性](docs/client-compatibility.md)、[DNS 白名单原则](docs/dns-whitelist.md)、[功能目录](docs/feature-matrix.md)、[Apple 路由](docs/apple-routing.md)、[动态规则来源](docs/rule-sources.md)、[节点处理测试](Test/README.md)。
-
-可用 `./tools/npmw run diagnose -- --probe-domain setup.icloud.com` 或 `--probe-ip 17.0.0.1` 在隔离的 Mihomo 回环环境中查看实际命中的规则与策略链；`--select 'Other Apple Service=美国'` 可模拟一次组内选择。诊断使用合成节点和本机下载的规则快照，所有出口终止在本地，不代表真实订阅当前选择、设备网络或 UDP 行为。
+| 文档 | 内容 |
+| --- | --- |
+| [功能目录](docs/feature-matrix.md) | 全部脚本开关、默认值、静态 provider 与本地展开模式说明 |
+| [Apple 路由说明](docs/apple-routing.md) | Siri/PCC、AppleProxy、Other Apple Service 边界与 DNS 策略 |
+| [国内 DNS 白名单原则](docs/dns-whitelist.md) | DNS 解析器分工、匹配优先级与维护边界 |
+| [规则来源说明](docs/rule-sources.md) | 上游规则集来源、厂商模块覆盖关系与依赖优先级 |
+| [多客户端兼容性](docs/client-compatibility.md) | Stash / Surge / Shadowrocket / Quantumult X 差异与省略项 |
+| [开发与验证说明](docs/validation.md) | 本地工具链（Node 24.19.0 / npm 11.17.0）、`test` / `check` / `native:check` 与诊断命令 |
+| [节点处理测试](Test/README.md) | 节点过滤、标准化与 hosts 改写测试说明 |
 
 ## 来源与许可
 
